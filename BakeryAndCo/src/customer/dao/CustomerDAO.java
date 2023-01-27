@@ -18,7 +18,7 @@ public class CustomerDAO {
 			e.printStackTrace();
 			System.exit(0);
 		}
-	}
+	}  
 
 	public static CustomerDAO dao = null;
 
