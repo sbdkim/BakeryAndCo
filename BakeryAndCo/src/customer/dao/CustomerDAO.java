@@ -124,31 +124,41 @@ public class CustomerDAO {
 		}
 		return result;
 	} // createCustomer
-	
-	
-	/*생성해야하는 메소드 LIST: 
-- DONE: createCustomer //memberDAO insertMember이랑 비슷합니다
-- passwordReset
-- viewCompletedOrder - orderTBL (orderCompleted - True)
-- writeReview
-- viewCurrentOrder
-- viewRegionStore - 지역에 있는 가게들 출력
-- viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
-- viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력
-- updateCustomer 
-- unregisterCustomer
 
+	/*
+	 * 생성해야하는 메소드 LIST: 
+	 * (DONE) createCustomer //memberDAO insertMember이랑 비슷합니다 -
+	 * passwordReset - viewCompletedOrder - orderTBL (orderCompleted - True) -
+	 * writeReview - viewCurrentOrder - viewRegionStore - 지역에 있는 가게들 출력 -
+	 * viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력 - viewProduct -
+	 * 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 - updateCustomer -
+	 * unregisterCustomer
+	 * 
 	 */
-	
-	public int passwordReset() {
+
+	//password reset - userID, mobile, birthDate를 받아서 password를 reset
+	public int passwordReset(String userID, String password, String mobile, Date birthDate) {
 		int result = 0;
-		
-		
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update customerTBL set pwd = ? where userID = ? AND mobile = ? AND birthDate = ?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, pwdEncrypt(password));
+			pstmt.setString(2, userID);
+			pstmt.setString(3, mobile);
+			pstmt.setDate(4, (java.sql.Date) birthDate);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
 		return result;
-	}
-	
-	
-	
+	}//passwordRest
 	
 	
 	

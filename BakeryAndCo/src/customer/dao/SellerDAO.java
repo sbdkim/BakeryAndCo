@@ -78,6 +78,61 @@ public class SellerDAO {
 		}		
 		return password;
 	}
+	
+	/*생성해야하는 메소드 LIST:
+- (DONE) createSeller
+- registerProduct
+- passwordReset
+- viewOrders - orderTBL 참고하고 그 스토에 들어온 주문 출력 날짜 시간
+- viewCustomers
+- viewProducts
+- editProduct
+- unregisterSeller
+
+	 * 
+	 * 
+	 * */	
+	
+	
+	
+	//password reset - sellerID, mobile, birthDate를 받아서 password를 reset
+	public int passwordReset(String sellerID, String password, String storeName, String mobile, Date birthDate) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update sellerTBL set pwd = ? where sellerID = ? AND mobile = ? AND birthDate = ? AND storeName = ?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, pwdEncrypt(password));
+			pstmt.setString(2, sellerID);
+			pstmt.setString(3, mobile);
+			pstmt.setDate(4, (java.sql.Date) birthDate);
+			pstmt.setString(5, storeName);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}//passwordRest
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 //seller생성
 	public int createSeller(String sellerID, String pwd, String name, Date birthDate, String gender, 
 			String storeName, String storeMobile, String email, String  mobile, String storeAddr, int regionCode) {
@@ -119,7 +174,7 @@ public class SellerDAO {
 		return result;
 	} // createSeller
 	
-	
+
 	
 	
 }//sellerDAO
