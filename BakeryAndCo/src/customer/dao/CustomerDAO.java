@@ -303,8 +303,37 @@ public class CustomerDAO {
 	
 	
 	
-	
-	
+	//Select all the completed order
+	public ArrayList<OrderVO> selectOrderCompl(){
+		ArrayList<OrderVO> list =null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt=null;	
+		ResultSet rs=null;
+		String sql="select Orderno,prodNum,prodName,Storename,Customerid,Quantity,cost,shippingcost,review,orderCompletedboolean,orderdate"
+				+ " from orderTBL order by Orderno";
+		OrderVO vo=null;
+		//3. PreparedStatement 객체생성
+		try {
+			pstmt=conn.prepareStatement(sql);
+			//? 채우기 x
+			// 쿼리문 전송 결과 받기
+			rs=pstmt.executeQuery();
+			if(rs.next()) {//읽은튜플이 하나이상 있는가?
+				list=new ArrayList<OrderVO>();//ArrayList 객체 생성
+				do {
+					vo=new OrderVO(rs.getInt("orderno") , rs.getInt("prodNum") , rs.getString("prodName") , rs.getString("storename") , rs.getString("customerid") , rs.getInt("quantity") ,
+							rs.getInt("cost") , rs.getString("shippingcost") , rs.getString("review") , rs.getInt("orderCompletedboolean") , rs.getDate("orderdate") );
+					list.add(vo);//ArrayList에 vo 객체 담기
+				}while(rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.close(rs, pstmt, conn);
+		}
+		
+		return list;
+	}	
 	
 	
 	
