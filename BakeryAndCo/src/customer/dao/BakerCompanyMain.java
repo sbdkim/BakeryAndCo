@@ -62,7 +62,33 @@ public class BakerCompanyMain {
 				
 				break;
 			case 2: // 회원가입
+				while(true) {
+					int subMenu;
+					
+					try {
+						subMenu = sc.nextInt();
+						sc.nextLine();
+					} catch (Exception e) {
+						System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+						//e.printStackTrace();
+						sc.nextLine();
+						continue;
+					}
+					if(subMenu==1) {
+					//	result = util.registerCustomer(sc);
+					}else if(subMenu==2) {
+						
+						
+					}else if(subMenu==0){
+						System.out.println();
+						break;
+					}else {
+						System.out.println("입력하신 번호에 오류가 있습니다...");
+						continue;
+					}
 
+				}
+				
 				break;
 
 			default:

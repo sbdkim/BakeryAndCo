@@ -1,5 +1,6 @@
 package customer.dao;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -95,6 +96,8 @@ public class CustomerDAOUtil {
 		 }
 		 return chk;
 	}
+	
+	
 
 	public boolean update(Scanner sc) {
 		// 아이디/패스워드 입력 받아서 조회
@@ -204,6 +207,93 @@ public class CustomerDAOUtil {
 		if(dao.CustomerDelete(id, password)==1)return true;
 		else return false;
 	}//delete
+
+	//회원가입 
+	public boolean registerCustomer(Scanner sc) {
+		boolean result = false;
+		String userID, pwd, pwdCheck, name, gender, email, mobile, addr;
+		Date birthDate;
+		while(true) {
+			System.out.print("사용자 ID(영문자,숫자조합(8~20자리)>>");
+			userID=sc.nextLine().trim();
+		//1. 패턴 체크
+			if(!idCheck(userID)) {
+				System.out.println("부적합한 사용자 ID 입니다. 영문자,숫자조합(8~20자리)");
+				continue;
+			}
+		//2. 아이디 중복 조회 select메소드를 DAO 만들기 boolean selectMember(String id)
+			//정상
+			if(dao.selectCustomer(userID)) {
+				System.out.println("이미 사용중인 ID 입니다.");
+				continue;				
+			}
+			break;
+		}//while -- check ID
+		while(true) {
+			//패스워드 입력
+				System.out.print("패스워드 ID(영문자,숫자,특수문자 조합(10~20자리)>>");
+				pwd=sc.nextLine().trim();
+			//1. 패턴체크
+				if(!pwdCheck(pwd)) {
+					System.out.println("부적합한 비밀번호 형식 입니다. 영문자,특수문자,숫자조합(10~20자리)");
+					continue;
+				}			
+			//패스워드 체크 입력
+				System.out.print("패스워드 다시 입력 >>");
+				pwdCheck=sc.nextLine().trim();
+			//두 패스워드 비교 틀린경우 다시 입력
+				if(!pwd.equals(pwdCheck)) {
+					System.out.println("입력하신 패스워드 2개가 다릅니다.");
+					continue;						
+				}			
+				break;
+			}
+		while(true) {
+			//이름 입력
+			System.out.print("이름 >>");
+			name=sc.nextLine().trim();
+			//공백의 경우 다시 입력
+			if(name.length()==0) {
+				System.out.println("이름은 필수 항목 입니다.");
+				continue;									
+			}
+			break;
+		}
+		
+		while(true) {
+			//이름 입력
+			System.out.print("성(남/여)>>");
+			gender=sc.nextLine().trim();
+			//공백의 경우 다시 입력
+			if(gender.length()==0) {
+				System.out.println("성은 필수 항목 입니다.");
+				continue;									
+			}
+			break;
+		}
+		
+		
+		
+		//String userID, pwd, pwdCheck, name, gender, email, mobile, addr;
+		//Date birthDate;
+		while(true) {
+			//전화번호 입력
+			System.out.print("휴대폰 번호>>");
+			mobile=sc.nextLine().trim();			
+			//1. 패턴체크
+			if(!mobileCheck(mobile)) {
+				System.out.println("전화번호 형식이 틀립니다.xxx-xxxx-xxxx");
+				continue;													
+			}
+			//패턴 틀린경우 다시 입력
+			break;
+		}
+		
+		
+		
+		
+		return result;
+	}//registerCustomer
 	
 	
 	
