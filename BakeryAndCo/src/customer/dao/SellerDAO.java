@@ -163,11 +163,34 @@ public class SellerDAO {
 	} // createSeller
 	
 	
-	
 	//product을 등록하려면 등록할떄 필요한 필드들을 다 입력 받아서 sql문에 넣어야 한다.
-//	public int registerProduct() {
-//		
-//	}
+public int registerProduct(String prodCategory, String storeName, String prodName, int price, int inventory, String description) {
+	int result = 0;
+	Connection conn = this.getConnection();
+	String sql = null;
+	sql = "insert into productTBL(prodNum, prodCategory, storeName, prodName, price, inventory, description, registrationDate) "
+			+ "values (prod_seq, ?, ?,?,?,?,?, sysdate)";
+	
+	PreparedStatement pstmt = null;
+	try {
+		// 4. PreparedStatement 객체 생성하기
+		pstmt = conn.prepareStatement(sql);
+		// 5. ? 값 설정하기
+		pstmt.setString(1, prodCategory);
+		pstmt.setString(2, storeName);
+		pstmt.setString(3, prodName);
+		pstmt.setInt(4, price);
+		pstmt.setInt(5, inventory);
+		pstmt.setString(6, description);
+
+		result = pstmt.executeUpdate();
+	} catch (SQLException e) {
+		e.printStackTrace();
+	} finally {
+		this.close(pstmt, conn);
+	}
+	return result;
+}
 
 	
 	

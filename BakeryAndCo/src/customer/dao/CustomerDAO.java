@@ -131,6 +131,10 @@ public class CustomerDAO {
 	 * (DONE) passwordReset viewCompletedOrder - orderTBL (orderCompleted - True) -
 	 * (DONE) writeReview viewCurrentOrder - orderCompleted - false viewRegionStore
 	 * - 지역에 있는 가게들 출력 viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
+	 * 
+	 * 
+	 * 
+	 * 
 	 * viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
 	 * unregisterCustomer
 	 * 
