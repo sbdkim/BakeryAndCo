@@ -92,10 +92,10 @@ public class CustomerDAO {
 		Connection conn = this.getConnection();
 		String sql = null;
 		if (email == null) {
-			sql = "insert into customerTBL(userID, pwd, name, gender, birhtDate, mobile, addr, enrollDate)"
+			sql = "insert into customerTBL(userID, pwd, name, gender, birthDate, mobile, addr, enrollDate)"
 					+ " values (?,?,?,?,?,?,?, sysdate)";
 		} else {
-			sql = "insert into customerTBL(userID, pwd, name, gender, birhtDate,  mobile, addr,email, enrollDate)"
+			sql = "insert into customerTBL(userID, pwd, name, gender, birthDate,  mobile, addr,email, enrollDate)"
 					+ " values (?,?,?,?,?,?,?,?, sysdate)";
 		}
 

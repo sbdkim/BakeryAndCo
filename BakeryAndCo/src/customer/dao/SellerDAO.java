@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class SellerDAO {
@@ -77,36 +78,48 @@ public class SellerDAO {
 		}		
 		return password;
 	}
+//seller생성
+	public int createSeller(String sellerID, String pwd, String name, Date birthDate, String gender, 
+			String storeName, String storeMobile, String email, String  mobile, String storeAddr, int regionCode) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		String sql = null;
+		if (email == null) {
+			sql = "insert into sellerTBL(sellerID, pwd, name, gender, birthDate, storeName, storeMobile, mobile, storeAddr, enrollDate)"
+					+ " values (?,?,?,?,?,?,?,?,?, sysdate)";
+		} else {
+			sql = "insert into sellerTBL(sellerID, pwd, name, gender, birthDate, storeName, storeMobile, mobile, storeAddr, email enrollDate)"
+					+ " values (?,?,?,?,?,?,?,?,?,?, sysdate)";
+		}
 
-	//비밀번호 바꾸기
-	public int insertMember(String id,String password,String name
-		,String mobile,String addr) {
-	int result=0;
-	Connection conn=this.getConnection();
-	PreparedStatement pstmt=null;	
-	String sql=null;
-	if(addr==null) {
-		sql="insert into membertbl(id,password,name,mobile,reg_date)";
-		sql+=" values(?,?,?,?,sysdate)";
+		PreparedStatement pstmt = null;
+		try {
+			// 4. PreparedStatement 객체 생성하기
+			pstmt = conn.prepareStatement(sql);
+			// 5. ? 값 설정하기
+			pstmt.setString(1, sellerID);
+			pstmt.setString(2, pwdEncrypt(pwd));
+			pstmt.setString(3, name);
+			pstmt.setString(4, gender);
+			pstmt.setDate(5, (java.sql.Date) birthDate);
+			pstmt.setString(6, storeName);
+			pstmt.setString(7, storeMobile);
+			pstmt.setString(8, mobile);
+			pstmt.setString(9, storeAddr);
+
+			if (email != null)
+				pstmt.setString(10, email);
+			// 쿼리문 전송+결과 받기
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(pstmt, conn);
+		}
+		return result;
+	} // createSeller
 	
-	}else {
-		sql="insert into membertbl(id,password,name,mobile,addr,reg_date)";
-		sql+=" values(?,?,?,?,?,sysdate)";
-	}
-	try {
-		pstmt=conn.prepareStatement(sql);
-		//?채우기
-		pstmt.setString(1, id);
-		pstmt.setString(2, pwdEncrypt(password));
-		pstmt.setString(3, name);
-		pstmt.setString(4, mobile);
-		if(addr!=null)pstmt.setString(5, addr);
-		result=pstmt.executeUpdate();
-		
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}
-	this.close(pstmt, conn);
-	return result;
-	}	
-}
+	
+	
+	
+}//sellerDAO
