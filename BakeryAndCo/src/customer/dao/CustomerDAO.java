@@ -229,26 +229,44 @@ public class CustomerDAO {
 
 	
 	// 지역에 있는 가게 출력
-	public int viewRegionStore(String regionCode) {
-		int result = 0;
+	public ArrayList<SellerVO> viewRegionStore(String regionCode) {
+		ArrayList<SellerVO> list = null;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String sql = null;
+		SellerVO vo = null;
 		
-		//list all the stores in the region
+		//list all the stores in the region -- storeViewtable 만들기???
+		//sql = "select storeName from viewStoreTBL where regionCode = ?";
 		sql = "select storeName from sellerTBL where regionCode = ?";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			// ?채우기
 			pstmt.setString(1, regionCode);
-
-			result = pstmt.executeUpdate();
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				list = new ArrayList<SellerVO>();
+				
+				do {
+					vo = new SellerVO(
+							rs.getString("storeName")			);
+					list.add(vo);
+				}while(rs.next());
+			}
+			
+			
+			
+			
+			
+			
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		this.close(pstmt, conn);
+		this.close(rs, pstmt, conn);
 
-		return result;
+		return list;
 	}
 	
 	
@@ -428,38 +446,6 @@ public class CustomerDAO {
 
 		return result;
 	}
-	
-	
-////	- viewRegionStore - 지역에 있는 가게들 출력//
-//	public ArrayList<SellerVO> regionSelectAll(String regionCode){
-//		ArrayList<SellerVO> list=null;
-//		Connection conn=this.getConnection();
-//		PreparedStatement pstmt=null;	
-//		ResultSet rs=null;
-//		String sql="select storeName from sellerTBL where regionCode = ?";
-//		RegionVO vo=null;
-//		//3. PreparedStatement 객체생성
-//		try {
-//			pstmt=conn.prepareStatement(sql);
-//			//? 채우기 x
-//			pstmt.setString(1, regionCode);
-//			// 쿼리문 전송 결과 받기
-//			rs=pstmt.executeQuery();
-//			if(rs.next()) {//읽은튜플이 하나이상 있는가?
-//				list=new ArrayList<RegionVO>();//ArrayList 객체 생성
-//				do {
-//					vo=new RegionVO(rs.getInt("regionCode") , rs.getString("regionName"));
-//					list.add(vo);//ArrayList에 vo 객체 담기
-//				}while(rs.next());
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}finally {
-//			this.close(rs, pstmt, conn);
-//		}
-//		return list;
-//	}
-//	
 	
 	
 	
