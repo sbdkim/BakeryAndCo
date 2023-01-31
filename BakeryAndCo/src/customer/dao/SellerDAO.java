@@ -92,9 +92,7 @@ public class SellerDAO {
 	 * 
 	 * 
 	 * */	
-	
-	
-	
+
 	//password reset - sellerID, mobile, birthDate를 받아서 password를 reset
 	public int passwordReset(String sellerID, String password, String storeName, String mobile, Date birthDate) {
 		int result = 0;
@@ -119,16 +117,6 @@ public class SellerDAO {
 
 		return result;
 	}//passwordRest
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -174,6 +162,10 @@ public class SellerDAO {
 		return result;
 	} // createSeller
 	
+	
+	
+	
+	public int registerProduct() {}
 
 	
 	
