@@ -67,21 +67,23 @@ public class SellerDAO {
 	
 	//암호화 모듈
 	private String pwdEncrypt(String pwd) {
-		MessageDigest md=null;
-		String password=null;
+		MessageDigest md = null;
+		String encrypted = "";
 		try {
-			md=MessageDigest.getInstance("SHA512");
+			md = MessageDigest.getInstance("SHA-256");
 			md.update(pwd.getBytes());
-			password=String.format("%0128x", new BigInteger(1,md.digest()));
+			encrypted = String.format("%064x", new BigInteger(1, md.digest()));
+			// System.out.println(hex);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-		}		
-		return password;
+		}
+		return encrypted;
 	}
+
 	
 	/*생성해야하는 메소드 LIST:
 - (DONE) createSeller
-- registerProduct
+- (DONE) registerProduct
 - (DONE) passwordReset
 - viewOrders - orderTBL 참고하고 그 스토에 들어온 주문 출력 날짜 시간
 - viewCustomers
@@ -191,6 +193,44 @@ public int registerProduct(String prodCategory, String storeName, String prodNam
 	}
 	return result;
 }
+
+
+public ArrayList<ProductVO> viewProducts(){
+	ArrayList<ProductVO> list=null;
+	Connection conn=this.getConnection();
+	PreparedStatement pstmt=null;	
+	ResultSet rs=null;
+	String sql="select prodNum,scategory,storename,prodName,price,Inventory,description,registerdate,rating from productTBL order by prodNum";
+	ProductVO vo=null;
+	//3. PreparedStatement 객체생성
+	try {
+		pstmt=conn.prepareStatement(sql);
+		//? 채우기 x
+		// 쿼리문 전송 결과 받기
+		rs=pstmt.executeQuery();
+		if(rs.next()) {//읽은튜플이 하나이상 있는가?
+			list=new ArrayList<ProductVO>();//ArrayList 객체 생성
+			do {
+				vo=new ProductVO(rs.getInt("prodNum"),
+						rs.getString("scategory"),rs.getString("storename"),
+						rs.getString("prodName"),rs.getInt("price"),
+						rs.getInt("Inventory"),rs.getString("description"),
+						rs.getDate("registerdate"),rs.getInt("rating"));
+				list.add(vo);//ArrayList에 vo 객체 담기
+			}while(rs.next());
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}finally {
+		this.close(rs, pstmt, conn);
+	}
+	return list;
+}
+
+
+
+
+
 
 	
 	
