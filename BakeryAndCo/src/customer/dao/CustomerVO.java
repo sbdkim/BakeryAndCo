@@ -12,11 +12,12 @@ public class CustomerVO {
 	//constructors
 	public CustomerVO() {super();}
 	
-	public CustomerVO(String userID,  String pwd, String name, Date birthDate, String email, String  mobile, String addr, Timestamp enrollDate ) {
+	public CustomerVO(String userID,  String pwd, String name, String gender, Date birthDate, String email, String  mobile, String addr, Timestamp enrollDate ) {
 		super();
 		this.userID = userID;
 		this.pwd = pwd;
 		this.name = name;
+		this.gender = gender;
 		this.birthDate = birthDate;
 		this.email = email;
 		this.mobile = mobile;
@@ -101,11 +102,11 @@ public class CustomerVO {
 	}
 
 	
-	//tring userID,  String pwd, String name, Date birthDate, String mobile, String addr, Timestamp enrollDate 
+	
 	@Override
 	public String toString() {
 		
-		return "MemberVO : [ID" + userID + ", 이름:" +  name + ", 생년월일: " + birthDate +", 이메일: " + email + ", 전화번호: " + mobile + ", 주소: " + addr +", 등록날짜: "  + enrollDate +"]"; 
+		return "CustomerVO : [ID: " + userID + ", 이름: " +  name +  ", 성: " +  gender + ", 생년월일: " + birthDate +", 이메일: " + email + ", 전화번호: " + mobile + ", 주소: " + addr +", 등록날짜: "  + enrollDate +"]"; 
 		
 	}
 	
