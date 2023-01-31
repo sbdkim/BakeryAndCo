@@ -97,7 +97,16 @@ public class CustomerDAOUtil {
 				 }
 				 return chk;
 			}
-			
+			public boolean emailCheck(String email) {
+				 boolean chk = false;
+				// 영문, 숫자, 특수문자 조합 (10~20 자리)
+				 String pattern ="^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}])[A-Za-z[0-9]!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}]{10,20}$";
+				 match = Pattern.compile(pattern).matcher(email);	
+				 if(match.find()) {//패턴에 맞는지 확인
+					  chk = true;
+				 }
+				 return chk;
+			}
 			
 			/////////////////////////////////////////////////////////////////////
 			
