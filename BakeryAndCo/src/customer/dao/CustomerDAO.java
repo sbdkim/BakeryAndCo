@@ -128,10 +128,14 @@ public class CustomerDAO {
 	/*
 	 * 생성해야하는 메소드 LIST: 
 	 * (DONE) createCustomer //memberDAO insertMember이랑 비슷합니다 -
-	 * (DONE) passwordReset - viewCompletedOrder - orderTBL (orderCompleted - True) -
-	 * (DONE) writeReview - viewCurrentOrder - viewRegionStore - 지역에 있는 가게들 출력 -
-	 * viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력 - viewProduct -
-	 * 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 - updateCustomer -
+	 * (DONE) passwordReset 
+	 * viewCompletedOrder - orderTBL (orderCompleted - True) -
+	 * (DONE) writeReview  
+	 *  viewCurrentOrder - orderCompleted - false
+	 *  viewRegionStore - 지역에 있는 가게들 출력
+	 *  viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력	 
+	 *  viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력
+	 * updateCustomer 
 	 * unregisterCustomer
 	 * 
 	 */
@@ -180,6 +184,60 @@ public class CustomerDAO {
 		this.close(pstmt, conn);
 
 		return result;
+	}//writeReview
+	
+	//아직 store에서 완료 안된 주문 출력(미배송)
+	public int viewCurrentOrder(String userID) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = 'false' ";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, userID);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		
+		return result;
+	}//viewCurrentOrder
+	
+	//완료된 주문 출력 
+	public int viewCompletedOrder(String userID) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = 'true' order by  orderDate desc";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, userID);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		
+		return result;
+	}//viewCurrentOrder
+	
+	
+	
+	//지역에 있는 가게 출력
+	public int viewRegionStore() {
+		int result = 0;
+		
+		
+		return result;
 	}
 	
 	
@@ -187,7 +245,5 @@ public class CustomerDAO {
 	
 	
 	
-	
-	
 
-}
+}//customerDAO
