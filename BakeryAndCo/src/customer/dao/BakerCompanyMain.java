@@ -1,15 +1,15 @@
 package customer.dao;
 
 import java.util.Scanner;
-
-public class CustomerDAOMain {
+ 
+public class BakerCompanyMain {
 
 	public static void main(String[] args) {
 		int menu = 0;
 		CustomerDAOUtil util = new CustomerDAOUtil();
 		Scanner sc = new Scanner(System.in);
 		String id = null;
-
+ 
 		while (true) {
 			System.out.println("-----Bread & Co. Main Menu -----");
 			System.out.println("[1] 회원가입");
