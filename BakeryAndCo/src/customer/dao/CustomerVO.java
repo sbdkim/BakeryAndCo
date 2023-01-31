@@ -1,42 +1,48 @@
 package customer.dao;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class CustomerVO {
 	//fields
-	private String id, password, name, birthDate, mobile, addr;
-	private Timestamp reg_date;
+	private String userID, pwd, name, gender, email, mobile,  addr ;
+	private Date birthDate;
+	private Timestamp enrollDate;
 	
 	//constructors
 	public CustomerVO() {super();}
 	
-	public CustomerVO(String id,  String name, String birthDate, String mobile, String addr, int grade, Timestamp reg_date ) {
+	public CustomerVO(String userID,  String pwd, String name, String gender,  String email, String  mobile, String addr,Date birthDate, Timestamp enrollDate ) {
 		super();
-		this.id =  id;		
+		this.userID = userID;
+		this.pwd = pwd;
 		this.name = name;
+		this.gender = gender;
 		this.birthDate = birthDate;
+		this.email = email;
 		this.mobile = mobile;
 		this.addr = addr;
-		this.reg_date = reg_date;
+		this.enrollDate = enrollDate;
 	}
 
 	
 	
-	//methods
-	public String getId() {
-		return id;
+	
+	
+	public String getUserID() {
+		return userID;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setUserID(String userID) {
+		this.userID = userID;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPwd() {
+		return pwd;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
 	}
 
 	public String getName() {
@@ -46,17 +52,22 @@ public class CustomerVO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public String getbirthDate() {
-		return birthDate;
+
+	public String getGender() {
+		return gender;
 	}
-	
-	public void setbirthDate(String birthDate) {
-		this.birthDate = birthDate;
+
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
-	
-	
-	
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public String getMobile() {
 		return mobile;
@@ -74,18 +85,28 @@ public class CustomerVO {
 		this.addr = addr;
 	}
 
-	public Timestamp getReg_date() {
-		return reg_date;
+	public Date getBirthDate() {
+		return birthDate;
 	}
 
-	public void setReg_date(Timestamp reg_date) {
-		this.reg_date = reg_date;
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
+
+	public Timestamp getEnrollDate() {
+		return enrollDate;
+	}
+
+	public void setEnrollDate(Timestamp enrollDate) {
+		this.enrollDate = enrollDate;
+	}
+
+	
 	
 	@Override
 	public String toString() {
 		
-		return "MemberVO : [ID" + id + ", 이름:" +  name + ", 전화번호: " + mobile + ", 주소: " + addr +", 등록날짜: "  + reg_date +"]"; 
+		return "CustomerVO : [ID: " + userID + ", 이름: " +  name +  ", 성: " +  gender + ", 생년월일: " + birthDate +", 이메일: " + email + ", 전화번호: " + mobile + ", 주소: " + addr +", 등록날짜: "  + enrollDate +"]"; 
 		
 	}
 	
