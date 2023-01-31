@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
+
 public class CustomerDAO {
 
 	static {
@@ -238,6 +239,37 @@ public class CustomerDAO {
 		
 		
 		return result;
+	}
+
+	
+	//customer userID &pwd 로 검색
+	public CustomerVO selectCustomer(String userID, String pwd) {
+		CustomerVO vo = null;
+		
+		Connection conn=this.getConnection();
+		PreparedStatement pstmt=null;	
+		ResultSet rs=null;
+		String sql=
+		"select userID, name, gender, birthDate, email, mobile, addr, enrollDate from customerTBL where userID=? and pwd=?";
+		//3. PreparedStatement 객체생성
+		try {
+			pstmt=conn.prepareStatement(sql);
+			//? 채우기
+			pstmt.setString(1, userID);pstmt.setString(2, pwdEncrypt(pwd));
+			// 쿼리문 전송 결과 받기
+			rs=pstmt.executeQuery();
+			if(rs.next()) {//읽은튜플이 있는가?		
+				vo=new CustomerVO(rs.getString("userID"),
+						rs.getString("name"),rs.getString("gender"),
+						rs.getDate("birthDate"), rs.getString("email"),
+						rs.getString("mobile"), rs.getString("addr"), rs.getTimestamp("enrollDate"));		
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.close(rs, pstmt, conn);
+		}		
+		return vo;
 	}
 	
 	

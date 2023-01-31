@@ -26,6 +26,18 @@ public class CustomerVO {
 	}
 
 	
+	public CustomerVO(String userID,  String name, String gender, Date birthDate, String email, String  mobile, String addr, Timestamp enrollDate ) {
+		super();
+		this.userID = userID;
+		this.name = name;
+		this.gender = gender;
+		this.birthDate = birthDate;
+		this.email = email;
+		this.mobile = mobile;
+		this.addr = addr;
+		this.enrollDate = enrollDate;
+	}
+	
 	
 	
 	
