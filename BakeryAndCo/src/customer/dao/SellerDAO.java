@@ -164,8 +164,10 @@ public class SellerDAO {
 	
 	
 	
-	
-	public int registerProduct() {}
+	//product을 등록하려면 등록할떄 필요한 필드들을 다 입력 받아서 sql문에 넣어야 한다.
+//	public int registerProduct() {
+//		
+//	}
 
 	
 	

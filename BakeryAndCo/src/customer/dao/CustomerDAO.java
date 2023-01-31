@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class CustomerDAO {
@@ -356,5 +357,53 @@ public class CustomerDAO {
 
 		return result;
 	}
+	
+	
+//	- viewRegionStore - 지역에 있는 가게들 출력//
+	public ArrayList<RegionVO> regionSelectAll(){
+		ArrayList<RegionVO> list=null;
+		Connection conn=this.getConnection();
+		PreparedStatement pstmt=null;	
+		ResultSet rs=null;
+		String sql="select * from regionTBL";
+		RegionVO vo=null;
+		//3. PreparedStatement 객체생성
+		try {
+			pstmt=conn.prepareStatement(sql);
+			//? 채우기 x
+			// 쿼리문 전송 결과 받기
+			rs=pstmt.executeQuery();
+			if(rs.next()) {//읽은튜플이 하나이상 있는가?
+				list=new ArrayList<RegionVO>();//ArrayList 객체 생성
+				do {
+					vo=new RegionVO(rs.getInt("regionCode") , rs.getString("regionName"));
+					list.add(vo);//ArrayList에 vo 객체 담기
+				}while(rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }// customerDAO
