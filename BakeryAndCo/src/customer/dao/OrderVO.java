@@ -3,35 +3,39 @@ package customer.dao;
 import java.sql.Date;
 
 public class OrderVO {
-	private int Orderno,prodNum;
-	private String prodName,Storename,Customerid;
-	private int Quantity,cost;
-	private String shippingcost,review;
-	private int orderCompletedboolean;
-	private Date orderdate;
+	private int orderNo,prodNum;
+	private String prodName,storeName,userID;
+	private int quantity,cost;
+	private String shippingCost,review;
+	private boolean orderCompleted;
+	private Date orderDate;
 	public OrderVO() {
 		super();
 	}
-	public OrderVO(int orderno, int prodNum, String prodName, String storename, String customerid, int quantity,
-			int cost, String shippingcost, String review, int orderCompletedboolean, Date orderdate) {
+	
+	
+	public OrderVO(int orderNo, int prodNum, String prodName, String storeName, String userID, int quantity,
+			int cost, String shippingCost, String review, boolean orderCompleted, Date orderDate) {
 		super();
-		Orderno = orderno;
+		this.orderNo = orderNo;
 		this.prodNum = prodNum;
 		this.prodName = prodName;
-		Storename = storename;
-		Customerid = customerid;
-		Quantity = quantity;
+		this.storeName = storeName;
+		this.userID = userID;
+		this.quantity = quantity;
 		this.cost = cost;
-		this.shippingcost = shippingcost;
+		this.shippingCost = shippingCost;
 		this.review = review;
-		this.orderCompletedboolean = orderCompletedboolean;
-		this.orderdate = orderdate;
+		this.orderCompleted = orderCompleted;
+		this.orderDate = orderDate;
 	}
-	public int getOrderno() {
-		return Orderno;
+	
+	
+	public int getorderNo() {
+		return orderNo;
 	}
-	public void setOrderno(int orderno) {
-		Orderno = orderno;
+	public void setorderNo(int orderNo) {
+		this.orderNo = orderNo;
 	}
 	public int getProdNum() {
 		return prodNum;
@@ -45,23 +49,23 @@ public class OrderVO {
 	public void setProdName(String prodName) {
 		this.prodName = prodName;
 	}
-	public String getStorename() {
-		return Storename;
+	public String getstoreName() {
+		return storeName;
 	}
-	public void setStorename(String storename) {
-		Storename = storename;
+	public void setstoreName(String storeName) {
+		this.storeName = storeName;
 	}
-	public String getCustomerid() {
-		return Customerid;
+	public String getuserID() {
+		return userID;
 	}
-	public void setCustomerid(String customerid) {
-		Customerid = customerid;
+	public void setuserID(String userID) {
+		this.userID = userID;
 	}
-	public int getQuantity() {
-		return Quantity;
+	public int getquantity() {
+		return quantity;
 	}
-	public void setQuantity(int quantity) {
-		Quantity = quantity;
+	public void setquantity(int quantity) {
+		this.quantity = quantity;
 	}
 	public int getCost() {
 		return cost;
@@ -69,11 +73,11 @@ public class OrderVO {
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
-	public String getShippingcost() {
-		return shippingcost;
+	public String getshippingCost() {
+		return shippingCost;
 	}
-	public void setShippingcost(String shippingcost) {
-		this.shippingcost = shippingcost;
+	public void setshippingCost(String shippingCost) {
+		this.shippingCost = shippingCost;
 	}
 	public String getReview() {
 		return review;
@@ -81,24 +85,24 @@ public class OrderVO {
 	public void setReview(String review) {
 		this.review = review;
 	}
-	public int getOrderCompletedboolean() {
-		return orderCompletedboolean;
+	public boolean getorderCompleted() {
+		return orderCompleted;
 	}
-	public void setOrderCompletedboolean(int orderCompletedboolean) {
-		this.orderCompletedboolean = orderCompletedboolean;
+	public void setorderCompleted(boolean orderCompleted) {
+		this.orderCompleted = orderCompleted;
 	}
-	public Date getOrderdate() {
-		return orderdate;
+	public Date getorderDate() {
+		return orderDate;
 	}
-	public void setOrderdate(Date orderdate) {
-		this.orderdate = orderdate;
+	public void setorderDate(Date orderDate) {
+		this.orderDate = orderDate;
 	}
 	@Override
 	public String toString() {
-		return "OrderVO [Orderno=" + Orderno + ", prodNum=" + prodNum + ", prodName=" + prodName + ", Storename="
-				+ Storename + ", Customerid=" + Customerid + ", Quantity=" + Quantity + ", cost=" + cost
-				+ ", shippingcost=" + shippingcost + ", review=" + review + ", orderCompletedboolean="
-				+ orderCompletedboolean + ", orderdate=" + orderdate + "]";
+		return "OrderVO [orderNo=" + orderNo + ", prodNum=" + prodNum + ", prodName=" + prodName + ", storeName="
+				+ storeName + ", userID=" + userID + ", quantity=" + quantity + ", cost=" + cost
+				+ ", shippingCost=" + shippingCost + ", review=" + review + ", orderCompleted="
+				+ orderCompleted + ", orderDate=" + orderDate + "]";
 	}
 
 
