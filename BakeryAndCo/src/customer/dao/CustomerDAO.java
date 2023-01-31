@@ -347,14 +347,16 @@ public class CustomerDAO {
 			}
 			
 			
-//			- viewRegionStore - 지역에 있는 가게들 출력//
-			public ArrayList<RegionVO> regionSelectAll(){
-				ArrayList<RegionVO> list=null;
-				Connection conn=this.getConnection();
+//			- viewCompletedOrder - orderTBL (orderCompleted - True)
+			//고객 조회
+			public ArrayList<OrderVO> selectOrderCompl(){
+				ArrayList<OrderVO> list =null;
+				Connection conn = this.getConnection();
 				PreparedStatement pstmt=null;	
 				ResultSet rs=null;
-				String sql="select * from regionTBL";
-				RegionVO vo=null;
+				String sql="select Orderno,prodNum,prodName,Storename,Customerid,Quantity,cost,shippingcost,review,orderCompletedboolean,orderdate"
+						+ " from orderTBL order by Orderno";
+				OrderVO vo=null;
 				//3. PreparedStatement 객체생성
 				try {
 					pstmt=conn.prepareStatement(sql);
@@ -362,9 +364,10 @@ public class CustomerDAO {
 					// 쿼리문 전송 결과 받기
 					rs=pstmt.executeQuery();
 					if(rs.next()) {//읽은튜플이 하나이상 있는가?
-						list=new ArrayList<RegionVO>();//ArrayList 객체 생성
+						list=new ArrayList<OrderVO>();//ArrayList 객체 생성
 						do {
-							vo=new RegionVO(rs.getInt("regionCode") , rs.getString("regionName"));
+							vo=new OrderVO(rs.getInt("orderno") , rs.getInt("prodNum") , rs.getString("prodName") , rs.getString("storename") , rs.getString("customerid") , rs.getInt("quantity") ,
+									rs.getInt("cost") , rs.getString("shippingcost") , rs.getString("review") , rs.getInt("orderCompletedboolean") , rs.getDate("orderdate") );
 							list.add(vo);//ArrayList에 vo 객체 담기
 						}while(rs.next());
 					}
@@ -373,14 +376,13 @@ public class CustomerDAO {
 				}finally {
 					this.close(rs, pstmt, conn);
 				}
+				
 				return list;
 			}
-			
-			
-
-//			- viewCompletedOrder - orderTBL (orderCompleted - True)
-//			- writeReview //
 //			- viewCurrentOrder
+			
+			
+			//DAOUtil 부분
 //			- viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
 //			- viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력
 
