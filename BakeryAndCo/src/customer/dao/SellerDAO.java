@@ -67,17 +67,19 @@ public class SellerDAO {
 	
 	//암호화 모듈
 	private String pwdEncrypt(String pwd) {
-		MessageDigest md=null;
-		String password=null;
+		MessageDigest md = null;
+		String encrypted = "";
 		try {
-			md=MessageDigest.getInstance("SHA512");
+			md = MessageDigest.getInstance("SHA-256");
 			md.update(pwd.getBytes());
-			password=String.format("%0128x", new BigInteger(1,md.digest()));
+			encrypted = String.format("%064x", new BigInteger(1, md.digest()));
+			// System.out.println(hex);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-		}		
-		return password;
+		}
+		return encrypted;
 	}
+
 	
 	/*생성해야하는 메소드 LIST:
 - (DONE) createSeller
