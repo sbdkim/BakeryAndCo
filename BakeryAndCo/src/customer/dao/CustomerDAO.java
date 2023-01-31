@@ -227,12 +227,79 @@ public class CustomerDAO {
 		return result;
 	}// viewCurrentOrder
 
+	
 	// 지역에 있는 가게 출력
-	public int viewRegionStore() {
+	public int viewRegionStore(String regionCode) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = null;
+		
+		//list all the stores in the region
+		sql = "select storeName from sellerTBL where regionCode = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, regionCode);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	// 지역에 있는 가게들 출력  - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
+	public int viewProductCategory() {
 		int result = 0;
 
 		return result;
 	}
+	
+	//케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
+	public int viewProduct() {
+		int result = 0;
+
+		return result;
+	}
+	
+
+
+	 //unregisterCustomer
+	
+	public int unregisterCustomer() {
+		int result = 0;
+
+		return result;
+	}
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	// customer userID &pwd 로 검색
 	public CustomerVO selectCustomer(String userID, String pwd) {
@@ -363,35 +430,36 @@ public class CustomerDAO {
 	}
 	
 	
-//	- viewRegionStore - 지역에 있는 가게들 출력//
-	public ArrayList<RegionVO> regionSelectAll(){
-		ArrayList<RegionVO> list=null;
-		Connection conn=this.getConnection();
-		PreparedStatement pstmt=null;	
-		ResultSet rs=null;
-		String sql="select * from regionTBL";
-		RegionVO vo=null;
-		//3. PreparedStatement 객체생성
-		try {
-			pstmt=conn.prepareStatement(sql);
-			//? 채우기 x
-			// 쿼리문 전송 결과 받기
-			rs=pstmt.executeQuery();
-			if(rs.next()) {//읽은튜플이 하나이상 있는가?
-				list=new ArrayList<RegionVO>();//ArrayList 객체 생성
-				do {
-					vo=new RegionVO(rs.getInt("regionCode") , rs.getString("regionName"));
-					list.add(vo);//ArrayList에 vo 객체 담기
-				}while(rs.next());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally {
-			this.close(rs, pstmt, conn);
-		}
-		return list;
-	}
-	
+////	- viewRegionStore - 지역에 있는 가게들 출력//
+//	public ArrayList<SellerVO> regionSelectAll(String regionCode){
+//		ArrayList<SellerVO> list=null;
+//		Connection conn=this.getConnection();
+//		PreparedStatement pstmt=null;	
+//		ResultSet rs=null;
+//		String sql="select storeName from sellerTBL where regionCode = ?";
+//		RegionVO vo=null;
+//		//3. PreparedStatement 객체생성
+//		try {
+//			pstmt=conn.prepareStatement(sql);
+//			//? 채우기 x
+//			pstmt.setString(1, regionCode);
+//			// 쿼리문 전송 결과 받기
+//			rs=pstmt.executeQuery();
+//			if(rs.next()) {//읽은튜플이 하나이상 있는가?
+//				list=new ArrayList<RegionVO>();//ArrayList 객체 생성
+//				do {
+//					vo=new RegionVO(rs.getInt("regionCode") , rs.getString("regionName"));
+//					list.add(vo);//ArrayList에 vo 객체 담기
+//				}while(rs.next());
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}finally {
+//			this.close(rs, pstmt, conn);
+//		}
+//		return list;
+//	}
+//	
 	
 	
 	

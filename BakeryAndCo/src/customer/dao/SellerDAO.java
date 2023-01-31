@@ -81,7 +81,7 @@ public class SellerDAO {
 	
 	/*생성해야하는 메소드 LIST:
 - (DONE) createSeller
-- registerProduct
+- (DONE) registerProduct
 - (DONE) passwordReset
 - viewOrders - orderTBL 참고하고 그 스토에 들어온 주문 출력 날짜 시간
 - viewCustomers
