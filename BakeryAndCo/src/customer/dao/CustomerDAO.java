@@ -8,7 +8,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-  
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+
 public class CustomerDAO {
 
 	static {
@@ -26,9 +29,8 @@ public class CustomerDAO {
 	}
 
 	public static CustomerDAO getInstance() {
-		if (dao == null) {
+		if (dao == null)
 			dao = new CustomerDAO();
-		}
 		return dao;
 	}
 
@@ -68,14 +70,13 @@ public class CustomerDAO {
 			e.printStackTrace();
 		}
 	}
-	
 
-	private String pwdEncrypt(String password) {
+	private String pwdEncrypt(String pwd) {
 		MessageDigest md = null;
 		String encrypted = "";
 		try {
 			md = MessageDigest.getInstance("SHA-256");
-			md.update(password.getBytes());
+			md.update(pwd.getBytes());
 			encrypted = String.format("%064x", new BigInteger(1, md.digest()));
 			// System.out.println(hex);
 		} catch (NoSuchAlgorithmException e) {
@@ -83,17 +84,20 @@ public class CustomerDAO {
 		}
 		return encrypted;
 	}
-	
-	//메소드 여기에 추가 
-	
-	public int createCustomer(String id, String password, String name, String mobile, String addr) {
+
+	// 메소드 여기에 추가
+
+	public int createCustomer(String userID, String pwd, String name, String gender, Date birthDate, String email,
+			String mobile, String addr) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		String sql = null;
-		if (addr == null) {
-			sql = "insert into customerTBL(id, password, name, mobile, reg_date)" + " values (?,?,?,?, sysdate)";
+		if (email == null) {
+			sql = "insert into customerTBL(userID, pwd, name, gender, birthDate, mobile, addr, enrollDate)"
+					+ " values (?,?,?,?,?,?,?, sysdate)";
 		} else {
-			sql = "insert into customerTBL(id, password, name, mobile, addr, reg_date)" + " values (?,?,?,?,?, sysdate)";
+			sql = "insert into customerTBL(userID, pwd, name, gender, birthDate,  mobile, addr,email, enrollDate)"
+					+ " values (?,?,?,?,?,?,?,?, sysdate)";
 		}
 
 		PreparedStatement pstmt = null;
@@ -101,12 +105,17 @@ public class CustomerDAO {
 			// 4. PreparedStatement 객체 생성하기
 			pstmt = conn.prepareStatement(sql);
 			// 5. ? 값 설정하기
-			pstmt.setString(1, id);
-			pstmt.setString(2, pwdEncrypt(password));
+			pstmt.setString(1, userID);
+			pstmt.setString(2, pwdEncrypt(pwd));
 			pstmt.setString(3, name);
-			pstmt.setString(4, mobile);
+			pstmt.setString(4, gender);
+			pstmt.setDate(5, (java.sql.Date) birthDate);
+
+			pstmt.setString(6, mobile);
+			pstmt.setString(7, addr);
+
 			if (addr != null)
-				pstmt.setString(5, addr);
+				pstmt.setString(8, email);
 			// 쿼리문 전송+결과 받기
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -115,7 +124,277 @@ public class CustomerDAO {
 			this.close(pstmt, conn);
 		}
 		return result;
-	} // memberInsert
+	} // createCustomer
+
+	/*
+	 * 생성해야하는 메소드 LIST: (DONE) createCustomer //memberDAO insertMember이랑 비슷합니다 -
+	 * (DONE) passwordReset viewCompletedOrder - orderTBL (orderCompleted - True) -
+	 * (DONE) writeReview viewCurrentOrder - orderCompleted - false viewRegionStore
+	 * - 지역에 있는 가게들 출력 viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
+	 * viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
+	 * unregisterCustomer
+	 * 
+	 */
+
+	// password reset - userID, mobile, birthDate를 받아서 password를 reset
+	public int passwordReset(String userID, String password, String mobile, Date birthDate) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update customerTBL set pwd = ? where userID = ? AND mobile = ? AND birthDate = ?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, pwdEncrypt(password));
+			pstmt.setString(2, userID);
+			pstmt.setString(3, mobile);
+			pstmt.setDate(4, (java.sql.Date) birthDate);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}// passwordRest
+
+	public int writeReview(String orderNo, String review) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update orderTBL set review = ? where orderNo = ?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, review);
+			pstmt.setString(2, orderNo);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}// writeReview
+
+	// 아직 store에서 완료 안된 주문 출력(미배송)
+	public int viewCurrentOrder(String userID) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = 'false' ";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, userID);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}// viewCurrentOrder
+
+	// 완료된 주문 출력
+	public int viewCompletedOrder(String userID) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = 'true' order by  orderDate desc";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, userID);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}// viewCurrentOrder
+
+	// 지역에 있는 가게 출력
+	public int viewRegionStore() {
+		int result = 0;
+
+		return result;
+	}
+
+	// customer userID &pwd 로 검색
+	public CustomerVO selectCustomer(String userID, String pwd) {
+		CustomerVO vo = null;
+
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select userID, name, gender, birthDate, email, mobile, addr, enrollDate from customerTBL where userID=? and pwd=?";
+		// 3. PreparedStatement 객체생성
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기
+			pstmt.setString(1, userID);
+			pstmt.setString(2, pwdEncrypt(pwd));
+			// 쿼리문 전송 결과 받기
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 있는가?
+				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"), rs.getString("gender"),
+						rs.getDate("birthDate"), rs.getString("email"), rs.getString("mobile"), rs.getString("addr"),
+						rs.getTimestamp("enrollDate"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
+		}
+		return vo;
+	}
+
+	
+	public int CustomerDelete(String userID,String pwd) {
+		int result=0;
+		Connection conn=this.getConnection();
+		PreparedStatement pstmt=null;	
+		String sql="delete from customerTBL where userID=? and pwd=?";
+		try {
+			pstmt=conn.prepareStatement(sql);
+			//?채우기
+			pstmt.setString(1, userID);
+			pstmt.setString(2, pwdEncrypt(pwd));
+			result=pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);	
+
+		return result;
+	}
+	
+	
+	
+	public int updateCustomer(String userID, String pwd, String name, String gender, String email, String mobile,
+			String addr) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		StringBuilder sql = new StringBuilder("update customerTBL set ");
+		int cnt = 0;// 수정 필드(열) 개수
+		if (pwd != null) {
+			sql.append("pwd=?,");
+		}
+		if (name != null) {
+			sql.append("name=?,");
+		}
+		if (gender != null) {
+			sql.append("gender=?,");
+		} // gender
+		if (email != null) {
+			sql.append("email=?,");
+		} // email
+		if (mobile != null) {
+			sql.append("mobile=?,");
+		}
+
+		if (addr != null) {
+			sql.append("addr=?,");
+		}
+//		if(birthDate!=null) {
+//			sql.append("birthDate=?,");
+//		}//birthDate
+
+		// 마지막 , 없애고
+		sql = sql.delete(sql.length() - 1, sql.length());
+		// where 이하 붙이기
+		sql.append(" where id=?");
+		try {
+			pstmt = conn.prepareStatement(sql.toString());
+			// ?채우기
+			if (pwd != null) {
+				cnt++;
+				pstmt.setString(cnt, this.pwdEncrypt(pwd));
+			}
+			if (name != null) {
+				cnt++;
+				pstmt.setString(cnt, name);
+			}
+			if (gender != null) {
+				cnt++;
+				pstmt.setString(cnt, gender);
+			}
+			if (email != null) {
+				cnt++;
+				pstmt.setString(cnt, email);
+			}
+			if (mobile != null) {
+				cnt++;
+				pstmt.setString(cnt, mobile);
+			}
+			if (addr != null) {
+				cnt++;
+				pstmt.setString(cnt, addr);
+			}
+//			if(birthDate!=null) {
+//				cnt++;
+//				pstmt.setDate(cnt,(java.sql.Date)birthDate);
+//			}
+			pstmt.setString(++cnt, userID);
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}
+	
+	
+//	- viewRegionStore - 지역에 있는 가게들 출력//
+	public ArrayList<RegionVO> regionSelectAll(){
+		ArrayList<RegionVO> list=null;
+		Connection conn=this.getConnection();
+		PreparedStatement pstmt=null;	
+		ResultSet rs=null;
+		String sql="select * from regionTBL";
+		RegionVO vo=null;
+		//3. PreparedStatement 객체생성
+		try {
+			pstmt=conn.prepareStatement(sql);
+			//? 채우기 x
+			// 쿼리문 전송 결과 받기
+			rs=pstmt.executeQuery();
+			if(rs.next()) {//읽은튜플이 하나이상 있는가?
+				list=new ArrayList<RegionVO>();//ArrayList 객체 생성
+				do {
+					vo=new RegionVO(rs.getInt("regionCode") , rs.getString("regionName"));
+					list.add(vo);//ArrayList에 vo 객체 담기
+				}while(rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -127,4 +406,4 @@ public class CustomerDAO {
 	
 	
 
-}
+}// customerDAO
