@@ -225,14 +225,6 @@ public class CustomerDAO {
 				return result;
 			}
 			
-			/*생성해야하는 메소드 LIST: 
-			- DONE: createCustomer //memberDAO insertMember이랑 비슷합니다//
-			
-			
-			- passwordReset 
-			
-				 */
-			
 			//비밀번호 바꾸기 or 초기화 //update
 			public int passwordReset(String UserID,String pwd) {
 				int result=0;
@@ -254,24 +246,7 @@ public class CustomerDAO {
 				return result;
 			}
 			
-			
-//			- viewCompletedOrder - orderTBL (orderCompleted - True)
-			
-			
-			
-			
-			
-			
-			
-			
-//			- writeReview
-//			- viewCurrentOrder
-//			- viewRegionStore - 지역에 있는 가게들 출력
-			
-			
-//			- viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
-//			- viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력
-//			- updateCustomer 
+
 //			- unregisterCustomer
 			public int CustomerDelete(String userID,String pwd) {
 				int result=0;
@@ -292,6 +267,96 @@ public class CustomerDAO {
 						
 				return result;
 			}
-	
+			
+			
+//			- updateCustomer// 
+			public int updateCustomer(String userID,  String pwd, String name, String gender,  String email, String  mobile, String addr) {
+				int result=0;
+				Connection conn=this.getConnection();
+				PreparedStatement pstmt=null;	
+				StringBuilder sql=new StringBuilder("update membertbl set ");
+				int cnt=0;//수정 필드(열) 개수
+				if(pwd!=null) {			
+					sql.append("pwd=?,");
+				}
+				if(name!=null) {
+					sql.append("name=?,");
+				}
+				if(gender!=null) {
+					sql.append("gender=?,");
+				}//gender
+				if(email!=null) {
+					sql.append("email=?,");
+				}//email
+				if(mobile!=null) {
+					sql.append("mobile=?,");
+				}
+				
+				if(addr!=null) {
+					sql.append("addr=?,");
+				}
+//				if(birthDate!=null) {
+//					sql.append("birthDate=?,");
+//				}//birthDate
+				
+				//마지막 , 없애고 
+				sql=sql.delete(sql.length()-1, sql.length());
+				//where 이하 붙이기
+				sql.append(" where id=?");
+				try {
+					pstmt=conn.prepareStatement(sql.toString());
+					//?채우기
+					if(pwd!=null) {
+						cnt++;
+						pstmt.setString(cnt, this.pwdEncrypt(pwd));
+					}
+					if(name!=null) {
+						cnt++;
+						pstmt.setString(cnt,name);
+					}
+					if(gender!=null) {
+						cnt++;
+						pstmt.setString(cnt,gender);
+					}
+					if(email!=null) {
+						cnt++;
+						pstmt.setString(cnt,email);
+					}
+					if(mobile!=null) {
+						cnt++;
+						pstmt.setString(cnt,mobile);
+					}
+					if(addr!=null) {
+						cnt++;
+						pstmt.setString(cnt,addr);
+					}
+//					if(birthDate!=null) {
+//						cnt++;
+//						pstmt.setDate(cnt,(java.sql.Date)birthDate);
+//					}
+					pstmt.setString(++cnt, userID);
+					result=pstmt.executeUpdate();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				this.close(pstmt, conn);			
+				
+				return result;
+			}
+			
+			
+			
+//			- viewCompletedOrder - orderTBL (orderCompleted - True)
+			
+//			- writeReview
+//			- viewCurrentOrder
+//			- viewRegionStore - 지역에 있는 가게들 출력
+			
+			
+//			- viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
+//			- viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력
+
+			
 
 }
