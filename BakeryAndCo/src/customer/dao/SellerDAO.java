@@ -237,5 +237,76 @@ public class SellerDAO {
 		return list;
 	}
 	
+	public int editProduct(int prodNum, String scategory, String storename, String prodName, int price, int inventory, String description, 
+			  Date registerdate , int rating) {
+		int result=0;
+		Connection conn=this.getConnection();
+		PreparedStatement pstmt=null;	
+		StringBuilder sql=new StringBuilder("update Producttbl set ");
+		int cnt=0;//수정 필드(열) 개수
+		if(scategory!=null) {			
+			sql.append("scategory=?,");
+		}
+		if(storename!=null) {
+			sql.append("storename=?,");
+		}
+		if(prodName!=null) {
+			sql.append("prodName=?,");
+		}
+		if(price!=0) {
+			sql.append("price=?,");
+		}
+		
+		sql.append("inventory=?,");
+		
+		if(description!=null) {
+			sql.append("description=?,");
+		}
+		if(registerdate!=null) {
+			sql.append("registerdate=?,");
+		}
+		
+			sql.append("rating=?,");
+		
+		//마지막 , 없애고 
+		sql=sql.delete(sql.length()-1, sql.length());
+		
+		sql.append(" where prodNum=?");
+		try {
+			pstmt=conn.prepareStatement(sql.toString());
+			//?채우기
+			if(scategory!=null) {
+				cnt++;
+				pstmt.setString(cnt, this.pwdEncrypt(scategory));
+			}
+			if(storename!=null) {
+				cnt++;
+				pstmt.setString(cnt,storename);
+			}
+			if(price!=0) {
+				cnt++;
+				pstmt.setInt(cnt,price);
+			}
+			   pstmt.setInt(++cnt,inventory);
+			
+			if(description!=null) {
+				cnt++;
+				pstmt.setString(cnt,description);
+			}
+			   pstmt.setInt(++cnt,rating);
+			
+			pstmt.setInt(++cnt,prodNum);
+			result=pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);			
+		
+		return result;
+	}
+	
+	
+	
 
 }// sellerDAO
