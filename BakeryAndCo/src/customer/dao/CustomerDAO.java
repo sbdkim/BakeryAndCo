@@ -348,7 +348,7 @@ public class CustomerDAO {
 			
 			
 //			- viewCompletedOrder - orderTBL (orderCompleted - True)
-			//고객 조회
+			//완료된 주문보기
 			public ArrayList<OrderVO> selectOrderCompl(){
 				ArrayList<OrderVO> list =null;
 				Connection conn = this.getConnection();
@@ -379,11 +379,43 @@ public class CustomerDAO {
 				
 				return list;
 			}
-//			- viewCurrentOrder
+			
+//			- viewCurrentOrder (insert)
+			public int viewCurrentOrder(int orderno, int prodNum, String prodName, String storename, String customerid, int quantity,
+					int cost, String shippingcost, String review, int orderCompletedboolean, Date orderdate) {
+				int result=0;
+				Connection conn=this.getConnection();
+				PreparedStatement pstmt=null;	
+				String sql=null;
+					sql="insert into OrderTBL values(?,?,?,?,?,?,?,?,?,?,sysdate)";
+					
+//Orderno,prodNum,prodName,Storename,Customerid,Quantity,cost,shippingcost,review,orderCompletedboolean,orderdate
+				try {
+					pstmt=conn.prepareStatement(sql);
+					pstmt.setInt(1, orderno);
+					pstmt.setInt(2, prodNum);
+					pstmt.setString(3, prodName);
+					pstmt.setString(4, storename);
+					pstmt.setString(5, customerid);
+					pstmt.setInt(6, quantity);
+					pstmt.setInt(7, cost);
+					pstmt.setString(8, shippingcost);
+					pstmt.setString(9, review);
+					pstmt.setInt(10, orderCompletedboolean);
+					result=pstmt.executeUpdate();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				this.close(pstmt, conn);
+				return result;
+			}
 			
 			
 			//DAOUtil 부분
 //			- viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
+
+			
 //			- viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력
 
 			
