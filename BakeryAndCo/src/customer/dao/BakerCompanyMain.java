@@ -2,7 +2,7 @@ package customer.dao;
 
 import java.util.Scanner;
  
-public class CustomerDAOMain {
+public class BakerCompanyMain {
 
 	public static void main(String[] args) {
 		int menu = 0;
