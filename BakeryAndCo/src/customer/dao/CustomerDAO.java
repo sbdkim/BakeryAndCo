@@ -8,7 +8,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class CustomerDAO {
 
@@ -19,7 +20,7 @@ public class CustomerDAO {
 			e.printStackTrace();
 			System.exit(0);
 		}
-	}  
+	}
 
 	public static CustomerDAO dao = null;
 
@@ -27,9 +28,8 @@ public class CustomerDAO {
 	}
 
 	public static CustomerDAO getInstance() {
-		if (dao == null) {
+		if (dao == null)
 			dao = new CustomerDAO();
-		}
 		return dao;
 	}
 
@@ -69,14 +69,13 @@ public class CustomerDAO {
 			e.printStackTrace();
 		}
 	}
-	
 
-	private String pwdEncrypt(String password) {
+	private String pwdEncrypt(String pwd) {
 		MessageDigest md = null;
 		String encrypted = "";
 		try {
 			md = MessageDigest.getInstance("SHA-256");
-			md.update(password.getBytes());
+			md.update(pwd.getBytes());
 			encrypted = String.format("%064x", new BigInteger(1, md.digest()));
 			// System.out.println(hex);
 		} catch (NoSuchAlgorithmException e) {
@@ -84,17 +83,20 @@ public class CustomerDAO {
 		}
 		return encrypted;
 	}
-	
-	//메소드 여기에 추가 
-	
-	public int createCustomer(String id, String password, String name, String mobile, String addr) {
+
+	// 메소드 여기에 추가
+
+	public int createCustomer(String userID, String pwd, String name, String gender, Date birthDate, String email,
+			String mobile, String addr) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		String sql = null;
-		if (addr == null) {
-			sql = "insert into customerTBL(id, password, name, mobile, reg_date)" + " values (?,?,?,?, sysdate)";
+		if (email == null) {
+			sql = "insert into customerTBL(userID, pwd, name, gender, birhtDate, mobile, addr, enrollDate)"
+					+ " values (?,?,?,?,?,?,?, sysdate)";
 		} else {
-			sql = "insert into customerTBL(id, password, name, mobile, addr, reg_date)" + " values (?,?,?,?,?, sysdate)";
+			sql = "insert into customerTBL(userID, pwd, name, gender, birhtDate,  mobile, addr,email, enrollDate)"
+					+ " values (?,?,?,?,?,?,?,?, sysdate)";
 		}
 
 		PreparedStatement pstmt = null;
@@ -102,12 +104,17 @@ public class CustomerDAO {
 			// 4. PreparedStatement 객체 생성하기
 			pstmt = conn.prepareStatement(sql);
 			// 5. ? 값 설정하기
-			pstmt.setString(1, id);
-			pstmt.setString(2, pwdEncrypt(password));
+			pstmt.setString(1, userID);
+			pstmt.setString(2, pwdEncrypt(pwd));
 			pstmt.setString(3, name);
-			pstmt.setString(4, mobile);
+			pstmt.setString(4, gender);
+			pstmt.setDate(5, (java.sql.Date) birthDate);
+
+			pstmt.setString(6, mobile);
+			pstmt.setString(7, addr);
+
 			if (addr != null)
-				pstmt.setString(5, addr);
+				pstmt.setString(8, email);
 			// 쿼리문 전송+결과 받기
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -116,7 +123,8 @@ public class CustomerDAO {
 			this.close(pstmt, conn);
 		}
 		return result;
-	} // memberInsert
+	} // createCustomer
+	
 	
 	
 	
