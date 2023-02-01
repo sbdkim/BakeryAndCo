@@ -7,7 +7,7 @@ public class OrderVO {
 	private String prodName,storeName,userID;
 	private int quantity,cost;
 	private String shippingCost,review;
-	private char orderCompleted;
+	private int orderCompleted;
 	private Date orderDate;
 	public OrderVO() {
 		super();
@@ -15,7 +15,7 @@ public class OrderVO {
 	
 	
 	public OrderVO(int orderNo, int prodNum, String prodName, String storeName, String userID, int quantity,
-			int cost, String shippingCost, String review, char orderCompleted, Date orderDate) {
+			int cost, String shippingCost, String review, int orderCompleted, Date orderDate) {
 		super();
 		this.orderNo = orderNo;
 		this.prodNum = prodNum;
@@ -85,10 +85,10 @@ public class OrderVO {
 	public void setReview(String review) {
 		this.review = review;
 	}
-	public char getorderCompleted() {
+	public int getorderCompleted() {
 		return orderCompleted;
 	}
-	public void setorderCompleted(char orderCompleted) {
+	public void setorderCompleted(int orderCompleted) {
 		this.orderCompleted = orderCompleted;
 	}
 	public Date getorderDate() {
