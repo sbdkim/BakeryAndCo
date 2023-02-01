@@ -394,7 +394,7 @@ public ArrayList<ProductVO> viewProducts(){
 		Connection conn=this.getConnection();
 		PreparedStatement pstmt=null;	
 		ResultSet rs=null;
-		String sql="select userID,name, gender, pwd,birthDate,email, mobile ,addr,reg_date from customertbl c join ordertbl o on c.userID=o.userID order by userID";
+		String sql="select userID,name, pwd, birthDate, email, mobile ,addr, enrolldate from customertbl c join ordertbl o on c.userID=o.userID order by userID";
 		CustomerVO vo=null;
 		//3. PreparedStatement 객체생성
 		try {
@@ -408,7 +408,7 @@ public ArrayList<ProductVO> viewProducts(){
 					vo=new CustomerVO(rs.getString("userID"),
 							rs.getString("name"), rs.getString("gender"), rs.getString("pwd"), rs.getDate("birthDate"),
 							rs.getString("email"),rs.getString("mobile"),
-							rs.getString("addr"),rs.getTimestamp("reg_date"));
+							rs.getString("addr"),rs.getTimestamp("enrolldate"));
 					list.add(vo);//ArrayList에 vo 객체 담기
 				}while(rs.next());
 			}
@@ -452,11 +452,29 @@ public ArrayList<ProductVO> viewProducts(){
 		}
 		return list;
 		
-		
+	
 		
 	}
 	
-	
+	public int unregisterSeller(String sellerid,String password) {
+		int result=0;
+		Connection conn=this.getConnection();
+		PreparedStatement pstmt=null;	
+		String sql="update sellertbl set active='0' where sellerid=? and password=?";
+		try {
+			pstmt=conn.prepareStatement(sql);
+			//?채우기
+			pstmt.setString(1, sellerid);
+			pstmt.setString(2, pwdEncrypt(password));
+			result=pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);	
+				
+		return result;
+	}
 		
 		
 	
