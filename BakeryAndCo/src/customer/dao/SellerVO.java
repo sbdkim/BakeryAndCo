@@ -5,37 +5,47 @@ import java.util.Date;
 
 public class SellerVO {
 	//fields
-	private String sellerID, pwd, name, storeName, storeMobile, gender, email, mobile,  storeAddr ;
-	private int regionCode;
-	private Date birthDate;
+	private String sellerID, pwd, name, storeName, storeMobile,  email,  storeAddr ;
+	private int regionCode, active;
+	private Date birthDate; 
 	private Timestamp enrollDate;
 	
 	//constructors
 	public SellerVO() {super();}
 	
-	public SellerVO(String sellerID,  String pwd, String name, Date birthDate, String gender, String storeName, String storeMobile, String email, String  mobile, String storeAddr, int regionCode, Timestamp enrollDate ) {
+	public SellerVO(String sellerID,  String pwd, String name, Date birthDate, String storeName, 
+			String storeMobile, String email,  String storeAddr, int regionCode, int active, Timestamp enrollDate ) {
 		super();
 		this.sellerID = sellerID;
 		this.pwd = pwd;
 		this.name = name;
 		this.birthDate = birthDate;
 		this.storeName = storeName;
-		this.email = email;
-		this.mobile = mobile;
 		this.storeMobile = storeMobile;
+		this.email = email;
 		this.storeAddr = storeAddr;
 		this.regionCode = regionCode;
+		this.active = active;
 		this.enrollDate = enrollDate;
 	}
 	
-	public SellerVO(String storeName) {
+	public SellerVO(String sellerID,  String name, Date birthDate, String storeName, 
+			String storeMobile, String email,  String storeAddr, int regionCode, int active, Timestamp enrollDate ) {
 		super();
+		this.sellerID = sellerID;
+		this.name = name;
+		this.birthDate = birthDate;
 		this.storeName = storeName;
+		this.storeMobile = storeMobile;
+		this.email = email;
+		this.storeAddr = storeAddr;
+		this.regionCode = regionCode;
+		this.active = active;
+		this.enrollDate = enrollDate;
 	}
+	
+	
 
-	
-		
-	
 	public String getSellerID() {
 		return sellerID;
 	}
@@ -84,14 +94,6 @@ public class SellerVO {
 		this.email = email;
 	}
 
-	public String getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
 	public String getStoreAddr() {
 		return storeAddr;
 	}
@@ -106,6 +108,14 @@ public class SellerVO {
 
 	public void setRegionCode(int regionCode) {
 		this.regionCode = regionCode;
+	}
+
+	public int getActive() {
+		return active;
+	}
+
+	public void setActive(int active) {
+		this.active = active;
 	}
 
 	public Date getBirthDate() {
@@ -124,23 +134,16 @@ public class SellerVO {
 		this.enrollDate = enrollDate;
 	}
 
+//	public SellerVO(String sellerID,  String name, Date birthDate, String storeName, 
+//			String storeMobile, String email,  String storeAddr, int regionCode, int active, Timestamp enrollDate ) {
 	
 	
-	
-	
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
-	//	public SellerVO(String sellerID,  String pwd, String name, Date birthDate, String gender, String storeName, String storeMobile, String email, String  mobile, String storeAddr, int regionCode, Timestamp enrollDate ) {
 	@Override
 	public String toString() {
 		
-		return "SellerVO : [ID: " + sellerID + ", 이름:" +  name +  ", 생년월일: " + birthDate + "성: " + gender + ", 가게명: " + storeName +", 이메일: " + email + ", 전화번호: " + mobile +", 가게 전화번호: " + storeMobile + ", 가게주소: " + storeAddr +", 가게지역코드: " + regionCode + ", 등록날짜: "  + enrollDate +"]"; 
+		return "SellerVO : [ID: " + sellerID + ", 이름:" +  name +  ", 생년월일: " + birthDate + 
+				", 가게명: " + storeName +", 가게 전화번호: " + storeMobile + ", 이메일: " + email + 
+				  ", 가게주소: " + storeAddr +", 가게지역코드: " + regionCode + ", 활성: " + active +", 등록날짜: "  + enrollDate +"]"; 
 		
 	}
 	

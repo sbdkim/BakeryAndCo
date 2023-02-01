@@ -3,19 +3,16 @@ package customer.dao;
 import java.sql.Date;
 
 public class OrderVO {
-	private int orderNo,prodNum;
-	private String prodName,storeName,userID;
-	private int quantity,cost;
-	private String shippingCost,review;
-	private boolean orderCompleted;
-	private Date orderDate;
+	int orderNo,prodNum, orderCompleted, quantity,cost;
+	String prodName,storeName,userID,shippingCost,review;
+	Date orderDate;
+	
 	public OrderVO() {
 		super();
 	}
 	
-	
 	public OrderVO(int orderNo, int prodNum, String prodName, String storeName, String userID, int quantity,
-			int cost, String shippingCost, String review, boolean orderCompleted, Date orderDate) {
+			int cost, String shippingCost, String review, int orderCompleted, Date orderDate) {
 		super();
 		this.orderNo = orderNo;
 		this.prodNum = prodNum;
@@ -85,10 +82,10 @@ public class OrderVO {
 	public void setReview(String review) {
 		this.review = review;
 	}
-	public boolean getorderCompleted() {
+	public int getorderCompleted() {
 		return orderCompleted;
 	}
-	public void setorderCompleted(boolean orderCompleted) {
+	public void setorderCompleted(int orderCompleted) {
 		this.orderCompleted = orderCompleted;
 	}
 	public Date getorderDate() {

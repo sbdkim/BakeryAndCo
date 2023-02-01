@@ -57,7 +57,6 @@ public class CustomerDAO {
 		}
 	}
 
-	// 닫기 - rs, pstmt, conn
 	private void close(ResultSet rs, PreparedStatement pstmt, Connection conn) {
 		try {
 			if (rs != null)
@@ -85,19 +84,19 @@ public class CustomerDAO {
 		return encrypted;
 	}
 
-	// 메소드 여기에 추가
-
-	public int createCustomer(String userID, String pwd, String name, String gender, Date birthDate, String email,
-			String mobile, String addr) {
+	
+	
+	public int createCustomer(String userID, String pwd, String name, Date birthDate, String mobile, String email, 
+			String addr, int active, Timestamp enrollDate) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		String sql = null;
 		if (email == null) {
-			sql = "insert into customerTBL(userID, pwd, name, gender, birthDate, mobile, addr, enrollDate)"
-					+ " values (?,?,?,?,?,?,?, sysdate)";
-		} else {
-			sql = "insert into customerTBL(userID, pwd, name, gender, birthDate,  mobile, addr,email, enrollDate)"
+			sql = "insert into customerTBL(userID, pwd, name, birthDate, mobile, addr, active, email, enrollDate)"
 					+ " values (?,?,?,?,?,?,?,?, sysdate)";
+		} else {
+			sql = "insert into customerTBL(userID, pwd, name, birthDate, mobile, addr, active, enrollDate)"
+					+ " values (?,?,?,?,?,?,?, sysdate)";
 		}
 
 		PreparedStatement pstmt = null;
@@ -108,11 +107,10 @@ public class CustomerDAO {
 			pstmt.setString(1, userID);
 			pstmt.setString(2, pwdEncrypt(pwd));
 			pstmt.setString(3, name);
-			pstmt.setString(4, gender);
-			pstmt.setDate(5, (java.sql.Date) birthDate);
-
-			pstmt.setString(6, mobile);
-			pstmt.setString(7, addr);
+			pstmt.setDate(4, (java.sql.Date) birthDate);
+			pstmt.setString(5, mobile);
+			pstmt.setString(6, addr);
+			pstmt.setInt(7, active);
 
 			if (email != null)
 				pstmt.setString(8, email);
@@ -126,22 +124,9 @@ public class CustomerDAO {
 		return result;
 	} // createCustomer
 
-	/*
-	 * 생성해야하는 메소드 LIST: (DONE) createCustomer //memberDAO insertMember이랑 비슷합니다 -
-	 * (DONE) passwordReset viewCompletedOrder - orderTBL (orderCompleted - True) -
-	 * (DONE) writeReview viewCurrentOrder - orderCompleted - false viewRegionStore
-	 * - 지역에 있는 가게들 출력 viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
-	 * 
-	 * 
-	 * 
-	 * 
-	 * viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
-	 * unregisterCustomer
-	 * 
-	 */
 
 	// password reset - userID, mobile, birthDate를 받아서 password를 reset
-	public int passwordReset(String userID, String password, String mobile, Date birthDate) {
+	public int resetPassword(String userID, String password, String mobile, Date birthDate) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
@@ -162,7 +147,7 @@ public class CustomerDAO {
 		this.close(pstmt, conn);
 
 		return result;
-	}// passwordRest
+	}// resetPassword
 
 	public int writeReview(String orderNo, String review) {
 		int result = 0;
@@ -195,7 +180,7 @@ public class CustomerDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		OrderVO vo = null;
-		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = 'true' order by  orderDate desc";
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '1' order by  orderDate desc";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -208,8 +193,10 @@ public class CustomerDAO {
 				////int orderNo, int prodNum, String prodName, String storename, String userID, int quantity,
 				//int cost, String shippingcost, String review, boolean orderCompleted, Date orderdate
 				do {
-					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"), rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"),
-							rs.getInt("cost"), rs.getString("shippingCost"), rs.getString("review"), rs.getBoolean("orderCompleted"), rs.getDate("orderDate"));
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"), 
+							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"),
+							rs.getInt("cost"), rs.getString("shippingCost"), rs.getString("review"), 
+							rs.getInt("orderCompleted"), rs.getDate("orderDate"));
 					list.add(vo);
 				}while(rs.next());
 			}
@@ -221,6 +208,9 @@ public class CustomerDAO {
 		return list;
 	}// viewCompletedOrder
 
+	
+
+	
 	
 	// 지역에 있는 가게 출력
 	public ArrayList<SellerVO> viewRegionStore(String regionCode) {
@@ -244,16 +234,13 @@ public class CustomerDAO {
 				
 				do {
 					vo = new SellerVO(
-							rs.getString("storeName")			);
+							rs.getString("sellerID"), rs.getString("pwd"), rs.getString("name"), rs.getDate("birthDate"),
+							rs.getString("storeName"), rs.getString("storeMobile"), rs.getString("email"), rs.getString("storeAddr"), rs.getInt("regionCode"), rs.getInt("active"), rs.getTimestamp("enrollDate"));
 					list.add(vo);
 				}while(rs.next());
 			}
 			
-			
-			
-			
-			
-			
+
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -264,11 +251,28 @@ public class CustomerDAO {
 	}
 	
 	
+	// <METHOD LIST>
+	// createCustomer - customer를 만들때 필요한 모든 필드를 받아서 customerTBL에 추가 (SQL Insert)
+	// resetPassword - userID, mobile, birthDate 를 입력 받아서 password를 제설정 (SQL Update)
+	// writeReview - customer에 orderNumber를 입력 받아서 orderTBL에 review 작성하기 (SQL Update)
+	// viewCompletedOrder - orderTBL에서 그 customer에 주문에 completedOrder '1'인 order 출력
+	// viewOrderProcessing - orderTBL에서 그 customer에 주문에 completedOrder '0'인 order 출력
+	// viewRegionStore - 지격에 있슨 store들 출력
+	// viewProductCategory - 들어간 store에 있는 category출력
+	// viewProduct - 들어간 store에 category안에 해당되는 모든 product 출력
+	// selectCustomer(userID) - 회원가입 - ID 반복되는지 확인
+	// selectCustomer(userID, pwd) - 로그인 할때 
+	// customerDelete - 삭제는 아닌 customer에 active를 1에서 0으로 바꿔지는 메소드
+	// updateCustomer - 비밀번호를 입력하면 pwd, email, name, mobile, addr 수정 가능
 	
 	
 	
 	
+	
+	
+
 	// 지역에 있는 가게들 출력  - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
+	//LIST THE CATEGORY
 	public int viewProductCategory() {
 		int result = 0;
 
@@ -276,24 +280,13 @@ public class CustomerDAO {
 	}
 	
 	//케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
+	//LIST THE PRODUCTS IN THE CATEGORY
 	public int viewProduct() {
 		int result = 0;
 
 		return result;
 	}
-	
 
-
-	 //unregisterCustomer
-	
-	public int unregisterCustomer() {
-		int result = 0;
-
-		return result;
-	}
-	
-
-	
 	
 	
 	
@@ -303,7 +296,7 @@ public class CustomerDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		OrderVO vo = null;
-		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = 'false' order by  orderDate desc";
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '0' order by  orderDate desc";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -316,8 +309,10 @@ public class CustomerDAO {
 				////int orderNo, int prodNum, String prodName, String storename, String userID, int quantity,
 				//int cost, String shippingcost, String review, boolean orderCompleted, Date orderdate
 				do {
-					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"), rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"),
-							rs.getInt("cost"), rs.getString("shippingCost"), rs.getString("review"), rs.getBoolean("orderCompleted"), rs.getDate("orderDate"));
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"), 
+							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"),
+							rs.getInt("cost"), rs.getString("shippingCost"), rs.getString("review"), 
+							rs.getInt("orderCompleted"), rs.getDate("orderDate"));
 					list.add(vo);
 				}while(rs.next());
 			}
@@ -372,7 +367,7 @@ public class CustomerDAO {
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "select userID, name, gender, birthDate, email, mobile, addr, enrollDate from customerTBL where userID=? and pwd=?";
+		String sql = "select userID, name, birthDate, email, mobile, addr, enrollDate from customerTBL where userID=? and pwd=? and active='1' ";
 		// 3. PreparedStatement 객체생성
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -382,9 +377,9 @@ public class CustomerDAO {
 			// 쿼리문 전송 결과 받기
 			rs = pstmt.executeQuery();
 			if (rs.next()) {// 읽은튜플이 있는가?
-				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"), rs.getString("gender"),
-						rs.getDate("birthDate"), rs.getString("email"), rs.getString("mobile"), rs.getString("addr"),
-						rs.getTimestamp("enrollDate"));
+				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"),
+						rs.getDate("birthDate"), rs.getString("mobile"),  rs.getString("email"), rs.getString("addr"),
+						rs.getInt("active"), rs.getTimestamp("enrollDate"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -395,7 +390,8 @@ public class CustomerDAO {
 	}
 
 	//id랑 pwd받아서 customerTBL에 customer계정을 active(false -0)으로 update한다
-	public int CustomerDelete(String userID,String pwd) {
+	//DELETE하는게 아니라 active를 (0 - false)로 바꿔준다
+	public int customerDelete(String userID,String pwd) {
 		int result=0;
 		Connection conn=this.getConnection();
 		PreparedStatement pstmt=null;	
@@ -417,7 +413,7 @@ public class CustomerDAO {
 	
 	
 	
-	public int updateCustomer(String userID, String pwd, String name, String gender, String email, String mobile,
+	public int updateCustomer(String userID, String pwd, String name,String email, String mobile,
 			String addr) {
 		int result = 0;
 		Connection conn = this.getConnection();
@@ -430,23 +426,15 @@ public class CustomerDAO {
 		if (name != null) {
 			sql.append("name=?,");
 		}
-		if (gender != null) {
-			sql.append("gender=?,");
-		} // gender
 		if (email != null) {
 			sql.append("email=?,");
 		} // email
 		if (mobile != null) {
 			sql.append("mobile=?,");
 		}
-
 		if (addr != null) {
 			sql.append("addr=?,");
 		}
-//		if(birthDate!=null) {
-//			sql.append("birthDate=?,");
-//		}//birthDate
-
 		// 마지막 , 없애고
 		sql = sql.delete(sql.length() - 1, sql.length());
 		// where 이하 붙이기
@@ -462,10 +450,6 @@ public class CustomerDAO {
 				cnt++;
 				pstmt.setString(cnt, name);
 			}
-			if (gender != null) {
-				cnt++;
-				pstmt.setString(cnt, gender);
-			}
 			if (email != null) {
 				cnt++;
 				pstmt.setString(cnt, email);
@@ -478,10 +462,6 @@ public class CustomerDAO {
 				cnt++;
 				pstmt.setString(cnt, addr);
 			}
-//			if(birthDate!=null) {
-//				cnt++;
-//				pstmt.setDate(cnt,(java.sql.Date)birthDate);
-//			}
 			pstmt.setString(++cnt, userID);
 			result = pstmt.executeUpdate();
 
@@ -491,7 +471,7 @@ public class CustomerDAO {
 		this.close(pstmt, conn);
 
 		return result;
-	}
+	}//updateCustomer
 	
 	
 	

@@ -208,6 +208,9 @@ public class CustomerDAOUtil {
 		else return false;
 	}//delete
 
+	
+	
+	
 	//회원가입 
 	public boolean registerCustomer(Scanner sc) {
 		boolean result = false;
