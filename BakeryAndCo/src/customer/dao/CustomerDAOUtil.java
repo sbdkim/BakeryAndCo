@@ -1,5 +1,7 @@
 package customer.dao;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -42,7 +44,7 @@ public class CustomerDAOUtil {
 				CustomerVO vo=dao.selectCustomer(id, password);
 				if(vo!=null) {
 					map=new HashMap<String,String>();
-					map.put("id", id);
+					map.put("userID", id);
 					map.put("name",vo.getName());
 				}	
 				return map;
@@ -109,13 +111,6 @@ public class CustomerDAOUtil {
 			}
 			
 			/////////////////////////////////////////////////////////////////////
-			
-			
-			
-			
-			
-			
-			
 			
 	
 	//-------------------------------------------------------
@@ -206,7 +201,84 @@ public class CustomerDAOUtil {
 				return false;
 			}
 //-------------------------------------------------------
+			//회원가입
+			public int createCustomer(Scanner sc) {
+				int result=0;
+				String userID=null, pwd=null,  name=null,  gender=null,  email=null, mobile=null, addr=null;
+				Date birthDate=null;
+				Timestamp enrollDate=null ;
+				String pwdCheck=null;
+				
 			
+			while(true) {
+			//아이디 입력 ->
+				System.out.print("사용자 ID(영문자,숫자조합(8~20자리)>>");
+				userID=sc.nextLine().trim();
+			//1. 패턴 체크
+				if(!idCheck(userID)) {
+					System.out.println("부적합한 사용자 ID 입니다. 영문자,숫자조합(8~20자리)");
+					continue;
+				}
+			//2. 아이디 중복 조회 select메소드를 DAO 만들기 boolean selectMember(String id)
+				//정상
+				if(dao.selectCustomer(userID)) {
+					System.out.println("이미 사용중인 ID 입니다.");
+					continue;				
+				}
+				break;
+			}
+			while(true) {
+			//패스워드 입력
+				System.out.print("패스워드 ID(영문자,숫자,특수문자 조합(10~20자리)>>");
+				pwd=sc.nextLine().trim();
+			//1. 패턴체크
+				if(!pwdCheck(pwd)) {
+					System.out.println("부적합한 비밀번호 형식 입니다. 영문자,특수문자,숫자조합(10~20자리)");
+					continue;
+				}			
+			//패스워드 체크 입력
+				System.out.print("패스워드 다시 입력 >>");
+				pwdCheck=sc.nextLine().trim();
+			//두 패스워드 비교 틀린경우 다시 입력
+				if(!pwd.equals(pwdCheck)) {
+					System.out.println("입력하신 패스워드 2개가 다릅니다.");
+					continue;						
+				}			
+				break;
+			}
+			while(true) {
+				//이름 입력
+				System.out.print("이름 >>");
+				name=sc.nextLine().trim();
+				//공백의 경우 다시 입력
+				if(name.length()==0) {
+					System.out.println("이름은 필수 항목 입니다.");
+					continue;									
+				}
+				break;
+			}
+			while(true) {
+				//전화번호 입력
+				System.out.print("휴대폰 번호>>");
+				mobile=sc.nextLine().trim();			
+				//1. 패턴체크
+				if(!mobileCheck(mobile)) {
+					System.out.println("전화번호 형식이 틀립니다.xxx-xxxx-xxxx");
+					continue;													
+				}
+				//패턴 틀린경우 다시 입력
+				break;
+			}
+			//주소는 그냥 입력 공백이면 null
+			System.out.print("주소>>");
+			addr=sc.nextLine().trim();			
+			if(addr.length()==0)addr=null;
+			//연결~~~
+			result=dao.createCustomer(userID, pwd, name, mobile, addr);
+			System.out.println("회원가입 완료");
+			//삽입완료
+			return result;
+			}
 	
 	
 }//CustomerDAOUtil

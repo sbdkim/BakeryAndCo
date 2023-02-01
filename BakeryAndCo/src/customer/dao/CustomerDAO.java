@@ -90,14 +90,14 @@ public class CustomerDAO {
 	
 	//메소드 여기에 추가 
 	
-	public int createCustomer(String id, String password, String name, String mobile, String addr) {
+	public int createCustomer(String userID, String password, String name, String mobile, String addr) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		String sql = null;
 		if (addr == null) {
-			sql = "insert into customerTBL(id, password, name, mobile, reg_date)" + " values (?,?,?,?, sysdate)";
+			sql = "insert into customerTBL(userID, pwd, name, mobile, enrolldate)" + " values (?,?,?,?, sysdate)";
 		} else {
-			sql = "insert into customerTBL(id, password, name, mobile, addr, reg_date)" + " values (?,?,?,?,?, sysdate)";
+			sql = "insert into customerTBL(userID, pwd, name, mobile, addr, enrolldate)" + " values (?,?,?,?,?, sysdate)";
 		}
 
 		PreparedStatement pstmt = null;
@@ -105,7 +105,7 @@ public class CustomerDAO {
 			// 4. PreparedStatement 객체 생성하기
 			pstmt = conn.prepareStatement(sql);
 			// 5. ? 값 설정하기
-			pstmt.setString(1, id);
+			pstmt.setString(1, userID);
 			pstmt.setString(2, pwdEncrypt(password));
 			pstmt.setString(3, name);
 			pstmt.setString(4, mobile);
@@ -119,7 +119,7 @@ public class CustomerDAO {
 			this.close(pstmt, conn);
 		}
 		return result;
-	} // memberInsert
+	} // customerTBLInsert
 	
 	
 		
@@ -163,7 +163,7 @@ public class CustomerDAO {
 				Connection conn = this.getConnection();
 				PreparedStatement pstmt=null;	
 				ResultSet rs=null;
-				String sql="select userID,name,grade,pwd,BirthDate,gender,email,mobile,addr,enrolldate"
+				String sql="select userID,pwd,name,gender,email,mobile,addr,BirthDate,enrolldate"
 						+ " from CustomerTBL where userID=? and pwd=?";
 				CustomerVO vo=null;
 				//3. PreparedStatement 객체생성
@@ -187,23 +187,44 @@ public class CustomerDAO {
 				
 				return vo;
 			}
+			
+			
+			//id로 검색  이미 사용중인 id true반환, 없으면 false 반환
+			public boolean selectCustomer(String userID) {
+				boolean result=false;
+				Connection conn=this.getConnection();
+				PreparedStatement pstmt=null;	
+				ResultSet rs=null;
+				String sql=	"select userID from customertbl where userID=? ";
+				//3. PreparedStatement 객체생성
+				try {
+					pstmt=conn.prepareStatement(sql);
+					//? 채우기
+					pstmt.setString(1, userID);
+					// 쿼리문 전송 결과 받기
+					rs=pstmt.executeQuery();
+					if(rs.next()) {//읽은튜플이 있는가?	
+						result=true;
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}finally {
+					this.close(rs, pstmt, conn);
+				}		
+				return result;
+			}
+			
+			
 		
 			//Create Customer .. 회원가입
-			public int insertCustomer(String userID, String pwd, String name, String gender, String email, String mobile, String addr,
-					Date birthDate, Timestamp enrollDate
-					) {
+			public int insertCustomer(String userID, String pwd, String name, String gender, 
+									String email, String mobile, String addr,Date birthDate) {
 				int result=0;
 				Connection conn=this.getConnection();
 				PreparedStatement pstmt=null;	
 				String sql=null;
-				/*if(addr==null) {
-					sql="insert into membertbl(id,password,name,mobile,reg_date)";
-					sql+=" values(?,?,?,?,sysdate)";
-				
-				}else {*/
-					sql="insert into membertbl(userID, pwd, name, gender, email, mobile,  addr, birthDate, enrollDate)";
+					sql="insert into customertbl(userID, pwd, name, gender, email, mobile,  addr, birthDate, enrollDate)";
 					sql+=" values(?,?,?,?,?,?,?,?,sysdate)";
-				//}
 				try {
 					pstmt=conn.prepareStatement(sql);
 					//?채우기
@@ -216,7 +237,7 @@ public class CustomerDAO {
 					pstmt.setString(6, mobile);
 					pstmt.setString(7, addr);
 					pstmt.setDate(8, (java.sql.Date)birthDate);
-					pstmt.setTimestamp(9, enrollDate);
+//					pstmt.setTimestamp(9, enrollDate);
 					result=pstmt.executeUpdate();
 					
 				} catch (SQLException e) {
@@ -232,7 +253,7 @@ public class CustomerDAO {
 				
 				Connection conn=this.getConnection();
 				PreparedStatement pstmt=null;	
-				String sql="update membertbl set pwd=? where id=?";
+				String sql="update customertbl set pwd=? where id=?";
 				try {
 					pstmt=conn.prepareStatement(sql);
 					//?채우기			
@@ -410,6 +431,23 @@ public class CustomerDAO {
 				this.close(pstmt, conn);
 				return result;
 			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			
 			//DAOUtil 부분

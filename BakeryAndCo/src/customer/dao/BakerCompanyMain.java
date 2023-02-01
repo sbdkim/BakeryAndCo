@@ -1,14 +1,23 @@
 package customer.dao;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
  
 public class BakerCompanyMain {
 
 	public static void main(String[] args) {
 		int menu = 0;
+		CustomerDAO dao = CustomerDAO.getInstance();
 		CustomerDAOUtil util = new CustomerDAOUtil();
 		Scanner sc = new Scanner(System.in);
-		String id = null;
+		String id = null,name =null;
+		boolean isJoin=false;//회원가입수행
+		
+//		String userID=null, pwd=null,  name=null,  gender=null,  email=null, mobile=null, addr=null;
+//		Date birthDate=null;
+//		Timestamp enrollDate=null ;
  
 		while (true) {
 			System.out.println("-----Bread & Co. Main Menu -----");
@@ -30,9 +39,20 @@ public class BakerCompanyMain {
 			switch (menu) {
 
 			case 1: //회원가입
-				
+				util.createCustomer(sc);
 				break;
 			case 2: // 로그인
+				if(id==null) {//로그인 진행
+					HashMap<String,String> map=util.login(sc);
+					if(map!=null) {
+						id=map.get("userID");
+						name=map.get("name");
+						System.out.println(name+"님 로그인 성공");				
+					}
+					else System.out.println("로그인 실패");
+				}else {//로그아웃
+					id=null;name=null;isJoin=false;
+				}
 				
 				break;
 			}
