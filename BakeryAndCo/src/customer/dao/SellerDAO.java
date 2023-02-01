@@ -420,6 +420,43 @@ public ArrayList<ProductVO> viewProducts(){
 		return list;
 	}
 		
+	
+	
+	public ArrayList<OrderVO> viewOrders(String storename){
+		ArrayList<OrderVO> list=null;
+		Connection conn=this.getConnection();
+		PreparedStatement pstmt=null;	
+		ResultSet rs=null;
+		String sql="select * from o_c_view where storename like ? order by userID";
+		OrderVO vo=null;
+		//3. PreparedStatement 객체생성
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, storename);
+			// 쿼리문 전송 결과 받기
+			rs=pstmt.executeQuery();
+			if(rs.next()) {//읽은튜플이 하나이상 있는가?
+				list=new ArrayList<OrderVO>();//ArrayList 객체 생성
+				do {
+					vo=new OrderVO(rs.getInt("orderNo"),
+							rs.getInt("prodNum"), rs.getString("prodName"), rs.getString("storeName"), rs.getString("userID"),
+							rs.getString("name"),rs.getInt("quantity"),rs.getString("cost"),
+							rs.getString("shippingCost"), rs.getString("review"), rs.get("orderCompleted"), rs.getDate("orderdate"));
+					list.add(vo);//ArrayList에 vo 객체 담기
+				}while(rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+		
+		
+		
+	}
+	
+	
 		
 		
 	
