@@ -26,6 +26,11 @@ public class SellerVO {
 		this.regionCode = regionCode;
 		this.enrollDate = enrollDate;
 	}
+	
+	public SellerVO(String storeName) {
+		super();
+		this.storeName = storeName;
+	}
 
 	
 		

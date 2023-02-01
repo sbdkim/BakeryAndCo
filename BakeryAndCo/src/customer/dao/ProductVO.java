@@ -3,11 +3,14 @@ package customer.dao;
 import java.util.Date;
 
 public class ProductVO {
-	
+
 	private int prodNum, price,Inventory,Rating;
 	private String storename,prodName,description,scategory;
 	private Date registerdate;
 	
+
+
+
 	public ProductVO() {
 		super();
 	}
@@ -100,13 +103,14 @@ public class ProductVO {
 
 	@Override
 	public String toString() {
-		
-		
-		
+
+
+
 		return "ProductVO : [ID: " + prodNum + ", 가게이름" +  storename +  ", 제품이름: " + prodName + "가격: " + price + ", 재고량: " + Inventory +", 상품설명: " + description + ", 등록일: " + registerdate +", 별점: " + Rating  +"]";
 	}
-	
-	
-	
+
+
+
 
 }//ProductVO
+

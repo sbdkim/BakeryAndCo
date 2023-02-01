@@ -131,6 +131,10 @@ public class CustomerDAO {
 	 * (DONE) passwordReset viewCompletedOrder - orderTBL (orderCompleted - True) -
 	 * (DONE) writeReview viewCurrentOrder - orderCompleted - false viewRegionStore
 	 * - 지역에 있는 가게들 출력 viewProductCategory - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
+	 * 
+	 * 
+	 * 
+	 * 
 	 * viewProduct - 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
 	 * unregisterCustomer
 	 * 
@@ -182,53 +186,162 @@ public class CustomerDAO {
 	}// writeReview
 
 	// 아직 store에서 완료 안된 주문 출력(미배송)
-	public int viewCurrentOrder(String userID) {
-		int result = 0;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = 'false' ";
 
-		try {
-			pstmt = conn.prepareStatement(sql);
-			// ?채우기
-			pstmt.setString(1, userID);
-
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return result;
-	}// viewCurrentOrder
 
 	// 완료된 주문 출력
-	public int viewCompletedOrder(String userID) {
-		int result = 0;
+	public ArrayList<OrderVO> viewCompletedOrder(String userID) {
+		ArrayList<OrderVO> list = null;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		OrderVO vo = null;
 		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = 'true' order by  orderDate desc";
-
+		
 		try {
 			pstmt = conn.prepareStatement(sql);
 			// ?채우기
 			pstmt.setString(1, userID);
-
-			result = pstmt.executeUpdate();
+			if(rs.next()) {
+				list = new ArrayList<OrderVO>();
+				
+				
+				////int orderNo, int prodNum, String prodName, String storename, String userID, int quantity,
+				//int cost, String shippingcost, String review, boolean orderCompleted, Date orderdate
+				do {
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"), rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"),
+							rs.getInt("cost"), rs.getString("shippingCost"), rs.getString("review"), rs.getBoolean("orderCompleted"), rs.getDate("orderDate"));
+					list.add(vo);
+				}while(rs.next());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		this.close(pstmt, conn);
 
-		return result;
-	}// viewCurrentOrder
+		return list;
+	}// viewCompletedOrder
 
+	
 	// 지역에 있는 가게 출력
-	public int viewRegionStore() {
+	public ArrayList<SellerVO> viewRegionStore(String regionCode) {
+		ArrayList<SellerVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		SellerVO vo = null;
+		
+		//list all the stores in the region -- storeViewtable 만들기???
+		//sql = "select storeName from viewStoreTBL where regionCode = ?";
+		sql = "select storeName from sellerTBL where regionCode = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, regionCode);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				list = new ArrayList<SellerVO>();
+				
+				do {
+					vo = new SellerVO(
+							rs.getString("storeName")			);
+					list.add(vo);
+				}while(rs.next());
+			}
+			
+			
+			
+			
+			
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(rs, pstmt, conn);
+
+		return list;
+	}
+	
+	
+	
+	
+	
+	
+	// 지역에 있는 가게들 출력  - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
+	public int viewProductCategory() {
 		int result = 0;
 
 		return result;
 	}
+	
+	//케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
+	public int viewProduct() {
+		int result = 0;
+
+		return result;
+	}
+	
+
+
+	 //unregisterCustomer
+	
+	public int unregisterCustomer() {
+		int result = 0;
+
+		return result;
+	}
+	
+
+	
+	
+	
+	
+	public ArrayList<OrderVO> viewOrderProcessing(String userID) {
+		ArrayList<OrderVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		OrderVO vo = null;
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = 'false' order by  orderDate desc";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, userID);
+			if(rs.next()) {
+				list = new ArrayList<OrderVO>();
+				
+				
+				////int orderNo, int prodNum, String prodName, String storename, String userID, int quantity,
+				//int cost, String shippingcost, String review, boolean orderCompleted, Date orderdate
+				do {
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"), rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"),
+							rs.getInt("cost"), rs.getString("shippingCost"), rs.getString("review"), rs.getBoolean("orderCompleted"), rs.getDate("orderDate"));
+					list.add(vo);
+				}while(rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return list;
+	}// viewCurrentOrder
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	// customer userID &pwd 로 검색
 	public CustomerVO selectCustomer(String userID, String pwd) {
@@ -357,37 +470,6 @@ public class CustomerDAO {
 
 		return result;
 	}
-	
-	
-//	- viewRegionStore - 지역에 있는 가게들 출력//
-	public ArrayList<RegionVO> regionSelectAll(){
-		ArrayList<RegionVO> list=null;
-		Connection conn=this.getConnection();
-		PreparedStatement pstmt=null;	
-		ResultSet rs=null;
-		String sql="select * from regionTBL";
-		RegionVO vo=null;
-		//3. PreparedStatement 객체생성
-		try {
-			pstmt=conn.prepareStatement(sql);
-			//? 채우기 x
-			// 쿼리문 전송 결과 받기
-			rs=pstmt.executeQuery();
-			if(rs.next()) {//읽은튜플이 하나이상 있는가?
-				list=new ArrayList<RegionVO>();//ArrayList 객체 생성
-				do {
-					vo=new RegionVO(rs.getInt("regionCode") , rs.getString("regionName"));
-					list.add(vo);//ArrayList에 vo 객체 담기
-				}while(rs.next());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally {
-			this.close(rs, pstmt, conn);
-		}
-		return list;
-	}
-	
 	
 	
 	
