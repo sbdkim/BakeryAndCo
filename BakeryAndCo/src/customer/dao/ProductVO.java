@@ -7,6 +7,9 @@ public class ProductVO {
 	private int prodNum, price,Inventory,Rating;
 	private String storename,prodName,description,scategory;
 	private Date registerdate;
+	
+
+
 
 	public ProductVO() {
 		super();
@@ -110,3 +113,4 @@ public class ProductVO {
 
 
 }//ProductVO
+
