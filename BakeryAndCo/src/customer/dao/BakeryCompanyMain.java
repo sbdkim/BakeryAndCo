@@ -3,7 +3,7 @@ package customer.dao;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class BakerCompanyMain {
+public class BakeryCompanyMain {
 
 	public static void main(String[] args) {
 		int menu = 0;
