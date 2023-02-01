@@ -389,6 +389,39 @@ public ArrayList<ProductVO> viewProducts(){
 	}
 	
 	
+	public ArrayList<CustomerVO> viewCustomers(){
+		ArrayList<CustomerVO> list=null;
+		Connection conn=this.getConnection();
+		PreparedStatement pstmt=null;	
+		ResultSet rs=null;
+		String sql="select userID,name, gender, pwd,birthDate,email, mobile ,addr,reg_date from customertbl c join ordertbl o on c.userID=o.userID order by userID";
+		CustomerVO vo=null;
+		//3. PreparedStatement 객체생성
+		try {
+			pstmt=conn.prepareStatement(sql);
+			//? 채우기 x
+			// 쿼리문 전송 결과 받기
+			rs=pstmt.executeQuery();
+			if(rs.next()) {//읽은튜플이 하나이상 있는가?
+				list=new ArrayList<CustomerVO>();//ArrayList 객체 생성
+				do {
+					vo=new CustomerVO(rs.getString("userID"),
+							rs.getString("name"), rs.getString("gender"), rs.getString("pwd"), rs.getDate("birthDate"),
+							rs.getString("email"),rs.getString("mobile"),
+							rs.getString("addr"),rs.getTimestamp("reg_date"));
+					list.add(vo);//ArrayList에 vo 객체 담기
+				}while(rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+	}
+		
+		
+		
 	
 	
 	
