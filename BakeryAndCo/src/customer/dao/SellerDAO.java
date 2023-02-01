@@ -97,9 +97,9 @@ public class SellerDAO {
 	 *   registerProduct - (DONE)
 	 * passwordReset -
 	 *  viewOrders - orderTBL 참고하고 그 스토에 들어온 주문 출력 날짜 시간 -
-	 * viewCustomers -(Done)
+	 * viewCustomers - 
 	 *  viewProducts -
-	 *   editProduct-(Done)
+	 *   editProduct-
 	 *   - unregisterSeller
 	 * 
 	 * 
@@ -305,6 +305,9 @@ public class SellerDAO {
 		
 		return result;
 	}
+	
+	
+	
 	
 	
 	
