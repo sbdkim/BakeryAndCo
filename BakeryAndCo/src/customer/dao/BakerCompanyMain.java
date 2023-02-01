@@ -59,15 +59,18 @@ public class BakerCompanyMain {
 
 				break;
 			case 2: // 회원가입
-				System.out.println("[2] 회원가입을 선택하셨습니다");
+				System.out.println("───────────────────────────────────");
+				System.out.println("[선택: 2] 회원가입을 선택하셨습니다");
 				while(true) {
 					int subMenu;
 
 					try {
+						System.out.println("───────────────────────────────────");
 						System.out.println("[회원가입]");
 						System.out.println("[1] 소비자 ");
 						System.out.println("[2] 판매자 ");
 						System.out.println("[0] 취소, 매인 메뉴로 ");
+						System.out.println("───────────────────────────────────");
 						System.out.print("[회원가입 하실 메뉴를 선택하세요]: ");
 						subMenu = sc.nextInt();
 						sc.nextLine();
@@ -81,17 +84,20 @@ public class BakerCompanyMain {
 					
 					if(subMenu==1) { //소비자 회원가입
 						result = util.registerCustomer(sc);
-						if(result) System.out.println("회원가입 완료!");
-						else System.out.println("회원가입 실패");
+						if(result) System.out.println("[회원가입 완료!]");
+						else System.out.println("[회원가입 실패...]");
+						break;
 					}else if(subMenu==2) { //판매자 회원가입
 						result = util2.registerSeller(sc);
-						if(result) System.out.println("회원가입 완료!");
-						else System.out.println("회원가입 실패");
+						if(result) System.out.println("[회원가입 완료!]");
+						else System.out.println("[회원가입 실패...]");
+						break;
 					}else if(subMenu==0){
-						System.out.println();
+						System.out.println("[메인 매뉴로 돌아갑니다...]");
 						break;
 					}else {
 						System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+						System.out.println();
 						continue;
 					}
 
@@ -101,6 +107,7 @@ public class BakerCompanyMain {
 
 			default:
 				System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+				System.out.println();
 				break;
 			}//switch case (MAIN MENU)
 

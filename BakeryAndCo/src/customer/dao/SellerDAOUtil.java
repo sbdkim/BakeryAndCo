@@ -107,7 +107,7 @@ public class SellerDAOUtil {
 		return chk;
 	}
 
-	
+	//calls createSeller method in SellerDAO to insert into table the values entered in registerSeller
 	public boolean registerSeller(Scanner sc) {
 		boolean result = false;
 		int runMethod, regionCode;
@@ -234,9 +234,15 @@ public class SellerDAOUtil {
 		
 		while (true) {
 			// 전화번호 입력
-			System.out.println("1. 서울 | 2. 부산 | 3. 대구 ,.....");
-			System.out.print("가게 지역");
-			regionCode = sc.nextInt();
+			System.out.println("[1. 서울 | 2. 부산 | 3. 대구 ,.....]");
+			System.out.print("가게 지역>>");
+			try {
+				regionCode = sc.nextInt();
+			}catch(Exception e) {
+				System.out.println("지역 입력 오류... 다시 입력하세요.");
+				continue;
+			}
+		
 
 			// 패턴 틀린경우 다시 입력
 			break;

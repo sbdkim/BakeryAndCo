@@ -160,7 +160,7 @@ public class SellerDAO {
 					+ " values (?,?,?,?,?,?,?,?,?, sysdate)";
 		} else {
 			sql = "insert into sellerTBL(sellerID, pwd, name,  birthDate, storeName, storeMobile,  storeAddr, active, regionCode, email, enrollDate)"
-					+ " values (?,?,?,?,?,?,?,?,?,? sysdate)";
+					+ " values (?,?,?,?,?,?,?,?,?,?, sysdate)";
 		}
 
 		PreparedStatement pstmt = null;
