@@ -84,9 +84,7 @@ public class CustomerDAO {
 		return encrypted;
 	}
 
-	
-	
-	public int createCustomer(String userID, String pwd, String name, Date birthDate, String mobile, String email, 
+	public int createCustomer(String userID, String pwd, String name, Date birthDate, String mobile, String email,
 			String addr, int active, Timestamp enrollDate) {
 		int result = 0;
 		Connection conn = this.getConnection();
@@ -123,7 +121,6 @@ public class CustomerDAO {
 		}
 		return result;
 	} // createCustomer
-
 
 	// password reset - userID, mobile, birthDate를 받아서 password를 reset
 	public int resetPassword(String userID, String password, String mobile, Date birthDate) {
@@ -172,7 +169,6 @@ public class CustomerDAO {
 
 	// 아직 store에서 완료 안된 주문 출력(미배송)
 
-
 	// 완료된 주문 출력
 	public ArrayList<OrderVO> viewCompletedOrder(String userID) {
 		ArrayList<OrderVO> list = null;
@@ -181,24 +177,25 @@ public class CustomerDAO {
 		ResultSet rs = null;
 		OrderVO vo = null;
 		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '1' order by  orderDate desc";
-		
+
 		try {
 			pstmt = conn.prepareStatement(sql);
 			// ?채우기
 			pstmt.setString(1, userID);
-			if(rs.next()) {
+			if (rs.next()) {
 				list = new ArrayList<OrderVO>();
-				
-				
-				////int orderNo, int prodNum, String prodName, String storename, String userID, int quantity,
-				//int cost, String shippingcost, String review, boolean orderCompleted, Date orderdate
+
+				//// int orderNo, int prodNum, String prodName, String storeName, String userID,
+				//// int quantity,
+				// int cost, String shippingcost, String review, boolean orderCompleted, Date
+				//// orderdate
 				do {
-					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"), 
-							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"),
-							rs.getInt("cost"), rs.getString("shippingCost"), rs.getString("review"), 
-							rs.getInt("orderCompleted"), rs.getDate("orderDate"));
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
+							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
+							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
+							rs.getDate("orderDate"));
 					list.add(vo);
-				}while(rs.next());
+				} while (rs.next());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -208,10 +205,6 @@ public class CustomerDAO {
 		return list;
 	}// viewCompletedOrder
 
-	
-
-	
-	
 	// 지역에 있는 가게 출력
 	public ArrayList<SellerVO> viewRegionStore(String regionCode) {
 		ArrayList<SellerVO> list = null;
@@ -220,28 +213,27 @@ public class CustomerDAO {
 		ResultSet rs = null;
 		String sql = null;
 		SellerVO vo = null;
-		
-		//list all the stores in the region -- storeViewtable 만들기???
-		//sql = "select storeName from viewStoreTBL where regionCode = ?";
+
+		// list all the stores in the region -- storeViewtable 만들기???
+		// sql = "select storeName from viewStoreTBL where regionCode = ?";
 		sql = "select storeName from sellerTBL where regionCode = ?";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			// ?채우기
 			pstmt.setString(1, regionCode);
 			rs = pstmt.executeQuery();
-			if(rs.next()) {
+			if (rs.next()) {
 				list = new ArrayList<SellerVO>();
-				
-				do {
-					vo = new SellerVO(
-							rs.getString("sellerID"), rs.getString("pwd"), rs.getString("name"), rs.getDate("birthDate"),
-							rs.getString("storeName"), rs.getString("storeMobile"), rs.getString("email"), rs.getString("storeAddr"), rs.getInt("regionCode"), rs.getInt("active"), rs.getTimestamp("enrollDate"));
-					list.add(vo);
-				}while(rs.next());
-			}
-			
 
-			
+				do {
+					vo = new SellerVO(rs.getString("sellerID"), rs.getString("pwd"), rs.getString("name"),
+							rs.getDate("birthDate"), rs.getString("storeName"), rs.getString("storeMobile"),
+							rs.getString("email"), rs.getString("storeAddr"), rs.getInt("regionCode"),
+							rs.getInt("active"), rs.getTimestamp("enrollDate"));
+					list.add(vo);
+				} while (rs.next());
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -249,47 +241,81 @@ public class CustomerDAO {
 
 		return list;
 	}
-	
-	
+
 	// <METHOD LIST>
 	// createCustomer - customer를 만들때 필요한 모든 필드를 받아서 customerTBL에 추가 (SQL Insert)
 	// resetPassword - userID, mobile, birthDate 를 입력 받아서 password를 제설정 (SQL Update)
-	// writeReview - customer에 orderNumber를 입력 받아서 orderTBL에 review 작성하기 (SQL Update)
+	// writeReview - customer에 orderNumber를 입력 받아서 orderTBL에 review 작성하기 (SQL
+	// Update)
 	// viewCompletedOrder - orderTBL에서 그 customer에 주문에 completedOrder '1'인 order 출력
 	// viewOrderProcessing - orderTBL에서 그 customer에 주문에 completedOrder '0'인 order 출력
 	// viewRegionStore - 지격에 있슨 store들 출력
 	// viewProductCategory - 들어간 store에 있는 category출력
 	// viewProduct - 들어간 store에 category안에 해당되는 모든 product 출력
 	// selectCustomer(userID) - 회원가입 - ID 반복되는지 확인
-	// selectCustomer(userID, pwd) - 로그인 할때 
+	// selectCustomer(userID, pwd) - 로그인 할때
 	// customerDelete - 삭제는 아닌 customer에 active를 1에서 0으로 바꿔지는 메소드
 	// updateCustomer - 비밀번호를 입력하면 pwd, email, name, mobile, addr 수정 가능
-	
-	
-	
-	
-	
-	
 
-	// 지역에 있는 가게들 출력  - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
-	//LIST THE CATEGORY
-	public int viewProductCategory() {
-		int result = 0;
+	// 지역에 있는 가게들 출력 - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
+	// LIST THE CATEGORY (list of Categories)
+	public ArrayList<String> viewProductCategory(String storeName) {
+		ArrayList<String> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ProductVO vo = null;
+		String sql = "select distinct category from productTBL where storeName = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, storeName);
+			if (rs.next()) {
+				list = new ArrayList<String>();
+				do {
+					list.add(rs.getString(1));
+				} while (rs.next());
+			}
 
-		return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
 	}
-	
-	//케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
-	//LIST THE PRODUCTS IN THE CATEGORY
-	public int viewProduct() {
-		int result = 0;
 
-		return result;
+	// 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
+	// LIST THE PRODUCTS IN THE CATEGORY
+	public ArrayList<ProductVO> viewProduct(int categoryNumber) {
+		ArrayList<ProductVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ProductVO vo = null;
+		String sql = "select prodNum, prodName, price, inventory, description, registerDate from productTBL where  category = ?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, categoryNumber);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				list = new ArrayList<ProductVO>();
+				do {
+					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
+							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
+							rs.getString("description"), rs.getTimestamp("categoryNumber"), rs.getInt("rating"));
+				} while (rs.next());
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return list;
 	}
 
-	
-	
-	
 	public ArrayList<OrderVO> viewOrderProcessing(String userID) {
 		ArrayList<OrderVO> list = null;
 		Connection conn = this.getConnection();
@@ -297,24 +323,25 @@ public class CustomerDAO {
 		ResultSet rs = null;
 		OrderVO vo = null;
 		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '0' order by  orderDate desc";
-		
+
 		try {
 			pstmt = conn.prepareStatement(sql);
 			// ?채우기
 			pstmt.setString(1, userID);
-			if(rs.next()) {
+			if (rs.next()) {
 				list = new ArrayList<OrderVO>();
-				
-				
-				////int orderNo, int prodNum, String prodName, String storename, String userID, int quantity,
-				//int cost, String shippingcost, String review, boolean orderCompleted, Date orderdate
+
+				//// int orderNo, int prodNum, String prodName, String storeName, String userID,
+				//// int quantity,
+				// int cost, String shippingcost, String review, boolean orderCompleted, Date
+				//// orderdate
 				do {
-					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"), 
-							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"),
-							rs.getInt("cost"), rs.getString("shippingCost"), rs.getString("review"), 
-							rs.getInt("orderCompleted"), rs.getDate("orderDate"));
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
+							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
+							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
+							rs.getDate("orderDate"));
 					list.add(vo);
-				}while(rs.next());
+				} while (rs.next());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -323,42 +350,30 @@ public class CustomerDAO {
 
 		return list;
 	}// viewCurrentOrder
-	
 
-	
-	
-	
-	
-	
-	//selectCustomer - 회원가입할때 입력한 아이디가 존제하닌지 확인
+	// selectCustomer - 회원가입할때 입력한 아이디가 존제하닌지 확인
 	public boolean selectCustomer(String userID) {
-		boolean result=false;
-		Connection conn=this.getConnection();
-		PreparedStatement pstmt=null;	
-		ResultSet rs=null;
-		String sql=	"select userID from customerTBL where userID=? ";
+		boolean result = false;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select userID from customerTBL where userID=? ";
 		try {
-			pstmt=conn.prepareStatement(sql);
-			//? 채우기
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기
 			pstmt.setString(1, userID);
 			// 쿼리문 전송 결과 받기
-			rs=pstmt.executeQuery();
-			if(rs.next()) {//읽은튜플이 있는가?	
-				result=true;
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 있는가?
+				result = true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			this.close(rs, pstmt, conn);
-		}		
+		}
 		return result;
 	}
-	
-	
-	
-	
-	
-	
 
 	// customer userID &pwd 로 검색
 	public CustomerVO selectCustomer(String userID, String pwd) {
@@ -377,9 +392,9 @@ public class CustomerDAO {
 			// 쿼리문 전송 결과 받기
 			rs = pstmt.executeQuery();
 			if (rs.next()) {// 읽은튜플이 있는가?
-				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"),
-						rs.getDate("birthDate"), rs.getString("mobile"),  rs.getString("email"), rs.getString("addr"),
-						rs.getInt("active"), rs.getTimestamp("enrollDate"));
+				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"), rs.getDate("birthDate"),
+						rs.getString("mobile"), rs.getString("email"), rs.getString("addr"), rs.getInt("active"),
+						rs.getTimestamp("enrollDate"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -389,32 +404,29 @@ public class CustomerDAO {
 		return vo;
 	}
 
-	//id랑 pwd받아서 customerTBL에 customer계정을 active(false -0)으로 update한다
-	//DELETE하는게 아니라 active를 (0 - false)로 바꿔준다
-	public int customerDelete(String userID,String pwd) {
-		int result=0;
-		Connection conn=this.getConnection();
-		PreparedStatement pstmt=null;	
-		String sql="update customerTBL set active = '0' where userID=? and pwd=?";
+	// id랑 pwd받아서 customerTBL에 customer계정을 active(false -0)으로 update한다
+	// DELETE하는게 아니라 active를 (0 - false)로 바꿔준다
+	public int customerDelete(String userID, String pwd) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update customerTBL set active = '0' where userID=? and pwd=?";
 		try {
-			pstmt=conn.prepareStatement(sql);
-			//?채우기
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
 			pstmt.setString(1, userID);
 			pstmt.setString(2, pwdEncrypt(pwd));
-			result=pstmt.executeUpdate();
+			result = pstmt.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		this.close(pstmt, conn);	
+		this.close(pstmt, conn);
 
 		return result;
 	}
-	
-	
-	
-	public int updateCustomer(String userID, String pwd, String name,String email, String mobile,
-			String addr) {
+
+	public int updateCustomer(String userID, String pwd, String name, String email, String mobile, String addr) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
@@ -471,23 +483,6 @@ public class CustomerDAO {
 		this.close(pstmt, conn);
 
 		return result;
-	}//updateCustomer
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}// updateCustomer
 
 }// customerDAO

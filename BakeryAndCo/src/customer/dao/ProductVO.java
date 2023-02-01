@@ -5,7 +5,7 @@ import java.util.Date;
 public class ProductVO {
 
 	private int prodNum, price,Inventory,Rating;
-	private String storename,prodName,description,category;
+	private String storeName,prodName,description,category;
 	private Date registerdate;
 	
 
@@ -15,14 +15,14 @@ public class ProductVO {
 		super();
 	}
 
-	public ProductVO(int prodNum, String category, String storename, String prodName, int price, int inventory, String description, 
+	public ProductVO(int prodNum, String category, String storeName, String prodName, int price, int inventory, String description, 
 		  Date registerdate , int rating) {
 		super();
 		this.prodNum = prodNum;
 		this.price = price;
 		Inventory = inventory;
 		Rating = rating;
-		this.storename = storename;
+		this.storeName = storeName;
 		this.prodName = prodName;
 		this.description = description;
 		this.category = category;
@@ -61,12 +61,12 @@ public class ProductVO {
 		Rating = rating;
 	}
 
-	public String getStorename() {
-		return storename;
+	public String getstoreName() {
+		return storeName;
 	}
 
-	public void setStorename(String storename) {
-		this.storename = storename;
+	public void setstoreName(String storeName) {
+		this.storeName = storeName;
 	}
 
 	public String getProdName() {
@@ -106,7 +106,7 @@ public class ProductVO {
 
 
 
-		return "ProductVO : [ID: " + prodNum + ", 가게이름" +  storename +  ", 제품이름: " + prodName + "가격: " + price + ", 재고량: " + Inventory +", 상품설명: " + description + ", 등록일: " + registerdate +", 별점: " + Rating  +"]";
+		return "ProductVO : [ID: " + prodNum + ", 가게이름" +  storeName +  ", 제품이름: " + prodName + "가격: " + price + ", 재고량: " + Inventory +", 상품설명: " + description + ", 등록일: " + registerdate +", 별점: " + Rating  +"]";
 	}
 
 
