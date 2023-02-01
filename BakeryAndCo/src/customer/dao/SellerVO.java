@@ -5,9 +5,8 @@ import java.util.Date;
 
 public class SellerVO {
 	// fields
-	private String sellerID, pwd, name, storeName, storeMobile, email, storeAddr;
+	private String sellerID, pwd, name, storeName, storeMobile, email, storeAddr, birthDate;
 	private int regionCode, active;
-	private Date birthDate;
 	private Timestamp enrollDate;
 
 	// constructors
@@ -15,7 +14,7 @@ public class SellerVO {
 		super();
 	}
 
-	public SellerVO(String sellerID, String pwd, String name, Date birthDate, String storeName, String storeMobile,
+	public SellerVO(String sellerID, String pwd, String name, String birthDate, String storeName, String storeMobile,
 			String email, String storeAddr, int regionCode, int active, Timestamp enrollDate) {
 		super();
 		this.sellerID = sellerID;
@@ -31,7 +30,7 @@ public class SellerVO {
 		this.enrollDate = enrollDate;
 	}
 
-	public SellerVO(String sellerID, String name, Date birthDate, String storeName, String storeMobile, String email,
+	public SellerVO(String sellerID, String name, String birthDate, String storeName, String storeMobile, String email,
 			String storeAddr, int regionCode, int active, Timestamp enrollDate) {
 		super();
 		this.sellerID = sellerID;
@@ -118,11 +117,11 @@ public class SellerVO {
 		this.active = active;
 	}
 
-	public Date getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 

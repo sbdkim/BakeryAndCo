@@ -5,8 +5,8 @@ import java.util.Date;
 
 public class CustomerVO {
 	// fields
-	private String userID, pwd, name, email, mobile, addr;
-	private Date birthDate;
+	private String userID, pwd, name, email, mobile, addr, birthDate;
+	
 	private int active;
 	private Timestamp enrollDate;
 
@@ -15,7 +15,7 @@ public class CustomerVO {
 		super();
 	}
 
-	public CustomerVO(String userID, String pwd, String name, Date birthDate, String mobile, String email, String addr,
+	public CustomerVO(String userID, String pwd, String name, String birthDate, String mobile, String email, String addr,
 			int active, Timestamp enrollDate) {
 		super();
 		this.userID = userID;
@@ -29,7 +29,7 @@ public class CustomerVO {
 		this.enrollDate = enrollDate;
 	}
 
-	public CustomerVO(String userID, String name, Date birthDate, String mobile, String email, String addr, int active,
+	public CustomerVO(String userID, String name, String birthDate, String mobile, String email, String addr, int active,
 			Timestamp enrollDate) {
 		super();
 		this.userID = userID;
@@ -90,11 +90,11 @@ public class CustomerVO {
 		this.addr = addr;
 	}
 
-	public Date getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 

@@ -401,7 +401,7 @@ public class CustomerDAO {
 			// 쿼리문 전송 결과 받기
 			rs = pstmt.executeQuery();
 			if (rs.next()) {// 읽은튜플이 있는가?
-				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"), rs.getDate("birthDate"),
+				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"), rs.getString("birthDate"),
 						rs.getString("mobile"), rs.getString("email"), rs.getString("addr"), rs.getInt("active"),
 						rs.getTimestamp("enrollDate"));
 			}

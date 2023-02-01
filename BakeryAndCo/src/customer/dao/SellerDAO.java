@@ -111,7 +111,7 @@ public class SellerDAO {
 			if (rs.next()) {// 읽은튜플이 있는가?
 
 				vo = new SellerVO(rs.getString("sellerID"), rs.getString("pwd"), rs.getString("name"),
-						rs.getDate("birthDate"), rs.getString("storeName"), rs.getString("storeMobile"),
+						rs.getString("birthDate"), rs.getString("storeName"), rs.getString("storeMobile"),
 						rs.getString("email"), rs.getString("storeAddr"), rs.getInt("regionCode"), rs.getInt("active"),
 						rs.getTimestamp("enrollDate"));
 			}
