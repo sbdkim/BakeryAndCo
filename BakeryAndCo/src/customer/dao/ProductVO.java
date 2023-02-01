@@ -5,14 +5,14 @@ import java.util.Date;
 public class ProductVO {
 
 	private int prodNum, price,Inventory,Rating;
-	private String storename,prodName,description,scategory;
+	private String storename,prodName,description,category;
 	private Date registerdate;
 
 	public ProductVO() {
 		super();
 	}
 
-	public ProductVO(int prodNum, String scategory, String storename, String prodName, int price, int inventory, String description, 
+	public ProductVO(int prodNum, String category, String storename, String prodName, int price, int inventory, String description, 
 		  Date registerdate , int rating) {
 		super();
 		this.prodNum = prodNum;
@@ -22,7 +22,7 @@ public class ProductVO {
 		this.storename = storename;
 		this.prodName = prodName;
 		this.description = description;
-		this.scategory = scategory;
+		this.category = category;
 		this.registerdate = registerdate;
 	}
 
@@ -82,12 +82,12 @@ public class ProductVO {
 		this.description = description;
 	}
 
-	public String getScategory() {
-		return scategory;
+	public String getCategory() {
+		return category;
 	}
 
-	public void setScategory(String scategory) {
-		this.scategory = scategory;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public Date getRegisterdate() {

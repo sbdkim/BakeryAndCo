@@ -114,7 +114,7 @@ public class CustomerDAO {
 			pstmt.setString(6, mobile);
 			pstmt.setString(7, addr);
 
-			if (addr != null)
+			if (email != null)
 				pstmt.setString(8, email);
 			// 쿼리문 전송+결과 받기
 			result = pstmt.executeUpdate();
@@ -394,12 +394,12 @@ public class CustomerDAO {
 		return vo;
 	}
 
-	
+	//id랑 pwd받아서 customerTBL에 customer계정을 active(false -0)으로 update한다
 	public int CustomerDelete(String userID,String pwd) {
 		int result=0;
 		Connection conn=this.getConnection();
 		PreparedStatement pstmt=null;	
-		String sql="delete from customerTBL where userID=? and pwd=?";
+		String sql="update customerTBL set active = '0' where userID=? and pwd=?";
 		try {
 			pstmt=conn.prepareStatement(sql);
 			//?채우기

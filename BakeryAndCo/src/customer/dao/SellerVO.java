@@ -22,6 +22,7 @@ public class SellerVO {
 		this.storeName = storeName;
 		this.email = email;
 		this.mobile = mobile;
+		this.storeMobile = storeMobile;
 		this.storeAddr = storeAddr;
 		this.regionCode = regionCode;
 		this.enrollDate = enrollDate;
