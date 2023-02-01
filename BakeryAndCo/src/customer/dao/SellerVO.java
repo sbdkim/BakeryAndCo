@@ -1,80 +1,148 @@
 package customer.dao;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class SellerVO {
-	private String id,password,name,mobile,addr;
-	private int grade;
-	private Timestamp reg_date;
-	//생성자 패스워드까지 포함
-	public SellerVO(String id, String password, String name, String mobile, String addr, int grade,
-			Timestamp reg_date) {
+	//fields
+	private String sellerID, pwd, name, storeName, storeMobile, gender, email, mobile,  storeAddr ;
+	private int regionCode;
+	private Date birthDate;
+	private Timestamp enrollDate;
+	
+	//constructors
+	public SellerVO() {super();}
+	
+	public SellerVO(String sellerID,  String pwd, String name, Date birthDate, String gender, String storeName, String storeMobile, String email, String  mobile, String storeAddr, int regionCode, Timestamp enrollDate ) {
 		super();
-		this.id = id;
-		this.password = password;
+		this.sellerID = sellerID;
+		this.pwd = pwd;
 		this.name = name;
+		this.birthDate = birthDate;
+		this.storeName = storeName;
+		this.email = email;
 		this.mobile = mobile;
-		this.addr = addr;
-		this.grade = grade;
-		this.reg_date = reg_date;
+		this.storeMobile = storeMobile;
+		this.storeAddr = storeAddr;
+		this.regionCode = regionCode;
+		this.enrollDate = enrollDate;
 	}
-	//패스워드 제외
-	public SellerVO(String id, String name, String mobile, String addr, int grade,
-			Timestamp reg_date) {
+	
+	public SellerVO(String storeName) {
 		super();
-		this.id = id;
-		this.name = name;
-		this.mobile = mobile;
-		this.addr = addr;
-		this.grade = grade;
-		this.reg_date = reg_date;
+		this.storeName = storeName;
 	}
 
-	public String getId() {
-		return id;
+	
+		
+	
+	public String getSellerID() {
+		return sellerID;
 	}
-	public void setId(String id) {
-		this.id = id;
+
+	public void setSellerID(String sellerID) {
+		this.sellerID = sellerID;
 	}
-	public String getPassword() {
-		return password;
+
+	public String getPwd() {
+		return pwd;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public String getStoreName() {
+		return storeName;
+	}
+
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
+
+	public String getStoreMobile() {
+		return storeMobile;
+	}
+
+	public void setStoreMobile(String storeMobile) {
+		this.storeMobile = storeMobile;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public String getMobile() {
 		return mobile;
 	}
+
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-	public String getAddr() {
-		return addr;
+
+	public String getStoreAddr() {
+		return storeAddr;
 	}
-	public void setAddr(String addr) {
-		this.addr = addr;
+
+	public void setStoreAddr(String storeAddr) {
+		this.storeAddr = storeAddr;
 	}
-	public int getGrade() {
-		return grade;
+
+	public int getRegionCode() {
+		return regionCode;
 	}
-	public void setGrade(int grade) {
-		this.grade = grade;
+
+	public void setRegionCode(int regionCode) {
+		this.regionCode = regionCode;
 	}
-	public Timestamp getReg_date() {
-		return reg_date;
+
+	public Date getBirthDate() {
+		return birthDate;
 	}
-	public void setReg_date(Timestamp reg_date) {
-		this.reg_date = reg_date;
+
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
+
+	public Timestamp getEnrollDate() {
+		return enrollDate;
+	}
+
+	public void setEnrollDate(Timestamp enrollDate) {
+		this.enrollDate = enrollDate;
+	}
+
+	
+	
+	
+	
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	//	public SellerVO(String sellerID,  String pwd, String name, Date birthDate, String gender, String storeName, String storeMobile, String email, String  mobile, String storeAddr, int regionCode, Timestamp enrollDate ) {
 	@Override
 	public String toString() {
-		return "MemberVO [아이디=" + id + ", 이름=" + name + ", 연락처=" + mobile + ", 주소=" + addr + ", 등급="
-				+ grade + ", 등록일자=" + reg_date + "]";
+		
+		return "SellerVO : [ID: " + sellerID + ", 이름:" +  name +  ", 생년월일: " + birthDate + "성: " + gender + ", 가게명: " + storeName +", 이메일: " + email + ", 전화번호: " + mobile +", 가게 전화번호: " + storeMobile + ", 가게주소: " + storeAddr +", 가게지역코드: " + regionCode + ", 등록날짜: "  + enrollDate +"]"; 
+		
 	}
-}
+	
+
+}//CustomerVO
