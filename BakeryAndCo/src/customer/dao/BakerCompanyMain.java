@@ -1,6 +1,7 @@
 package customer.dao;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -10,6 +11,10 @@ public class BakerCompanyMain {
 	public static void main(String[] args) {
 		int menu = 0;
 		CustomerDAO dao = CustomerDAO.getInstance();
+		ProductDAO pdao=ProductDAO.getInstance();
+		
+		ArrayList<ProductVO> pvo = null;
+		
 		CustomerDAOUtil util = new CustomerDAOUtil();
 		Scanner sc = new Scanner(System.in);
 		String id = null,name =null;
@@ -54,7 +59,37 @@ public class BakerCompanyMain {
 					id=null;name=null;isJoin=false;
 				}
 				
+				//로그인 이후 진행
+				System.out.println("------------------");
+				System.out.println("상점목록");
+				System.out.println("1. 파리바게트");
+				System.out.println("2. 뚜레쥬르");
+				System.out.println("------------------");
+				int submenu;
+				System.out.print("상점 선택 (1,2)>>");
+				submenu = sc.nextInt();
+				if(submenu==1) {//파리바게트
+					pvo = pdao.selectProductALL();
+					if(pvo!=null)
+						for(ProductVO v : pvo)
+							System.out.println(v.toString());
+				}
+				else if(submenu==2) {//뚜레쥬르
+					
+				}
 				break;
+				
+				
+			case 3 : 
+				
+				break;
+			case 4 : 
+				
+				break;
+			case 5 : 
+				
+				break;
+				
 			}
 
 		} // end of while
