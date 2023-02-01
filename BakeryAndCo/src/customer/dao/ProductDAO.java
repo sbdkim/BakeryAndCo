@@ -72,7 +72,7 @@ public class ProductDAO {
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "select * from ProductTBL order by prodNum";
+		String sql = "select * from productTBL order by prodNum";
 		ProductVO vo = null;
 		// 3. PreparedStatement 객체생성
 		try {
@@ -83,9 +83,9 @@ public class ProductDAO {
 			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
 				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
 				do {
-					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("scategory"), rs.getString("storename"),
+					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
 							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
-							rs.getString("description"), rs.getDate("registerdate"), rs.getInt("rating"));
+							rs.getString("description"), rs.getDate("registerDate"), rs.getInt("rating"));
 					list.add(vo);// ArrayList에 vo 객체 담기
 				} while (rs.next());
 			}

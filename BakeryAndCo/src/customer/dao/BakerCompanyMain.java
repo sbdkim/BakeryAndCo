@@ -12,7 +12,7 @@ public class BakerCompanyMain {
 		SellerDAOUtil util2 = new SellerDAOUtil();
 		String id = null;
 		String name = null;
-		int result;
+		boolean result;
 		boolean isJoin = false;
 
 		while (true) {
@@ -30,11 +30,10 @@ public class BakerCompanyMain {
 			}
 
 			try {
-				menu = sc.nextInt();
-				sc.nextLine();
+				menu = sc.nextInt();sc.nextLine();
 			} catch (Exception e) {
 				System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
-				e.printStackTrace();
+				//e.printStackTrace();
 				sc.nextLine();
 				continue;
 			}
@@ -57,15 +56,19 @@ public class BakerCompanyMain {
 				}else {//로그아웃
 					id=null;name=null;isJoin=false;
 				}
-				
-				
-				
+
 				break;
 			case 2: // 회원가입
+				System.out.println("[2] 회원가입을 선택하셨습니다");
 				while(true) {
 					int subMenu;
-					
+
 					try {
+						System.out.println("[회원가입]");
+						System.out.println("[1] 소비자 ");
+						System.out.println("[2] 판매자 ");
+						System.out.println("[0] 취소, 매인 메뉴로 ");
+						System.out.print("[회원가입 하실 메뉴를 선택하세요]: ");
 						subMenu = sc.nextInt();
 						sc.nextLine();
 					} catch (Exception e) {
@@ -74,16 +77,21 @@ public class BakerCompanyMain {
 						sc.nextLine();
 						continue;
 					}
-					if(subMenu==1) {
-					//	result = util.registerCustomer(sc);
-					}else if(subMenu==2) {
-						
-						
+					
+					
+					if(subMenu==1) { //소비자 회원가입
+						result = util.registerCustomer(sc);
+						if(result) System.out.println("회원가입 완료!");
+						else System.out.println("회원가입 실패");
+					}else if(subMenu==2) { //판매자 회원가입
+						result = util2.registerSeller(sc);
+						if(result) System.out.println("회원가입 완료!");
+						else System.out.println("회원가입 실패");
 					}else if(subMenu==0){
 						System.out.println();
 						break;
 					}else {
-						System.out.println("입력하신 번호에 오류가 있습니다...");
+						System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 						continue;
 					}
 

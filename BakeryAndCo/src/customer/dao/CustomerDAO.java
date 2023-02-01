@@ -84,16 +84,16 @@ public class CustomerDAO {
 		return encrypted;
 	}
 
-	public int createCustomer(String userID, String pwd, String name, Date birthDate, String mobile, String email,
-			String addr, int active, Timestamp enrollDate) {
+	public int createCustomer(String userID, String pwd, String name, String birthDate, String mobile, String email,
+			String addr, int active) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		String sql = null;
-		if (email == null) {
-			sql = "insert into customerTBL(userID, pwd, name, birthDate, mobile, addr, active, email, enrollDate)"
+		if (email != null) {
+			sql = "insert into customerTBL(userID, pwd, name, birthDate, mobile, addr, active, email, enrolldate)"
 					+ " values (?,?,?,?,?,?,?,?, sysdate)";
 		} else {
-			sql = "insert into customerTBL(userID, pwd, name, birthDate, mobile, addr, active, enrollDate)"
+			sql = "insert into customerTBL(userID, pwd, name, birthDate, mobile, addr, active, enrolldate)"
 					+ " values (?,?,?,?,?,?,?, sysdate)";
 		}
 
@@ -105,7 +105,7 @@ public class CustomerDAO {
 			pstmt.setString(1, userID);
 			pstmt.setString(2, pwdEncrypt(pwd));
 			pstmt.setString(3, name);
-			pstmt.setDate(4, (java.sql.Date) birthDate);
+			pstmt.setString(4,  birthDate);
 			pstmt.setString(5, mobile);
 			pstmt.setString(6, addr);
 			pstmt.setInt(7, active);
@@ -123,7 +123,7 @@ public class CustomerDAO {
 	} // createCustomer
 
 	// password reset - userID, mobile, birthDate를 받아서 password를 reset
-	public int resetPassword(String userID, String password, String mobile, Date birthDate) {
+	public int resetPassword(String userID, String password, String mobile, String birthDate) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
@@ -135,8 +135,7 @@ public class CustomerDAO {
 			pstmt.setString(1, pwdEncrypt(password));
 			pstmt.setString(2, userID);
 			pstmt.setString(3, mobile);
-			pstmt.setDate(4, (java.sql.Date) birthDate);
-
+			pstmt.setString(4, birthDate);
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

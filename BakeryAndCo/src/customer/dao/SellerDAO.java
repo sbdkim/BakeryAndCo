@@ -99,7 +99,7 @@ public class SellerDAO {
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "select * from sellerTBL where sellerID=? and pwd=?";
+		String sql = "select * from sellerTBL where sellerID=? and pwd=? and active = '1' ";
 		// 3. PreparedStatement 객체생성
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -124,11 +124,11 @@ public class SellerDAO {
 	}
 
 	// password reset - sellerID, mobile, birthDate를 받아서 password를 reset
-	public int passwordReset(String sellerID, String password, String storeName, String mobile, Date birthDate) {
+	public int passwordReset(String sellerID, String password, String storeName, String mobile, String birthDate) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
-		String sql = "update sellerTBL set pwd = ? where sellerID = ? AND mobile = ? AND birthDate = ? AND storeName = ?";
+		String sql = "update sellerTBL set pwd = ? where sellerID = ? AND mobile = ? AND birthDate = ? AND storeName = ? AND active = '1' ";
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -136,7 +136,7 @@ public class SellerDAO {
 			pstmt.setString(1, pwdEncrypt(password));
 			pstmt.setString(2, sellerID);
 			pstmt.setString(3, mobile);
-			pstmt.setDate(4, (java.sql.Date) birthDate);
+			pstmt.setString(4,  birthDate);
 			pstmt.setString(5, storeName);
 
 			result = pstmt.executeUpdate();
@@ -150,8 +150,8 @@ public class SellerDAO {
 
 //seller생성
 
-	public int createSeller(String sellerID, String pwd, String name, Date birthDate, String storeName,
-			String storeMobile, String email, String storeAddr, int active, int regionCode, Timestamp enrollDate) {
+	public int createSeller(String sellerID, String pwd, String name, String birthDate, String storeName,
+			String storeMobile, String email, String storeAddr, int active, int regionCode) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		String sql = null;
@@ -171,7 +171,7 @@ public class SellerDAO {
 			pstmt.setString(1, sellerID);
 			pstmt.setString(2, pwdEncrypt(pwd));
 			pstmt.setString(3, name);
-			pstmt.setDate(4, (java.sql.Date) birthDate);
+			pstmt.setString(4, birthDate);
 			pstmt.setString(5, storeName);
 			pstmt.setString(6, storeMobile);
 			pstmt.setString(7, storeAddr);
@@ -224,7 +224,7 @@ public class SellerDAO {
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "select prodNum,scategory,storename,prodName,price,Inventory,description,registerdate,rating from productTBL order by prodNum";
+		String sql = "select prodNum,category,storeName,prodName,price,inventory,description,registerDate,rating from productTBL order by prodNum";
 		ProductVO vo = null;
 		// 3. PreparedStatement 객체생성
 		try {
@@ -235,9 +235,9 @@ public class SellerDAO {
 			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
 				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
 				do {
-					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("scategory"), rs.getString("storename"),
-							rs.getString("prodName"), rs.getInt("price"), rs.getInt("Inventory"),
-							rs.getString("description"), rs.getDate("registerdate"), rs.getInt("rating"));
+					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
+							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
+							rs.getString("description"), rs.getDate("registerDate"), rs.getInt("rating"));
 					list.add(vo);// ArrayList에 vo 객체 담기
 				} while (rs.next());
 			}
@@ -361,18 +361,18 @@ public class SellerDAO {
 		return result;
 	}
 
-	public int editProduct(int prodNum, String scategory, String storename, String prodName, int price, int inventory,
-			String description, Date registerdate, int rating) {
+	public int editProduct(int prodNum, String category, String storeName, String prodName, int price, int inventory,
+			String description, Date registerDate, int rating) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		StringBuilder sql = new StringBuilder("update Producttbl set ");
 		int cnt = 0;// 수정 필드(열) 개수
-		if (scategory != null) {
-			sql.append("scategory=?,");
+		if (category != null) {
+			sql.append("category=?,");
 		}
-		if (storename != null) {
-			sql.append("storename=?,");
+		if (storeName != null) {
+			sql.append("storeName=?,");
 		}
 		if (prodName != null) {
 			sql.append("prodName=?,");
@@ -386,8 +386,8 @@ public class SellerDAO {
 		if (description != null) {
 			sql.append("description=?,");
 		}
-		if (registerdate != null) {
-			sql.append("registerdate=?,");
+		if (registerDate != null) {
+			sql.append("registerDate=?,");
 		}
 
 		sql.append("rating=?,");
@@ -399,13 +399,13 @@ public class SellerDAO {
 		try {
 			pstmt = conn.prepareStatement(sql.toString());
 			// ?채우기
-			if (scategory != null) {
+			if (category != null) {
 				cnt++;
-				pstmt.setString(cnt, this.pwdEncrypt(scategory));
+				pstmt.setString(cnt, this.pwdEncrypt(category));
 			}
-			if (storename != null) {
+			if (storeName != null) {
 				cnt++;
-				pstmt.setString(cnt, storename);
+				pstmt.setString(cnt, storeName);
 			}
 			if (price != 0) {
 				cnt++;
@@ -430,7 +430,7 @@ public class SellerDAO {
 		return result;
 	}
 
-	public ArrayList<OrderVO> viewOrders(String storename) {
+	public ArrayList<OrderVO> viewOrders(String storeName) {
 		ArrayList<OrderVO> list = null;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
@@ -440,7 +440,7 @@ public class SellerDAO {
 		// 3. PreparedStatement 객체생성
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, storename);
+			pstmt.setString(1, storeName);
 			// 쿼리문 전송 결과 받기
 			rs = pstmt.executeQuery();
 			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
@@ -461,5 +461,44 @@ public class SellerDAO {
 		return list;
 
 	}
+	
+	public boolean selectSeller(String sellerID) {
+		boolean result = false;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select sellerID from sellerTBL where sellerID=? ";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기
+			pstmt.setString(1, sellerID);
+			// 쿼리문 전송 결과 받기
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 있는가?
+				result = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
+		}
+		return result;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }// sellerDAO
