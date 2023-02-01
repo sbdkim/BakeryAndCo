@@ -4,19 +4,16 @@ import java.util.Date;
 
 public class ProductVO {
 
-	private int prodNum, price,Inventory,Rating;
-	private String storeName,prodName,description,category;
+	private int prodNum, price, Inventory, Rating;
+	private String storeName, prodName, description, category;
 	private Date registerdate;
-	
-
-
 
 	public ProductVO() {
 		super();
 	}
 
-	public ProductVO(int prodNum, String category, String storeName, String prodName, int price, int inventory, String description, 
-		  Date registerdate , int rating) {
+	public ProductVO(int prodNum, String category, String storeName, String prodName, int price, int inventory,
+			String description, Date registerdate, int rating) {
 		super();
 		this.prodNum = prodNum;
 		this.price = price;
@@ -104,13 +101,8 @@ public class ProductVO {
 	@Override
 	public String toString() {
 
-
-
-		return "ProductVO : [ID: " + prodNum + ", 가게이름" +  storeName +  ", 제품이름: " + prodName + "가격: " + price + ", 재고량: " + Inventory +", 상품설명: " + description + ", 등록일: " + registerdate +", 별점: " + Rating  +"]";
+		return "ProductVO : [ID: " + prodNum + ", 가게이름" + storeName + ", 제품이름: " + prodName + "가격: " + price + ", 재고량: "
+				+ Inventory + ", 상품설명: " + description + ", 등록일: " + registerdate + ", 별점: " + Rating + "]";
 	}
 
-
-
-
-}//ProductVO
-
+}// ProductVO

@@ -12,9 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
-
 public class SellerDAO {
-	// 드라이버로딩 정적 블록
 	static {
 		try {
 			Class.forName("oracle.jdbc.OracleDriver");
@@ -23,11 +21,7 @@ public class SellerDAO {
 			System.exit(0);
 		}
 	}
-	// 싱글톤 생성자~
-	// 싱글톤
-	// 1. static memberDAO 객체 필드선언
-	// 2. 생성자 private
-	// 3. static 인 메소드하나를 만든다 getInstance : 생성자를 호출해서 객체생성 반환
+
 	private static SellerDAO dao = null;
 
 	private SellerDAO() {
@@ -53,7 +47,6 @@ public class SellerDAO {
 		return conn;
 	}
 
-	// 닫기 - pstmt, conn
 	private void close(PreparedStatement pstmt, Connection conn) {
 		try {
 			if (pstmt != null)
@@ -65,7 +58,6 @@ public class SellerDAO {
 		}
 	}
 
-	// 닫기 - rs, pstmt, conn
 	private void close(ResultSet rs, PreparedStatement pstmt, Connection conn) {
 		try {
 			if (rs != null)
@@ -79,7 +71,6 @@ public class SellerDAO {
 		}
 	}
 
-	// 암호화 모듈
 	private String pwdEncrypt(String pwd) {
 		MessageDigest md = null;
 
@@ -95,35 +86,12 @@ public class SellerDAO {
 		return encrypted;
 	}
 
-	
-	/*생성해야하는 메소드 LIST:
-- (DONE) createSeller
-- (DONE) registerProduct
-- (DONE) passwordReset
-- viewOrders - orderTBL 참고하고 그 스토에 들어온 주문 출력 날짜 시간
-- viewCustomers
-- viewProducts
-- editProduct
-- unregisterSeller
-
-
 	/*
-	 * 생성해야하는 메소드 LIST: -
-	 *  (DONE) createSeller -
-	 *   registerProduct - (DONE)
-	 * passwordReset -
-	 *  viewOrders - orderTBL 참고하고 그 스토에 들어온 주문 출력 날짜 시간 -
-	 * viewCustomers - 
-	 *  viewProducts -
-	 *   editProduct-
-	 *   - unregisterSeller
-	 * 
-	 * 
-	 * 
+	 * 생성해야하는 메소드 LIST: - (DONE) createSeller - (DONE) registerProduct - (DONE)
+	 * passwordReset - viewOrders - orderTBL 참고하고 그 스토에 들어온 주문 출력 날짜 시간 -
+	 * viewCustomers - viewProducts - editProduct - unregisterSeller
+	 */
 
-	 * */	
-	
-	
 	// customer userID &pwd 로 검색
 	public SellerVO selectSeller(String sellerID, String pwd) {
 		SellerVO vo = null;
@@ -131,7 +99,7 @@ public class SellerDAO {
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "select sellerID, name, birthDate, gender, storeName,  email, mobile, storeMobile, regionCode, storeAddr, enrollDate from sellerTBL where sellerID=? and pwd=?";
+		String sql = "select * from sellerTBL where sellerID=? and pwd=?";
 		// 3. PreparedStatement 객체생성
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -141,19 +109,10 @@ public class SellerDAO {
 			// 쿼리문 전송 결과 받기
 			rs = pstmt.executeQuery();
 			if (rs.next()) {// 읽은튜플이 있는가?
-				
-				
-				
-				//,  String pwd, String name, Date birthDate, String gender, String storeName, String storeMobile, String email, String  mobile, String storeAddr, int regionCode, Timestamp enrollDate ) {
-				
-				
-				
-				
-				vo = new SellerVO(
 
-						rs.getString("sellerID"), rs.getString("pwd"),rs.getString("name"), rs.getDate("birthDate"),
-						rs.getString("gender"),rs.getString("storeName"),rs.getString("storeMobile"),
-						 rs.getString("email"), rs.getString("mobile"), rs.getString("storeAddr"),rs.getInt("regionCode"),
+				vo = new SellerVO(rs.getString("sellerID"), rs.getString("pwd"), rs.getString("name"),
+						rs.getDate("birthDate"), rs.getString("storeName"), rs.getString("storeMobile"),
+						rs.getString("email"), rs.getString("storeAddr"), rs.getInt("regionCode"), rs.getInt("active"),
 						rs.getTimestamp("enrollDate"));
 			}
 		} catch (SQLException e) {
@@ -162,17 +121,7 @@ public class SellerDAO {
 			this.close(rs, pstmt, conn);
 		}
 		return vo;
-	}	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
+	}
 
 	// password reset - sellerID, mobile, birthDate를 받아서 password를 reset
 	public int passwordReset(String sellerID, String password, String storeName, String mobile, Date birthDate) {
@@ -187,7 +136,7 @@ public class SellerDAO {
 			pstmt.setString(1, pwdEncrypt(password));
 			pstmt.setString(2, sellerID);
 			pstmt.setString(3, mobile);
-			pstmt.setDate(4,  (java.sql.Date) birthDate);
+			pstmt.setDate(4, (java.sql.Date) birthDate);
 			pstmt.setString(5, storeName);
 
 			result = pstmt.executeUpdate();
@@ -200,17 +149,18 @@ public class SellerDAO {
 	}// passwordRest
 
 //seller생성
-	public int createSeller(String sellerID, String pwd, String name, Date birthDate, String gender, String storeName,
-			String storeMobile, String email, String mobile, String storeAddr, int regionCode) {
+
+	public int createSeller(String sellerID, String pwd, String name, Date birthDate, String storeName,
+			String storeMobile, String email, String storeAddr, int active, int regionCode, Timestamp enrollDate) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		String sql = null;
 		if (email == null) {
-			sql = "insert into sellerTBL(sellerID, pwd, name, gender, birthDate, storeName, storeMobile, mobile, storeAddr, enrollDate)"
+			sql = "insert into sellerTBL(sellerID, pwd, name,  birthDate, storeName, storeMobile,  storeAddr, active, regionCode, enrollDate)"
 					+ " values (?,?,?,?,?,?,?,?,?, sysdate)";
 		} else {
-			sql = "insert into sellerTBL(sellerID, pwd, name, gender, birthDate, storeName, storeMobile, mobile, storeAddr, email enrollDate)"
-					+ " values (?,?,?,?,?,?,?,?,?,?, sysdate)";
+			sql = "insert into sellerTBL(sellerID, pwd, name,  birthDate, storeName, storeMobile,  storeAddr, active, regionCode, email, enrollDate)"
+					+ " values (?,?,?,?,?,?,?,?,?,? sysdate)";
 		}
 
 		PreparedStatement pstmt = null;
@@ -221,13 +171,12 @@ public class SellerDAO {
 			pstmt.setString(1, sellerID);
 			pstmt.setString(2, pwdEncrypt(pwd));
 			pstmt.setString(3, name);
-			pstmt.setString(4, gender);
-			pstmt.setDate(5, (java.sql.Date) birthDate);
-			pstmt.setString(6, storeName);
-			pstmt.setString(7, storeMobile);
-			pstmt.setString(8, mobile);
-			pstmt.setString(9, storeAddr);
-
+			pstmt.setDate(4, (java.sql.Date) birthDate);
+			pstmt.setString(5, storeName);
+			pstmt.setString(6, storeMobile);
+			pstmt.setString(7, storeAddr);
+			pstmt.setInt(8, active);
+			pstmt.setInt(9, regionCode);
 			if (email != null)
 				pstmt.setString(10, email);
 			// 쿼리문 전송+결과 받기
@@ -241,12 +190,12 @@ public class SellerDAO {
 	} // createSeller
 
 	// product을 등록하려면 등록할떄 필요한 필드들을 다 입력 받아서 sql문에 넣어야 한다.
-	public int registerProduct(String prodCategory, String storeName, String prodName, int price, int inventory,
+	public int registerProduct(String category, String storeName, String prodName, int price, int inventory,
 			String description) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		String sql = null;
-		sql = "insert into productTBL(prodNum, prodCategory, storeName, prodName, price, inventory, description, registrationDate) "
+		sql = "insert into productTBL(prodNum, category, storeName, prodName, price, inventory, description, registerDate) "
 				+ "values (prod_seq, ?, ?,?,?,?,?, sysdate)";
 
 		PreparedStatement pstmt = null;
@@ -254,7 +203,7 @@ public class SellerDAO {
 			// 4. PreparedStatement 객체 생성하기
 			pstmt = conn.prepareStatement(sql);
 			// 5. ? 값 설정하기
-			pstmt.setString(1, prodCategory);
+			pstmt.setString(1, category);
 			pstmt.setString(2, storeName);
 			pstmt.setString(3, prodName);
 			pstmt.setInt(4, price);
@@ -268,304 +217,249 @@ public class SellerDAO {
 			this.close(pstmt, conn);
 		}
 		return result;
-	
 	}
-	
 
-	//product을 등록하려면 등록할떄 필요한 필드들을 다 입력 받아서 sql문에 넣어야 한다.
-public int registerProduct(String prodCategory, String storeName, String prodName, int price, int inventory, String description) {
-	int result = 0;
-	Connection conn = this.getConnection();
-	String sql = null;
-	sql = "insert into productTBL(prodNum, prodCategory, storeName, prodName, price, inventory, description, registrationDate) "
-			+ "values (prod_seq, ?, ?,?,?,?,?, sysdate)";
-	
-	PreparedStatement pstmt = null;
-	try {
-		// 4. PreparedStatement 객체 생성하기
-		pstmt = conn.prepareStatement(sql);
-		// 5. ? 값 설정하기
-		pstmt.setString(1, prodCategory);
-		pstmt.setString(2, storeName);
-		pstmt.setString(3, prodName);
-		pstmt.setInt(4, price);
-		pstmt.setInt(5, inventory);
-		pstmt.setString(6, description);
-
-		result = pstmt.executeUpdate();
-	} catch (SQLException e) {
-		e.printStackTrace();
-	} finally {
-		this.close(pstmt, conn);
-	}
-	return result;
-}
-
-
-public ArrayList<ProductVO> viewProducts(){
-	ArrayList<ProductVO> list=null;
-	Connection conn=this.getConnection();
-	PreparedStatement pstmt=null;	
-	ResultSet rs=null;
-	String sql="select prodNum,scategory,storename,prodName,price,Inventory,description,registerdate,rating from productTBL order by prodNum";
-	ProductVO vo=null;
-	//3. PreparedStatement 객체생성
-	try {
-		pstmt=conn.prepareStatement(sql);
-		//? 채우기 x
-		// 쿼리문 전송 결과 받기
-		rs=pstmt.executeQuery();
-		if(rs.next()) {//읽은튜플이 하나이상 있는가?
-			list=new ArrayList<ProductVO>();//ArrayList 객체 생성
-			do {
-				vo=new ProductVO(rs.getInt("prodNum"),
-						rs.getString("scategory"),rs.getString("storename"),
-						rs.getString("prodName"),rs.getInt("price"),
-						rs.getInt("Inventory"),rs.getString("description"),
-						rs.getDate("registerdate"),rs.getInt("rating"));
-				list.add(vo);//ArrayList에 vo 객체 담기
-			}while(rs.next());
-		}
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}finally {
-		this.close(rs, pstmt, conn);
-	}
-	return list;
-}
-
-//view all order 
-public ArrayList<OrderVO> viewOrder(String storeName) {
-	ArrayList<OrderVO> list=null;
-	Connection conn=this.getConnection();
-	PreparedStatement pstmt=null;	
-	ResultSet rs=null;
-	String sql = "select * from orderTBL where storeName = ?";
-	OrderVO vo = null;
-	
-	try {
-		pstmt=conn.prepareStatement(sql);
-		pstmt.setString(1,  storeName);
-		rs = pstmt.executeQuery();
-		
-		
-		if(rs.next()) {//읽은튜플이 하나이상 있는가?
-			list=new ArrayList<OrderVO>();//ArrayList 객체 생성
-			do {
-				vo=new OrderVO(						
-					rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
-					rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
-					rs.getString("shippingCost"), rs.getString("review"), rs.getBoolean("orderCompleted"), rs.getDate("orderDate")
-
-						);
-				list.add(vo);//ArrayList에 vo 객체 담기
-			}while(rs.next());
-		}
-
-		
-	} catch (SQLException e) {
-
-		e.printStackTrace();
-	}finally {
-		this.close(rs, pstmt, conn);
-	}	
-	
-	
-	
-	return list;
-}//viewOrder
-
-//viewCustomer - 그 가게에 있는 모든 손님을 출력
-
-//editProduct
-public int editProduct(int prodNum, int price, int inventory, String storeName, String prodName, String description, String category) {
-	int result = 0;
-	Connection conn=this.getConnection();
-	PreparedStatement pstmt=null;	
-	StringBuilder sql=new StringBuilder("update productTBL set ");
-	int cnt = 0;
-	if(price != -1) {
-		sql.append("price=?,");
-	}
-	if(inventory != -1) {
-		sql.append("inventory=?,");
-	}
-	if(storeName != null) {
-		sql.append("storeName=?,");
-	}
-	if(description != null) {
-		sql.append("description=?,");
-	}
-	if(category != null) {
-		sql.append("caterogy=?,");
-	}
-	sql=sql.delete(sql.length()-1, sql.length());
-	sql.append(" where prodNum=?");
-	try {
-		pstmt=conn.prepareStatement(sql.toString());
-		if(price!=-1) {
-			cnt++;
-			pstmt.setInt(cnt, price);
-		}
-		if(inventory!=-1) {
-			cnt++;
-			pstmt.setInt(cnt, inventory);
-		}
-		if(storeName!=null) {
-			cnt++;
-			pstmt.setString(cnt, storeName);
-		}
-		if(description!=null) {
-			cnt++;
-			pstmt.setString(cnt, description);
-		}
-		if(category!=null) {
-			cnt++;
-			pstmt.setString(cnt, category);
-		}
-		pstmt.setInt(++cnt, prodNum);
-		result=pstmt.executeUpdate();
-		
-	}catch (SQLException e) {
-		e.printStackTrace();
-	}
-	this.close(pstmt, conn);
-	
-	return result;
-}//editProduct
-
-//id랑 pwd받아서 sellerTBL에 seller계정을 active(false -0)으로 update한다
-public int SellerDelete(String sellerID, String pwd) {
-	int result=0;
-	Connection conn=this.getConnection();
-	PreparedStatement pstmt=null;
-	String sql="update sellerTBL set active = '0' where SellerID=? and pwd=?";
-	try {
-		pstmt=conn.prepareStatement(sql);
-		pstmt.setString(1, sellerID);
-		pstmt.setString(2, pwdEncrypt(pwd));
-		result=pstmt.executeUpdate();
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}
-	this.close(pstmt, conn);
-	
-	return result;
-}
-
-
-
-
-
-
-
-
-	
-	public ArrayList<ProductVO> viewProducts(){
-		ArrayList<ProductVO> list=null;
-		Connection conn=this.getConnection();
-		PreparedStatement pstmt=null;	
-		ResultSet rs=null;
-		String sql="select prodNum,scategory,storename,prodName,price,Inventory,description,registerdate,rating from productTBL order by prodNum";
-		ProductVO vo=null;
-		//3. PreparedStatement 객체생성
+	public ArrayList<ProductVO> viewProducts() {
+		ArrayList<ProductVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select prodNum,scategory,storename,prodName,price,Inventory,description,registerdate,rating from productTBL order by prodNum";
+		ProductVO vo = null;
+		// 3. PreparedStatement 객체생성
 		try {
-			pstmt=conn.prepareStatement(sql);
-			//? 채우기 x
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기 x
 			// 쿼리문 전송 결과 받기
-			rs=pstmt.executeQuery();
-			if(rs.next()) {//읽은튜플이 하나이상 있는가?
-				list=new ArrayList<ProductVO>();//ArrayList 객체 생성
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
+				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
 				do {
-					vo=new ProductVO(rs.getInt("prodNum"),
-							rs.getString("scategory"),rs.getString("storename"),
-							rs.getString("prodName"),rs.getInt("price"),
-							rs.getInt("Inventory"),rs.getString("description"),
-							rs.getDate("registerdate"),rs.getInt("rating"));
-					list.add(vo);//ArrayList에 vo 객체 담기
-				}while(rs.next());
+					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("scategory"), rs.getString("storename"),
+							rs.getString("prodName"), rs.getInt("price"), rs.getInt("Inventory"),
+							rs.getString("description"), rs.getDate("registerdate"), rs.getInt("rating"));
+					list.add(vo);// ArrayList에 vo 객체 담기
+				} while (rs.next());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			this.close(rs, pstmt, conn);
 		}
 		return list;
 	}
-	
-	public int editProduct(int prodNum, String scategory, String storename, String prodName, int price, int inventory, String description, 
-			  Date registerdate , int rating) {
-		int result=0;
-		Connection conn=this.getConnection();
-		PreparedStatement pstmt=null;	
-		StringBuilder sql=new StringBuilder("update Producttbl set ");
-		int cnt=0;//수정 필드(열) 개수
-		if(scategory!=null) {			
-			sql.append("scategory=?,");
+
+//view all order 
+	public ArrayList<OrderVO> viewOrder(String storeName) {
+		ArrayList<OrderVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select * from orderTBL where storeName = ?";
+		OrderVO vo = null;
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, storeName);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
+				list = new ArrayList<OrderVO>();// ArrayList 객체 생성
+				do {
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
+							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
+							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
+							rs.getDate("orderDate"));
+					list.add(vo);// ArrayList에 vo 객체 담기
+				} while (rs.next());
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
 		}
-		if(storename!=null) {
-			sql.append("storename=?,");
-		}
-		if(prodName!=null) {
-			sql.append("prodName=?,");
-		}
-		if(price!=0) {
+
+		return list;
+	}// viewOrder
+
+//editProduct
+	public int editProduct(int prodNum, int price, int inventory, String storeName, String prodName, String description,
+			String category) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		StringBuilder sql = new StringBuilder("update productTBL set ");
+		int cnt = 0;
+		if (price != -1) {
 			sql.append("price=?,");
 		}
-		
-		sql.append("inventory=?,");
-		
-		if(description!=null) {
+		if (inventory != -1) {
+			sql.append("inventory=?,");
+		}
+		if (storeName != null) {
+			sql.append("storeName=?,");
+		}
+		if (description != null) {
 			sql.append("description=?,");
 		}
-		if(registerdate!=null) {
-			sql.append("registerdate=?,");
+		if (category != null) {
+			sql.append("caterogy=?,");
 		}
-		
-			sql.append("rating=?,");
-		
-		//마지막 , 없애고 
-		sql=sql.delete(sql.length()-1, sql.length());
-		
+		sql = sql.delete(sql.length() - 1, sql.length());
 		sql.append(" where prodNum=?");
 		try {
-			pstmt=conn.prepareStatement(sql.toString());
-			//?채우기
-			if(scategory!=null) {
+			pstmt = conn.prepareStatement(sql.toString());
+			if (price != -1) {
 				cnt++;
-				pstmt.setString(cnt, this.pwdEncrypt(scategory));
+				pstmt.setInt(cnt, price);
 			}
-			if(storename!=null) {
+			if (inventory != -1) {
 				cnt++;
-				pstmt.setString(cnt,storename);
+				pstmt.setInt(cnt, inventory);
 			}
-			if(price!=0) {
+			if (storeName != null) {
 				cnt++;
-				pstmt.setInt(cnt,price);
+				pstmt.setString(cnt, storeName);
 			}
-			   pstmt.setInt(++cnt,inventory);
-			
-			if(description!=null) {
+			if (description != null) {
 				cnt++;
-				pstmt.setString(cnt,description);
+				pstmt.setString(cnt, description);
 			}
-			   pstmt.setInt(++cnt,rating);
-			
-			pstmt.setInt(++cnt,prodNum);
-			result=pstmt.executeUpdate();
-			
+			if (category != null) {
+				cnt++;
+				pstmt.setString(cnt, category);
+			}
+			pstmt.setInt(++cnt, prodNum);
+			result = pstmt.executeUpdate();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		this.close(pstmt, conn);			
-		
+		this.close(pstmt, conn);
+
+		return result;
+	}// editProduct
+
+//id랑 pwd받아서 sellerTBL에 seller계정을 active(false -0)으로 update한다
+	public int SellerDelete(String sellerID, String pwd) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update sellerTBL set active = '0' where SellerID=? and pwd=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, sellerID);
+			pstmt.setString(2, pwdEncrypt(pwd));
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
 		return result;
 	}
-	
-	
-	
-	
-	
-	
+
+	public int editProduct(int prodNum, String scategory, String storename, String prodName, int price, int inventory,
+			String description, Date registerdate, int rating) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		StringBuilder sql = new StringBuilder("update Producttbl set ");
+		int cnt = 0;// 수정 필드(열) 개수
+		if (scategory != null) {
+			sql.append("scategory=?,");
+		}
+		if (storename != null) {
+			sql.append("storename=?,");
+		}
+		if (prodName != null) {
+			sql.append("prodName=?,");
+		}
+		if (price != 0) {
+			sql.append("price=?,");
+		}
+
+		sql.append("inventory=?,");
+
+		if (description != null) {
+			sql.append("description=?,");
+		}
+		if (registerdate != null) {
+			sql.append("registerdate=?,");
+		}
+
+		sql.append("rating=?,");
+
+		// 마지막 , 없애고
+		sql = sql.delete(sql.length() - 1, sql.length());
+
+		sql.append(" where prodNum=?");
+		try {
+			pstmt = conn.prepareStatement(sql.toString());
+			// ?채우기
+			if (scategory != null) {
+				cnt++;
+				pstmt.setString(cnt, this.pwdEncrypt(scategory));
+			}
+			if (storename != null) {
+				cnt++;
+				pstmt.setString(cnt, storename);
+			}
+			if (price != 0) {
+				cnt++;
+				pstmt.setInt(cnt, price);
+			}
+			pstmt.setInt(++cnt, inventory);
+
+			if (description != null) {
+				cnt++;
+				pstmt.setString(cnt, description);
+			}
+			pstmt.setInt(++cnt, rating);
+
+			pstmt.setInt(++cnt, prodNum);
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}
+
+	public ArrayList<OrderVO> viewOrders(String storename) {
+		ArrayList<OrderVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select * from o_c_view where storeName like ? order by userID";
+		OrderVO vo = null;
+		// 3. PreparedStatement 객체생성
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, storename);
+			// 쿼리문 전송 결과 받기
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
+				list = new ArrayList<OrderVO>();// ArrayList 객체 생성
+				do {
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
+							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
+							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
+							rs.getDate("orderDate"));
+					list.add(vo);// ArrayList에 vo 객체 담기
+				} while (rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+
+	}
 
 }// sellerDAO

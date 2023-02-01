@@ -4,17 +4,19 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class SellerVO {
-	//fields
-	private String sellerID, pwd, name, storeName, storeMobile,  email,  storeAddr ;
+	// fields
+	private String sellerID, pwd, name, storeName, storeMobile, email, storeAddr;
 	private int regionCode, active;
-	private Date birthDate; 
+	private Date birthDate;
 	private Timestamp enrollDate;
-	
-	//constructors
-	public SellerVO() {super();}
-	
-	public SellerVO(String sellerID,  String pwd, String name, Date birthDate, String storeName, 
-			String storeMobile, String email,  String storeAddr, int regionCode, int active, Timestamp enrollDate ) {
+
+	// constructors
+	public SellerVO() {
+		super();
+	}
+
+	public SellerVO(String sellerID, String pwd, String name, Date birthDate, String storeName, String storeMobile,
+			String email, String storeAddr, int regionCode, int active, Timestamp enrollDate) {
 		super();
 		this.sellerID = sellerID;
 		this.pwd = pwd;
@@ -28,9 +30,9 @@ public class SellerVO {
 		this.active = active;
 		this.enrollDate = enrollDate;
 	}
-	
-	public SellerVO(String sellerID,  String name, Date birthDate, String storeName, 
-			String storeMobile, String email,  String storeAddr, int regionCode, int active, Timestamp enrollDate ) {
+
+	public SellerVO(String sellerID, String name, Date birthDate, String storeName, String storeMobile, String email,
+			String storeAddr, int regionCode, int active, Timestamp enrollDate) {
 		super();
 		this.sellerID = sellerID;
 		this.name = name;
@@ -43,8 +45,6 @@ public class SellerVO {
 		this.active = active;
 		this.enrollDate = enrollDate;
 	}
-	
-	
 
 	public String getSellerID() {
 		return sellerID;
@@ -136,16 +136,14 @@ public class SellerVO {
 
 //	public SellerVO(String sellerID,  String name, Date birthDate, String storeName, 
 //			String storeMobile, String email,  String storeAddr, int regionCode, int active, Timestamp enrollDate ) {
-	
-	
+
 	@Override
 	public String toString() {
-		
-		return "SellerVO : [ID: " + sellerID + ", 이름:" +  name +  ", 생년월일: " + birthDate + 
-				", 가게명: " + storeName +", 가게 전화번호: " + storeMobile + ", 이메일: " + email + 
-				  ", 가게주소: " + storeAddr +", 가게지역코드: " + regionCode + ", 활성: " + active +", 등록날짜: "  + enrollDate +"]"; 
-		
-	}
-	
 
-}//CustomerVO
+		return "SellerVO : [ID: " + sellerID + ", 이름:" + name + ", 생년월일: " + birthDate + ", 가게명: " + storeName
+				+ ", 가게 전화번호: " + storeMobile + ", 이메일: " + email + ", 가게주소: " + storeAddr + ", 가게지역코드: " + regionCode
+				+ ", 활성: " + active + ", 등록날짜: " + enrollDate + "]";
+
+	}
+
+}// CustomerVO

@@ -10,28 +10,28 @@ public class SellerDAOUtil {
 
 	private Matcher match;
 	SellerDAO dao = null;
-	
+
 	public SellerDAOUtil() {
 		super();
 		dao = SellerDAO.getInstance();
 	}
-	
+
 	public String login2(Scanner sc) {
-		String id=null;
-		String password=null;
+		String id = null;
+		String password = null;
 		System.out.println("--- 로그인 아이디/패스워드 입력 ----");
 		System.out.print("아이디>>");
-		id=sc.nextLine();
+		id = sc.nextLine();
 		System.out.print("패스워드>>");
-		password=sc.nextLine();
-		SellerVO vo=dao.selectSeller(id, password);
-		if(vo!=null)id=vo.getSellerID();
-		else id=null;
+		password = sc.nextLine();
+		SellerVO vo = dao.selectSeller(id, password);
+		if (vo != null)
+			id = vo.getSellerID();
+		else
+			id = null;
 		return id;
 	}
-	
-	
-	
+
 	public HashMap<String, String> login(Scanner sc) {
 		HashMap<String, String> map = null;
 		String id = null;
@@ -49,7 +49,7 @@ public class SellerDAOUtil {
 		}
 		return map;
 	}
-	
+
 	public boolean idCheck(String id) {
 		String pattern = "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z[0-9]]{8,20}$";
 		boolean chk = false;
@@ -83,19 +83,16 @@ public class SellerDAOUtil {
 		}
 		return chk;
 	}
-	
+
 	public boolean emailCheck(String email) {
-		 boolean chk = false;
+		boolean chk = false;
 		// 영문, 숫자, 특수문자 조합 (10~20 자리)
-		 String pattern ="^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}])[A-Za-z[0-9]!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}]{10,20}$";
-		 match = Pattern.compile(pattern).matcher(email);	
-		 if(match.find()) {//패턴에 맞는지 확인
-			  chk = true;
-		 }
-		 return chk;
+		String pattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}])[A-Za-z[0-9]!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}]{10,20}$";
+		match = Pattern.compile(pattern).matcher(email);
+		if (match.find()) {// 패턴에 맞는지 확인
+			chk = true;
+		}
+		return chk;
 	}
-	
-	
-	
-	
-}//SellerDAOUtil
+
+}// SellerDAOUtil

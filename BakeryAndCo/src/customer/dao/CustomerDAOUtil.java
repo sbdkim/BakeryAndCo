@@ -16,23 +16,22 @@ public class CustomerDAOUtil {
 		dao = CustomerDAO.getInstance();
 	}
 
-	
 	public String login2(Scanner sc) {
-		String id=null;
-		String password=null;
+		String id = null;
+		String password = null;
 		System.out.println("--- 로그인 아이디/패스워드 입력 ----");
 		System.out.print("아이디>>");
-		id=sc.nextLine();
+		id = sc.nextLine();
 		System.out.print("패스워드>>");
-		password=sc.nextLine();
-		CustomerVO vo=dao.selectCustomer(id, password);
-		if(vo!=null)id=vo.getUserID();
-		else id=null;
+		password = sc.nextLine();
+		CustomerVO vo = dao.selectCustomer(id, password);
+		if (vo != null)
+			id = vo.getUserID();
+		else
+			id = null;
 		return id;
 	}
-	
-	
-	
+
 	public HashMap<String, String> login(Scanner sc) {
 		HashMap<String, String> map = null;
 		String id = null;
@@ -84,20 +83,17 @@ public class CustomerDAOUtil {
 		}
 		return chk;
 	}
-	
-	
+
 	public boolean emailCheck(String email) {
-		 boolean chk = false;
+		boolean chk = false;
 		// 영문, 숫자, 특수문자 조합 (10~20 자리)
-		 String pattern ="^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}])[A-Za-z[0-9]!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}]{10,20}$";
-		 match = Pattern.compile(pattern).matcher(email);	
-		 if(match.find()) {//패턴에 맞는지 확인
-			  chk = true;
-		 }
-		 return chk;
+		String pattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}])[A-Za-z[0-9]!@#$%^&*?,./\\\\\\\\<>|_-[+]=\\\\`~\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}]{10,20}$";
+		match = Pattern.compile(pattern).matcher(email);
+		if (match.find()) {// 패턴에 맞는지 확인
+			chk = true;
+		}
+		return chk;
 	}
-	
-	
 
 	public boolean update(Scanner sc) {
 		// 아이디/패스워드 입력 받아서 조회
@@ -188,133 +184,106 @@ public class CustomerDAOUtil {
 				return true;
 		}
 		return false;
-	}//update
-	
-	
-	
-	public boolean delete(Scanner sc) {
-		//아이디 비번 입력
-		String id,password;
-		//아이디 패스워드 입력 받기
-		System.out.print("사용자 ID>>");
-		id=sc.nextLine().trim();
-		System.out.print("패스워드>>");
-		password=sc.nextLine().trim();		
-		//MemberVO vo=dao.selectMember(id, password);
-		//회원조회 하고 있으면 삭제 수행
-		//if(vo==null)return false;
-		//삭제 수행
-		if(dao.CustomerDelete(id, password)==1)return true;
-		else return false;
-	}//delete
+	}// update
 
-	
-	
-	
-	//회원가입 
+	public boolean delete(Scanner sc) {
+		// 아이디 비번 입력
+		String id, password;
+		// 아이디 패스워드 입력 받기
+		System.out.print("사용자 ID>>");
+		id = sc.nextLine().trim();
+		System.out.print("패스워드>>");
+		password = sc.nextLine().trim();
+		// MemberVO vo=dao.selectMember(id, password);
+		// 회원조회 하고 있으면 삭제 수행
+		// if(vo==null)return false;
+		// 삭제 수행
+		if (dao.CustomerDelete(id, password) == 1)
+			return true;
+		else
+			return false;
+	}// delete
+
+	// 회원가입
 	public boolean registerCustomer(Scanner sc) {
 		boolean result = false;
 		String userID, pwd, pwdCheck, name, gender, email, mobile, addr;
 		Date birthDate;
-		while(true) {
+		while (true) {
 			System.out.print("사용자 ID(영문자,숫자조합(8~20자리)>>");
-			userID=sc.nextLine().trim();
-		//1. 패턴 체크
-			if(!idCheck(userID)) {
+			userID = sc.nextLine().trim();
+			// 1. 패턴 체크
+			if (!idCheck(userID)) {
 				System.out.println("부적합한 사용자 ID 입니다. 영문자,숫자조합(8~20자리)");
 				continue;
 			}
-		//2. 아이디 중복 조회 select메소드를 DAO 만들기 boolean selectMember(String id)
-			//정상
-			if(dao.selectCustomer(userID)) {
+			// 2. 아이디 중복 조회 select메소드를 DAO 만들기 boolean selectMember(String id)
+			// 정상
+			if (dao.selectCustomer(userID)) {
 				System.out.println("이미 사용중인 ID 입니다.");
-				continue;				
+				continue;
 			}
 			break;
-		}//while -- check ID
-		while(true) {
-			//패스워드 입력
-				System.out.print("패스워드 ID(영문자,숫자,특수문자 조합(10~20자리)>>");
-				pwd=sc.nextLine().trim();
-			//1. 패턴체크
-				if(!pwdCheck(pwd)) {
-					System.out.println("부적합한 비밀번호 형식 입니다. 영문자,특수문자,숫자조합(10~20자리)");
-					continue;
-				}			
-			//패스워드 체크 입력
-				System.out.print("패스워드 다시 입력 >>");
-				pwdCheck=sc.nextLine().trim();
-			//두 패스워드 비교 틀린경우 다시 입력
-				if(!pwd.equals(pwdCheck)) {
-					System.out.println("입력하신 패스워드 2개가 다릅니다.");
-					continue;						
-				}			
-				break;
+		} // while -- check ID
+		while (true) {
+			// 패스워드 입력
+			System.out.print("패스워드 ID(영문자,숫자,특수문자 조합(10~20자리)>>");
+			pwd = sc.nextLine().trim();
+			// 1. 패턴체크
+			if (!pwdCheck(pwd)) {
+				System.out.println("부적합한 비밀번호 형식 입니다. 영문자,특수문자,숫자조합(10~20자리)");
+				continue;
 			}
-		while(true) {
-			//이름 입력
+			// 패스워드 체크 입력
+			System.out.print("패스워드 다시 입력 >>");
+			pwdCheck = sc.nextLine().trim();
+			// 두 패스워드 비교 틀린경우 다시 입력
+			if (!pwd.equals(pwdCheck)) {
+				System.out.println("입력하신 패스워드 2개가 다릅니다.");
+				continue;
+			}
+			break;
+		}
+		while (true) {
+			// 이름 입력
 			System.out.print("이름 >>");
-			name=sc.nextLine().trim();
-			//공백의 경우 다시 입력
-			if(name.length()==0) {
+			name = sc.nextLine().trim();
+			// 공백의 경우 다시 입력
+			if (name.length() == 0) {
 				System.out.println("이름은 필수 항목 입니다.");
-				continue;									
+				continue;
 			}
 			break;
 		}
-		
-		while(true) {
-			//이름 입력
+
+		while (true) {
+			// 이름 입력
 			System.out.print("성(남/여)>>");
-			gender=sc.nextLine().trim();
-			//공백의 경우 다시 입력
-			if(gender.length()==0) {
+			gender = sc.nextLine().trim();
+			// 공백의 경우 다시 입력
+			if (gender.length() == 0) {
 				System.out.println("성은 필수 항목 입니다.");
-				continue;									
+				continue;
 			}
 			break;
 		}
-		
-		
-		
-		//String userID, pwd, pwdCheck, name, gender, email, mobile, addr;
-		//Date birthDate;
-		while(true) {
-			//전화번호 입력
+
+		// String userID, pwd, pwdCheck, name, gender, email, mobile, addr;
+		// Date birthDate;
+		while (true) {
+			// 전화번호 입력
 			System.out.print("휴대폰 번호>>");
-			mobile=sc.nextLine().trim();			
-			//1. 패턴체크
-			if(!mobileCheck(mobile)) {
+			mobile = sc.nextLine().trim();
+			// 1. 패턴체크
+			if (!mobileCheck(mobile)) {
 				System.out.println("전화번호 형식이 틀립니다.xxx-xxxx-xxxx");
-				continue;													
+				continue;
 			}
-			//패턴 틀린경우 다시 입력
+			// 패턴 틀린경우 다시 입력
 			break;
 		}
-		
-		
-		
-		
+
 		return result;
-	}//registerCustomer
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}// registerCustomer
 
 }// CustomerDAOUtil
