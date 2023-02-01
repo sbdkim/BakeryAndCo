@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class ProductVO {
 
-	private int prodNum, price, Inventory, Rating;
+	private int prodNum, price, inventory, rating;
 	private String storeName, prodName, description, category;
 	private Date registerdate;
 
@@ -17,8 +17,8 @@ public class ProductVO {
 		super();
 		this.prodNum = prodNum;
 		this.price = price;
-		Inventory = inventory;
-		Rating = rating;
+		this.inventory = inventory;
+		this.rating = rating;
 		this.storeName = storeName;
 		this.prodName = prodName;
 		this.description = description;
@@ -43,19 +43,19 @@ public class ProductVO {
 	}
 
 	public int getInventory() {
-		return Inventory;
+		return inventory;
 	}
 
 	public void setInventory(int inventory) {
-		Inventory = inventory;
+		this.inventory = inventory;
 	}
 
 	public int getRating() {
-		return Rating;
+		return rating;
 	}
 
 	public void setRating(int rating) {
-		Rating = rating;
+		this.rating = rating;
 	}
 
 	public String getstoreName() {
@@ -102,7 +102,7 @@ public class ProductVO {
 	public String toString() {
 
 		return "ProductVO : [ID: " + prodNum + ", 가게이름" + storeName + ", 제품이름: " + prodName + "가격: " + price + ", 재고량: "
-				+ Inventory + ", 상품설명: " + description + ", 등록일: " + registerdate + ", 별점: " + Rating + "]";
+				+ inventory + ", 상품설명: " + description + ", 등록일: " + registerdate + ", 별점: " + rating + "]";
 	}
 
 }// ProductVO

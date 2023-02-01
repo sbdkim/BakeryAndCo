@@ -206,31 +206,22 @@ public class CustomerDAO {
 	}// viewCompletedOrder
 
 	// 지역에 있는 가게 출력
-	public ArrayList<SellerVO> viewRegionStore(String regionCode) {
-		ArrayList<SellerVO> list = null;
+	public ArrayList<String> viewRegionStore(String regionCode) {
+		ArrayList<String> list = null;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = null;
-		SellerVO vo = null;
 
-		// list all the stores in the region -- storeViewtable 만들기???
-		// sql = "select storeName from viewStoreTBL where regionCode = ?";
 		sql = "select storeName from sellerTBL where regionCode = ?";
 		try {
 			pstmt = conn.prepareStatement(sql);
-			// ?채우기
 			pstmt.setString(1, regionCode);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				list = new ArrayList<SellerVO>();
-
+				list = new ArrayList<String>();
 				do {
-					vo = new SellerVO(rs.getString("sellerID"), rs.getString("pwd"), rs.getString("name"),
-							rs.getDate("birthDate"), rs.getString("storeName"), rs.getString("storeMobile"),
-							rs.getString("email"), rs.getString("storeAddr"), rs.getInt("regionCode"),
-							rs.getInt("active"), rs.getTimestamp("enrollDate"));
-					list.add(vo);
+					list.add(rs.getString(1));
 				} while (rs.next());
 			}
 
@@ -242,6 +233,34 @@ public class CustomerDAO {
 		return list;
 	}
 
+
+	public ArrayList<String> viewProductCategory(String storeName) {
+		ArrayList<String> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select distinct category from productTBL where storeName = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, storeName);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				list = new ArrayList<String>();
+				do {
+					list.add(rs.getString(1));
+				} while (rs.next());
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	
+	
+	
 	// <METHOD LIST>
 	// createCustomer - customer를 만들때 필요한 모든 필드를 받아서 customerTBL에 추가 (SQL Insert)
 	// resetPassword - userID, mobile, birthDate 를 입력 받아서 password를 제설정 (SQL Update)
@@ -259,29 +278,20 @@ public class CustomerDAO {
 
 	// 지역에 있는 가게들 출력 - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
 	// LIST THE CATEGORY (list of Categories)
-	public ArrayList<String> viewProductCategory(String storeName) {
-		ArrayList<String> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		ProductVO vo = null;
-		String sql = "select distinct category from productTBL where storeName = ?";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, storeName);
-			if (rs.next()) {
-				list = new ArrayList<String>();
-				do {
-					list.add(rs.getString(1));
-				} while (rs.next());
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	// 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
 	// LIST THE PRODUCTS IN THE CATEGORY
