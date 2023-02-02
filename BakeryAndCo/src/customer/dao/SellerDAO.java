@@ -248,39 +248,6 @@ public int registerProduct(String prodCategory, String storeName, String prodNam
 }
 
 
-public ArrayList<ProductVO> viewProducts(){
-	ArrayList<ProductVO> list=null;
-	Connection conn=this.getConnection();
-	PreparedStatement pstmt=null;	
-	ResultSet rs=null;
-	String sql="select prodNum,scategory,storename,prodName,price,Inventory,description,registerdate,rating from productTBL order by prodNum";
-	ProductVO vo=null;
-	//3. PreparedStatement 객체생성
-	try {
-		pstmt=conn.prepareStatement(sql);
-		//? 채우기 x
-		// 쿼리문 전송 결과 받기
-		rs=pstmt.executeQuery();
-		if(rs.next()) {//읽은튜플이 하나이상 있는가?
-			list=new ArrayList<ProductVO>();//ArrayList 객체 생성
-			do {
-				vo=new ProductVO(rs.getInt("prodNum"),
-						rs.getString("scategory"),rs.getString("storename"),
-						rs.getString("prodName"),rs.getInt("price"),
-						rs.getInt("Inventory"),rs.getString("description"),
-						rs.getDate("registerdate"),rs.getInt("rating"));
-				list.add(vo);//ArrayList에 vo 객체 담기
-			}while(rs.next());
-		}
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}finally {
-		this.close(rs, pstmt, conn);
-	}
-	return list;
-}
-
-
 
 
 
@@ -387,7 +354,7 @@ public ArrayList<ProductVO> viewProducts(){
 		
 		return result;
 	}
-	
+	syso
 	
 	public ArrayList<CustomerVO> viewCustomers(){
 		ArrayList<CustomerVO> list=null;
@@ -477,7 +444,23 @@ public ArrayList<ProductVO> viewProducts(){
 	}
 		
 		
-	
+	public int SellerDelete(String sellerID, String pwd) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update sellerTBL set active = '0' where SellerID=? and pwd=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, sellerID);
+			pstmt.setString(2, pwdEncrypt(pwd));
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}
 	
 	
 	
