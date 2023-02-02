@@ -181,6 +181,7 @@ public class CustomerDAO {
 			pstmt = conn.prepareStatement(sql);
 			// ?채우기
 			pstmt.setString(1, userID);
+			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				list = new ArrayList<OrderVO>();
 
@@ -205,22 +206,24 @@ public class CustomerDAO {
 	}// viewCompletedOrder
 
 	// 지역에 있는 가게 출력
-	public ArrayList<String> viewRegionStore(String regionCode) {
-		ArrayList<String> list = null;
+	public ArrayList<SellerVO> viewRegionStore(int regionCode) {
+		ArrayList<SellerVO> list = null;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = null;
 
-		sql = "select storeName from sellerTBL where regionCode = ?";
+		sql = "select sellerID, storeName, regionCode, active from sellerTBL where regionCode = ?";
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, regionCode);
+			pstmt.setInt(1, regionCode);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				list = new ArrayList<String>();
+				list = new ArrayList<SellerVO>();
 				do {
-					list.add(rs.getString(1));
+					
+				list.add(new SellerVO(rs.getString(1), rs.getString(1), rs.getInt(3), rs.getInt(4)));
+				
 				} while (rs.next());
 			}
 
@@ -231,6 +234,11 @@ public class CustomerDAO {
 
 		return list;
 	}
+	
+
+	
+	
+	
 
 
 	public ArrayList<String> viewProductCategory(String storeName) {
@@ -337,6 +345,7 @@ public class CustomerDAO {
 			pstmt = conn.prepareStatement(sql);
 			// ?채우기
 			pstmt.setString(1, userID);
+			rs=pstmt.executeQuery();
 			if (rs.next()) {
 				list = new ArrayList<OrderVO>();
 
@@ -464,7 +473,7 @@ public class CustomerDAO {
 		// 마지막 , 없애고
 		sql = sql.delete(sql.length() - 1, sql.length());
 		// where 이하 붙이기
-		sql.append(" where id=?");
+		sql.append(" where userID=?");
 		try {
 			pstmt = conn.prepareStatement(sql.toString());
 			// ?채우기

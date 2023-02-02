@@ -13,6 +13,14 @@ public class SellerVO {
 	public SellerVO() {
 		super();
 	}
+	
+	public SellerVO(String sellerID, String storeName, int regionCode, int active) {
+		this.sellerID = sellerID;
+		this.storeName = storeName;
+		this.regionCode = regionCode;
+		this.active = active;
+	}
+	
 
 	public SellerVO(String sellerID, String pwd, String name, String birthDate, String storeName, String storeMobile,
 			String email, String storeAddr, int regionCode, int active, Timestamp enrollDate) {

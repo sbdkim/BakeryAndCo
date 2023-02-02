@@ -1,5 +1,6 @@
 package customer.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -106,29 +107,97 @@ public class CustomerDAOUtil {
 	}
 	
 	
+	public boolean showCurrentOrder(String id) {
+		boolean result = false;
+		ArrayList<OrderVO> list = null;
+		list = dao.viewOrderProcessing(id);
+		if(list!=null) {
+			for(OrderVO v: list) {
+				System.out.println(v.toString());
+			}	
+			result = true;
+		}
+		
+		return result;
+	}
+	
+	
+	
+	public boolean showCompletedOrder(String id) {
+		boolean result = false;
+		ArrayList<OrderVO> list = null;
+		list = dao.viewCompletedOrder(id);
+		if(list!=null) {
+			for(OrderVO v: list) {
+				System.out.println(v.toString());
+			}	
+			result = true;
+		}
+		
+		return result;
+	}
+	
+	//prints all the stores in the region with the region code
+	public boolean showRegionStore(int regionCode) {
+		boolean result = false;
+		ArrayList<SellerVO> list = null;
+		list = dao.viewRegionStore(regionCode);
+		if(list!=null) {
+			int i = 0;
+			for(SellerVO vo: list) {
+				i++;
+				System.out.println("[" + i + "] " +vo.getStoreName());
+			}	
+			result = true;
+		}
+		
+		return result;
+	}
+	
+	
+	
+	public int showRegionStoreNumber(int regionCode) {
+		ArrayList<SellerVO> list = null;
+		int i = 0;
+		list = dao.viewRegionStore(regionCode);
+		if(list!=null) {
+			
+			for(SellerVO vo: list) {
+				i++;
+				System.out.println("[" + i + "] " +vo.getStoreName());
+			}	
+		
+		}
+		
+		return i;
+	
+	}
+	
+
+
+	
+	
 	
 	
 
-	public boolean update(Scanner sc) {
+	public boolean update(String userID, Scanner sc) {
 		// 아이디/패스워드 입력 받아서 조회
 		// userID,pwd,name,gender,birthDate,email,mobile,addr,enrolldate
-		String userID, pwd;
+		String pwd;
 		CustomerVO vo = null;
 		// 아이디 패스워드 입력 받기
 		while (true) {
-			System.out.print("사용자 ID(enter 취소)>>");
-			userID = sc.nextLine().trim();
-			if (userID.length() == 0)
-				return false;
-			System.out.print("패스워드>>");
+			
+			System.out.print("현재 비밀번호를 입력하세요>>");
 			pwd = sc.nextLine().trim();
 			vo = dao.selectCustomer(userID, pwd);
 			if (vo == null) {
-				System.out.println("없는 사용자 입니다.");
+				System.out.println("비밀번호가 틀렸습니다...");
 				continue;
 			}
 			break;
 		}
+		System.out.println("[현재 정보가 출력되었습니다]");
 		System.out.println(vo.toString());
 		// 아이디 제외 다시 입력
 		// enter 수정 안하면 null 저장
@@ -199,6 +268,10 @@ public class CustomerDAOUtil {
 		}
 		return false;
 	}// update
+	
+	
+	
+	
 
 	public boolean delete(Scanner sc) {
 		// 아이디 비번 입력
@@ -334,5 +407,7 @@ public class CustomerDAOUtil {
 		
 		return result;
 	}// registerCustomer
+
+
 
 }// CustomerDAOUtil

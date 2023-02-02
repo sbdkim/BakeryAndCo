@@ -1,5 +1,6 @@
 package customer.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -259,7 +260,7 @@ public class SellerDAOUtil {
 		return result;
 	}// registerSeller
 
-
+	
 	
 	
 	
