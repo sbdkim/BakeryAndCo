@@ -255,118 +255,128 @@ public class SellerDAOUtil {
 
 	public boolean update(String sellerID, Scanner sc) {
 		String pwd;
+		int wrongCount = 0;
+		boolean updateRun = true;
 		SellerVO vo = null;
 		while (true) {
 			System.out.print("현재 비밀번호를 입력하세요>>");
 			pwd = sc.nextLine().trim();
 			vo = dao.selectSeller(sellerID, pwd);
+
+			// if password is wrong.
 			if (vo == null) {
-				System.out.println("비밀번호가 틀렸습니다...");
-				continue;
-			}
+				wrongCount++;
+				if (wrongCount < 3) {
+					System.out.println("비밀번호가 틀렸습니다...");
+					continue;
+				} else {
+					System.out.println("비밀번호가 3번 틀렸습니다...수정을 취소합니다.");
+					updateRun = false;
+					break;
+				}
+
+			} // if vo == null; Password is wrong
 			break;
 		} // while
-		System.out.println("[현재 정보가 출력되었습니다]");
-		System.out.println(vo.toString());
 
-		String name = null,  regionCode = null, storeMobile = null, storeAddr = null, pwd_check,
-				birthDate = null, email = null;
-		int regionCodeNum;
-		int cnt = 0;
+		while (updateRun) {
+			System.out.println("[현재 정보가 출력되었습니다]");
+			System.out.println(vo.toString());
 
-		while (true) {
-			System.out.print("패스워드(enter 수정안함)>>");
-			pwd = sc.nextLine().trim();
-			if (pwd.length() != 0) {
-				// 패턴체크
-				if (!this.pwdCheck(pwd)) {
-					System.out.println("부적합한 비밀번호 형식 입니다. 영문자,특수문자,숫자조합(10~20자리)");
-					continue;
-				}
-				System.out.print("패스워드 확인>>");
-				pwd_check = sc.nextLine().trim();
-				if (!pwd.equals(pwd_check)) {
-					System.out.println("입력하신 패스워드 2개가 다릅니다.");
-					continue;
-				}
-				cnt++;// 수정:패스워드가 오류가 없는경우
-			} else
-				pwd = null;
-			break;
-		}
+			String name = null, regionCode = null, storeMobile = null, storeAddr = null, pwd_check, birthDate = null,
+					email = null;
+			int regionCodeNum;
+			int cnt = 0;
 
-		System.out.print("이름 >>");
-		name = sc.nextLine().trim();
-		// 공백의 경우 다시 입력
-		if (name.length() == 0) {
-			name = null;
-		} else
-			cnt++;
-
-
-		while (true) {
-			try {
-				System.out
-						.println("[1. 서울특별시 | 2. 인천광역시 | 3. 부산광역시 | 4. 울산광역시 | 5. 대전광역시 | 6. 광주광역시 7. 대구광역시 | 8. 경기도]");
-				System.out
-						.println("[9. 강원도 | 10. 충청남도 | 11. 충청북도 | 12. 경상북도 | 13. 경상남도 | 14. 전라북도 | 15. 전라남도 | 16. 제주]");
-				System.out.print("가개 지역코드 >>");
-				regionCode = sc.nextLine().trim();
-				regionCodeNum = Integer.parseInt(regionCode); // enter causes error.
-			} catch (NumberFormatException e) {
-				regionCodeNum = 0;
+			while (true) {
+				System.out.print("패스워드(enter 수정안함)>>");
+				pwd = sc.nextLine().trim();
+				if (pwd.length() != 0) {
+					// 패턴체크
+					if (!this.pwdCheck(pwd)) {
+						System.out.println("부적합한 비밀번호 형식 입니다. 영문자,특수문자,숫자조합(10~20자리)");
+						continue;
+					}
+					System.out.print("패스워드 확인>>");
+					pwd_check = sc.nextLine().trim();
+					if (!pwd.equals(pwd_check)) {
+						System.out.println("입력하신 패스워드 2개가 다릅니다.");
+						continue;
+					}
+					cnt++;// 수정:패스워드가 오류가 없는경우
+				} else
+					pwd = null;
 				break;
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("지역번호 입력 오유, 다시 입력하세요....");
-				continue;
 			}
 
+			System.out.print("이름 >>");
+			name = sc.nextLine().trim();
 			// 공백의 경우 다시 입력
-			if (regionCode.length() == 0) {
-				regionCodeNum = 0;
+			if (name.length() == 0) {
+				name = null;
 			} else
 				cnt++;
-			break;
-		}
 
-		while (true) {
-			// 전화번호 입력
-			System.out.print("가개 전화번호>>");
-			storeMobile = sc.nextLine().trim();
-			if (storeMobile.length() != 0) {
-				// 1. 패턴체크
-				if (!mobileCheck(storeMobile)) {
-					System.out.println("전화번호 형식이 틀립니다.xxx-xxxx-xxxx");
+			while (true) {
+				try {
+					System.out.println(
+							"[1. 서울특별시 | 2. 인천광역시 | 3. 부산광역시 | 4. 울산광역시 | 5. 대전광역시 | 6. 광주광역시 7. 대구광역시 | 8. 경기도]");
+					System.out.println(
+							"[9. 강원도 | 10. 충청남도 | 11. 충청북도 | 12. 경상북도 | 13. 경상남도 | 14. 전라북도 | 15. 전라남도 | 16. 제주]");
+					System.out.print("가개 지역코드 >>");
+					regionCode = sc.nextLine().trim();
+					regionCodeNum = Integer.parseInt(regionCode); // enter causes error.
+				} catch (NumberFormatException e) {
+					regionCodeNum = 0;
+					break;
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("지역번호 입력 오유, 다시 입력하세요....");
 					continue;
 				}
+
+				// 공백의 경우 다시 입력
+				if (regionCode.length() == 0) {
+					regionCodeNum = 0;
+				} else
+					cnt++;
+				break;
+			}
+
+			while (true) {
+				// 전화번호 입력
+				System.out.print("가개 전화번호>>");
+				storeMobile = sc.nextLine().trim();
+				if (storeMobile.length() != 0) {
+					// 1. 패턴체크
+					if (!mobileCheck(storeMobile)) {
+						System.out.println("전화번호 형식이 틀립니다.xxx-xxxx-xxxx");
+						continue;
+					}
+					cnt++;
+					// 패턴 틀린경우 다시 입력
+				} else
+					storeMobile = null;
+				break;
+			}
+			// 주소는 그냥 입력 공백이면 null
+			System.out.print("주소>>");
+			storeAddr = sc.nextLine().trim();
+			if (storeAddr.length() == 0)
+				storeAddr = null;
+			else
 				cnt++;
-				// 패턴 틀린경우 다시 입력
-			} else
-				storeMobile = null;
-			break;
-		}
-		// 주소는 그냥 입력 공백이면 null
-		System.out.print("주소>>");
-		storeAddr = sc.nextLine().trim();
-		if (storeAddr.length() == 0)
-			storeAddr = null;
-		else
-			cnt++;
 
-		// 생년월일은 그냥 입력 공백이면 null
+			// 생년월일은 그냥 입력 공백이면 null
 
-		if (cnt != 0) {// update 진행
-			if (dao.updateSeller(sellerID, pwd, name,  email, storeMobile, storeAddr, regionCodeNum) == 1)//storeName,
-				return true;
+			if (cnt != 0) {// update 진행
+				if (dao.updateSeller(sellerID, pwd, name, email, storeMobile, storeAddr, regionCodeNum) == 1)// storeName,
+					return true;
+			}
 		}
 		return false;
 	}// update
-	
-	
-	
-	
-	
+
 	public boolean delete(Scanner sc) {
 		// 아이디 비번 입력
 		String id, pwd;
@@ -384,76 +394,113 @@ public class SellerDAOUtil {
 		else
 			return false;
 	}// delete
-	
-	
-	
+
 	public boolean viewStoreOrder(String storeName) {
 		boolean result = false;
 		ArrayList<OrderVO> list = null;
 		list = dao.viewOrders(storeName);
-		if(list!=null) {
-			for(OrderVO v: list) {
+		if (list != null) {
+			for (OrderVO v : list) {
 				System.out.println(v.toString());
-			}	
+			}
 			result = true;
 		}
-		
+
 		return result;
 	}
-	
-	
-	
-	
+
 	public boolean viewCustomerList(String storeName) {
 		boolean result = false;
 		ArrayList<CustomerVO> list = null;
 		list = dao.viewCustomers(storeName);
-		if(list!=null) {
-			for(CustomerVO v: list) {
+		if (list != null) {
+			for (CustomerVO v : list) {
 				System.out.println(v.toString());
-			}	
+			}
 			result = true;
 		}
-		
+
 		return result;
-	} 
-	
+	}
+
 	public boolean viewStoreProduct(String storeName) {
 		boolean result = false;
 		ArrayList<ProductVO> list = null;
 		list = dao.viewProducts(storeName);
-		if(list!=null) {
-			for(ProductVO v: list) {
+		if (list != null) {
+			for (ProductVO v : list) {
 				System.out.println(v.toString());
-			}	
+			}
 			result = true;
 		}
-		
+
 		return result;
-	} 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}
+
+	public boolean createProduct(Scanner sc, String storeName) {
+		boolean result = false;
+		int runMethod;
+		String category, prodName, description, registerDate;
+		int price, inventory, rating;
+
+		// 하나씩 입력받기
+		// prodNum은 prod_seq로 증가
+		while (true) {
+			System.out.print("상품 종류>>");
+			category = sc.nextLine().trim();
+			break;
+		}
+		// storeName, received from this method
+
+		while (true) {
+			System.out.print("상품 이름>>");
+			prodName = sc.nextLine().trim();
+			break;
+		}
+		// price
+		while (true) {
+			System.out.print("상품 가격>>");
+			try {
+				price = sc.nextInt();
+				sc.nextLine();
+			} catch (Exception e) {
+				System.out.println("가격 입력 오류... 다시 입력하세요.");
+				sc.nextLine();
+				continue;
+			}
+			break;
+
+		}
+
+		while (true) {
+			System.out.print("상품 갯수>>");
+			try {
+				inventory = sc.nextInt();
+				sc.nextLine();
+			} catch (Exception e) {
+				System.out.println("갯수 입력 오류... 다시 입력하세요.");
+				sc.nextLine();
+				continue;
+			}
+			break;
+		}
+		while (true) {
+			System.out.print("상품 설명 (간단하게)>>");
+			description = sc.nextLine().trim();
+			break;
+		}
+
+		// 입력 다 받은 후 DAO에서 메소드 부르기
+
+		runMethod = dao.registerProduct(category, storeName, prodName, price, inventory, description);
+
+		if (runMethod == 1) {
+			result = true;
+		} else
+			result = false;
+
+		return result;
+
+	}
 
 }// SellerDAOUtil

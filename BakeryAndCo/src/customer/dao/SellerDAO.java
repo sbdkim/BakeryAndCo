@@ -136,7 +136,7 @@ public class SellerDAO {
 			pstmt.setString(1, pwdEncrypt(password));
 			pstmt.setString(2, sellerID);
 			pstmt.setString(3, mobile);
-			pstmt.setString(4,  birthDate);
+			pstmt.setString(4, birthDate);
 			pstmt.setString(5, storeName);
 
 			result = pstmt.executeUpdate();
@@ -196,7 +196,7 @@ public class SellerDAO {
 		Connection conn = this.getConnection();
 		String sql = null;
 		sql = "insert into productTBL(prodNum, category, storeName, prodName, price, inventory, description, registerDate) "
-				+ "values (prod_seq, ?, ?,?,?,?,?, sysdate)";
+				+ "values (prod_seq.nextval, ?, ?,?,?,?,?, sysdate)";
 
 		PreparedStatement pstmt = null;
 		try {
@@ -230,13 +230,12 @@ public class SellerDAO {
 		try {
 			pstmt = conn.prepareStatement(sql);
 			// ? 채우기 x
-			pstmt.setString(1,  storeName);
+			pstmt.setString(1, storeName);
 			// 쿼리문 전송 결과 받기
 			rs = pstmt.executeQuery();
 			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
 				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
 				do {
-					System.out.println(rs.getInt("prodNum"));
 					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
 							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
 							rs.getString("description"), rs.getDate("registerDate"), rs.getInt("rating"));
@@ -456,14 +455,14 @@ public class SellerDAO {
 				} while (rs.next());
 			}
 		} catch (SQLException e) {
-		//	e.printStackTrace();
+			// e.printStackTrace();
 		} finally {
 			this.close(rs, pstmt, conn);
 		}
 		return list;
 
 	}
-	
+
 	public boolean selectSeller(String sellerID) {
 		boolean result = false;
 		Connection conn = this.getConnection();
@@ -487,13 +486,13 @@ public class SellerDAO {
 		return result;
 	}
 
-	public int updateSeller(String sellerID, String pwd, String name,  String email, String storeMobile, String storeAddr, int regionCode) {//String storeName,
+	public int updateSeller(String sellerID, String pwd, String name, String email, String storeMobile,
+			String storeAddr, int regionCode) {// String storeName,
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		StringBuilder sql = new StringBuilder("update sellerTBL set ");
-				
-		
+
 		int cnt = 0;// 수정 필드(열) 개수
 		if (pwd != null) {
 			sql.append("pwd=?,");
@@ -513,9 +512,7 @@ public class SellerDAO {
 		if (regionCode != 0) {
 			sql.append("regionCode=?,");
 		}
-		
-		
-		
+
 		// 마지막 , 없애고
 		sql = sql.delete(sql.length() - 1, sql.length());
 		// where 이하 붙이기
@@ -539,7 +536,7 @@ public class SellerDAO {
 				cnt++;
 				pstmt.setString(cnt, storeMobile);
 			}
-			
+
 			if (storeAddr != null) {
 				cnt++;
 				pstmt.setString(cnt, storeAddr);
@@ -556,62 +553,38 @@ public class SellerDAO {
 		}
 		this.close(pstmt, conn);
 
-		
-		
-		
-		
-		
-		
-		
-
 		return result;
 	}// updateCustomer
-	
-	
-	
-	public ArrayList<CustomerVO> viewCustomers(String storeName){
-		ArrayList<CustomerVO> list=null;
-		Connection conn=this.getConnection();
-		PreparedStatement pstmt=null;	
-		ResultSet rs=null;
-		String sql="select distinct c.userID, name,  birthDate, mobile , email, addr, enrollDate from customertbl c join ordertbl o on c.userID=o.userID where o.storeName = ? order by c.userID";
-		CustomerVO vo=null;
-		//3. PreparedStatement 객체생성
+
+	public ArrayList<CustomerVO> viewCustomers(String storeName) {
+		ArrayList<CustomerVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select distinct c.userID, name,  birthDate, mobile , email, addr, enrollDate from customertbl c join ordertbl o on c.userID=o.userID where o.storeName = ? order by c.userID";
+		CustomerVO vo = null;
+		// 3. PreparedStatement 객체생성
 		try {
-			pstmt=conn.prepareStatement(sql);
-			//? 채우기 x
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기 x
 			pstmt.setString(1, storeName);
 			// 쿼리문 전송 결과 받기
-			rs=pstmt.executeQuery();
-			if(rs.next()) {//읽은튜플이 하나이상 있는가?
-				list=new ArrayList<CustomerVO>();//ArrayList 객체 생성
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
+				list = new ArrayList<CustomerVO>();// ArrayList 객체 생성
 				do {
-					vo=new CustomerVO(rs.getString("userID"),
-							rs.getString("name"),  rs.getString("birthDate"),
-							rs.getString("mobile"),rs.getString("email"),
-							rs.getString("addr"),1,rs.getTimestamp("enrolldate"));
-					list.add(vo);//ArrayList에 vo 객체 담기
-				}while(rs.next());
+					vo = new CustomerVO(rs.getString("userID"), rs.getString("name"), rs.getString("birthDate"),
+							rs.getString("mobile"), rs.getString("email"), rs.getString("addr"), 1,
+							rs.getTimestamp("enrolldate"));
+					list.add(vo);// ArrayList에 vo 객체 담기
+				} while (rs.next());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			this.close(rs, pstmt, conn);
 		}
 		return list;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 }// sellerDAO

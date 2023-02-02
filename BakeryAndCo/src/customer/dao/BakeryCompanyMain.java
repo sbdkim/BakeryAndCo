@@ -279,7 +279,7 @@ public class BakeryCompanyMain {
 							isJoin = false;
 						}
 					} else if (subMenu == 2) {
-						
+
 						if (id == null) {// 로그인 진행
 							HashMap<String, String> map = util2.login(sc);
 							if (map != null) {
@@ -288,7 +288,7 @@ public class BakeryCompanyMain {
 								name = map.get("name");
 								storeName = map.get("storeName");
 								System.out.println("[" + name + "님 로그인 성공]");
-								
+
 								// 판매자 로그인 상태
 								int sellerMenu;
 								boolean sellerRun = true;
@@ -322,9 +322,9 @@ public class BakeryCompanyMain {
 									}
 
 									if (sellerMenu == 1) {
-								
-										System.out.println("["+ storeName +"의 주문목록]");
-										
+
+										System.out.println("[" + storeName + "의 주문목록]");
+
 										if (util2.viewStoreOrder(storeName)) {
 											System.out.println("[모든 주문목록 조회 완료]");
 											System.out.println();
@@ -332,8 +332,8 @@ public class BakeryCompanyMain {
 											System.out.println("[주문목록 조회 실패]");
 											System.out.println();
 										}
-									} else if (sellerMenu == 2) { //고객목록
-										System.out.println("["+ storeName +"의 고객목록]");
+									} else if (sellerMenu == 2) { // 고객목록
+										System.out.println("[" + storeName + "의 고객목록]");
 										if (util2.viewCustomerList(storeName)) {
 											System.out.println(" 모든 고객 조회 완료]");
 											System.out.println();
@@ -341,18 +341,60 @@ public class BakeryCompanyMain {
 											System.out.println("[모든 고객 조회 실패]");
 											System.out.println();
 										}
-									} else if (sellerMenu == 3) { // 제품 목록 (제품 등록, 수정)***********************************
-										System.out.println("["+ storeName +"의 제품목록]");
-										if (util2.viewStoreProduct(storeName)) {
-											System.out.println("[제품목록 조회 완료]");
+									} else if (sellerMenu == 3) { // 제품 목록 (제품 등록,
+																	// 수정)***********************************
+										System.out.println("[" + storeName + "의 제품목록]");
+
+										// 제품등록/ 제품 수정 메뉴
+										int productMenu;
+										boolean productRun = true;
+										while (productRun) {
+											if (util2.viewStoreProduct(storeName)) {
+												System.out.println("[제품목록 조회 완료]");
+											} else {
+												System.out.println("[제품목록 조회 실패]");
+											}
 											System.out.println();
-										} else {
-											System.out.println("[제품목록 조회 실패]");
-											System.out.println();
-										}
-										
-										
-										
+											System.out.println("───────────────────────────────────");
+											System.out.println("[제품목록 메뉴]");
+											System.out.println("[1] 제품등록");
+											System.out.println("[2] 제품수정");
+											System.out.println("[3] 취소, 판매자 메뉴로 돌아가기");
+											System.out.println("───────────────────────────────────");
+											try {
+												System.out.print("[메뉴번호를 선택하세요]: ");
+												productMenu = sc.nextInt();
+												sc.nextLine();
+											} catch (Exception e) {
+												System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+												// e.printStackTrace();
+												sc.nextLine();
+												continue;
+											}
+
+											if (productMenu > 4 || sellerMenu < 1) {
+												System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+												// e.printStackTrace();
+												sc.nextLine();
+												continue;
+											}
+
+											if (productMenu == 1) {// 제품등록
+												if (util2.createProduct(sc, storeName)) {
+													System.out.println("[제품등록 완료!]");
+												} else {
+													System.out.println("[제품 등록 실패]");
+												}
+											} else if (productMenu == 2) {// 제품수정하기
+
+											} else {
+												System.out.println("판매자 메뉴로 다시 돌아갑니다...");
+												productRun = false;
+												break;
+
+											}
+
+										} // productRun
 
 									} else if (sellerMenu == 4) {// 회원정보 수정 (완료)
 
@@ -360,7 +402,7 @@ public class BakeryCompanyMain {
 											System.out.println("[회원정보 수정 완료]");
 											System.out.println();
 										} else {
-											System.out.println("[회원정보 실패]");
+											System.out.println("[회원정보 수정 실패]");
 											System.out.println();
 										}
 									} else if (sellerMenu == 5) {// 회원탈퇴
