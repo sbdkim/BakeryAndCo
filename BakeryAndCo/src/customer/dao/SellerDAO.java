@@ -236,6 +236,7 @@ public class SellerDAO {
 			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
 				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
 				do {
+					System.out.println(rs.getInt("prodNum"));
 					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
 							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
 							rs.getString("description"), rs.getDate("registerDate"), rs.getInt("rating"));
@@ -486,11 +487,13 @@ public class SellerDAO {
 		return result;
 	}
 
-	public int updateSeller(String sellerID, String pwd, String name, String storeName, String email, String storeMobile, String storeAddr, int regionCode) {
+	public int updateSeller(String sellerID, String pwd, String name,  String email, String storeMobile, String storeAddr, int regionCode) {//String storeName,
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		StringBuilder sql = new StringBuilder("update sellerTBL set ");
+				
+		
 		int cnt = 0;// 수정 필드(열) 개수
 		if (pwd != null) {
 			sql.append("pwd=?,");
@@ -498,9 +501,6 @@ public class SellerDAO {
 		if (name != null) {
 			sql.append("name=?,");
 		}
-		if (storeName != null) {
-			sql.append("storeName=?,");
-		} 		
 		if (email != null) {
 			sql.append("email=?,");
 		} // email
@@ -531,10 +531,6 @@ public class SellerDAO {
 				cnt++;
 				pstmt.setString(cnt, name);
 			}
-			if (storeName != null) {
-				cnt++;
-				pstmt.setString(cnt, storeName);
-			}
 			if (email != null) {
 				cnt++;
 				pstmt.setString(cnt, email);
@@ -559,6 +555,14 @@ public class SellerDAO {
 			e.printStackTrace();
 		}
 		this.close(pstmt, conn);
+
+		
+		
+		
+		
+		
+		
+		
 
 		return result;
 	}// updateCustomer

@@ -364,7 +364,7 @@ public class SellerDAOUtil {
 		// 생년월일은 그냥 입력 공백이면 null
 
 		if (cnt != 0) {// update 진행
-			if (dao.updateSeller(sellerID, pwd, name, storeName, email, storeMobile, storeAddr, regionCodeNum) == 1)
+			if (dao.updateSeller(sellerID, pwd, name,  email, storeMobile, storeAddr, regionCodeNum) == 1)//storeName,
 				return true;
 		}
 		return false;
