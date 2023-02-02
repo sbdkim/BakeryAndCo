@@ -59,11 +59,10 @@ public class CustomerDAOUtil {
 				id=sc.nextLine().trim();
 				System.out.print("패스워드>>");
 				password=sc.nextLine().trim();		
-				//MemberVO vo=dao.selectMember(id, password);
-				//회원조회 하고 있으면 삭제 수행
-				//if(vo==null)return false;
-				//삭제 수행
-				if(dao.CustomerDelete(id, password)==1)return true;
+				if(dao.CustomerDelete(id, password)==1) {
+					System.out.println(id+ " 삭제가 완료되었습니다");
+					return true;
+					}
 				else return false;
 			}
 			
@@ -116,7 +115,7 @@ public class CustomerDAOUtil {
 	//-------------------------------------------------------
 			public boolean update(Scanner sc) {
 				// 아이디/패스워드 입력 받아서 조회
-				//userID,pwd,name,gender,birthDate,email,mobile,addr,enrolldate
+				//userID,pwd,name,birthDate,email,mobile,addr,enrolldate
 				String userID,password;
 				CustomerVO vo=null;
 				//아이디 패스워드 입력 받기
@@ -140,7 +139,7 @@ public class CustomerDAOUtil {
 				// 공백이 아니면 패턴체크 
 				// 비번 입력 첫번째 enter 비빌번호 변경 안하겠다 
 				String name=null,mobile=null,addr=null,pwd_check
-				,gender=null,birthDate=null,email=null;
+				,birthDate=null,email=null;
 				int cnt=0;
 
 				while(true) {
@@ -195,7 +194,7 @@ public class CustomerDAOUtil {
 				
 				
 				if(cnt!=0) {//update 진행
-					if(dao.updateCustomer(userID, password, name, gender, email, mobile, addr)==1)
+					if(dao.updateCustomer(userID, password, name, email, mobile, addr)==1)
 						return true;
 				}
 				return false;
@@ -204,7 +203,7 @@ public class CustomerDAOUtil {
 			//회원가입
 			public int createCustomer(Scanner sc) {
 				int result=0;
-				String userID=null, pwd=null,  name=null,  gender=null,  email=null, mobile=null, addr=null;
+				String userID=null, pwd=null,  name=null,   email=null, mobile=null, addr=null;
 				Date birthDate=null;
 				Timestamp enrollDate=null ;
 				String pwdCheck=null;
@@ -279,6 +278,23 @@ public class CustomerDAOUtil {
 			//삽입완료
 			return result;
 			}
+			
+			///회원탈퇴로 active 1--> 0 변경.
+			public boolean unregisterCustomer(Scanner sc) {
+				//아이디 비번 입력
+				String id,password;
+				//아이디 패스워드 입력 받기
+				System.out.print("사용자 ID>>");
+				id=sc.nextLine().trim();
+				System.out.print("패스워드>>");
+				password=sc.nextLine().trim();		
+				if(dao.unregisterCustomer(id, password)==1) {
+					System.out.println(id+ " 님 회원 탈퇴가 완료되었습니다. 이용해주셔서 감사합니다.");
+					return true;
+					}
+				else return false;
+			}
+			
 	
 	
 }//CustomerDAOUtil

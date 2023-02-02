@@ -12,6 +12,7 @@ public class BakerCompanyMain {
 		int menu = 0;
 		CustomerDAO dao = CustomerDAO.getInstance();
 		ProductDAO pdao=ProductDAO.getInstance();
+		OrderDAO ordao=OrderDAO.getInstance();
 		
 		ArrayList<ProductVO> pvo = null;
 		
@@ -65,19 +66,29 @@ public class BakerCompanyMain {
 				System.out.println("1. 파리바게트");
 				System.out.println("2. 뚜레쥬르");
 				System.out.println("------------------");
-				int submenu;
+				System.out.println("3. 회원탈퇴");
+				System.out.println("------------------");
+				int submenu=0;
 				System.out.print("상점 선택 (1,2)>>");
-				submenu = sc.nextInt();
+				submenu = sc.nextInt();sc.nextLine();
 				if(submenu==1) {//파리바게트
 					pvo = pdao.selectProductALL();
 					if(pvo!=null)
 						for(ProductVO v : pvo)
 							System.out.println(v.toString());
-				}
-				else if(submenu==2) {//뚜레쥬르
+				}else if(submenu==2) {
 					
+				}else if(submenu==3) {
+					util.unregisterCustomer(sc);
 				}
+				
+				
 				break;
+				
+				
+				
+				
+				
 				
 				
 			case 3 : 
