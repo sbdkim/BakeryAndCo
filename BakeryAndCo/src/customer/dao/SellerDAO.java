@@ -219,17 +219,18 @@ public class SellerDAO {
 		return result;
 	}
 
-	public ArrayList<ProductVO> viewProducts() {
+	public ArrayList<ProductVO> viewProducts(String storeName) {
 		ArrayList<ProductVO> list = null;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "select prodNum,category,storeName,prodName,price,inventory,description,registerDate,rating from productTBL order by prodNum";
+		String sql = "select prodNum,category,storeName,prodName,price,inventory,description,registerDate,rating from productTBL where storeName = ? order by prodNum";
 		ProductVO vo = null;
 		// 3. PreparedStatement 객체생성
 		try {
 			pstmt = conn.prepareStatement(sql);
 			// ? 채우기 x
+			pstmt.setString(1,  storeName);
 			// 쿼리문 전송 결과 받기
 			rs = pstmt.executeQuery();
 			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
@@ -435,7 +436,7 @@ public class SellerDAO {
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "select * from o_c_view where storeName like ? order by userID";
+		String sql = "select * from ordertbl where storeName = ? order by orderDate";
 		OrderVO vo = null;
 		// 3. PreparedStatement 객체생성
 		try {
@@ -454,7 +455,7 @@ public class SellerDAO {
 				} while (rs.next());
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+		//	e.printStackTrace();
 		} finally {
 			this.close(rs, pstmt, conn);
 		}
@@ -485,8 +486,116 @@ public class SellerDAO {
 		return result;
 	}
 
+	public int updateSeller(String sellerID, String pwd, String name, String storeName, String email, String storeMobile, String storeAddr, int regionCode) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		StringBuilder sql = new StringBuilder("update sellerTBL set ");
+		int cnt = 0;// 수정 필드(열) 개수
+		if (pwd != null) {
+			sql.append("pwd=?,");
+		}
+		if (name != null) {
+			sql.append("name=?,");
+		}
+		if (storeName != null) {
+			sql.append("storeName=?,");
+		} 		
+		if (email != null) {
+			sql.append("email=?,");
+		} // email
+		if (storeMobile != null) {
+			sql.append("storeMobile=?,");
+		}
+		if (storeAddr != null) {
+			sql.append("storeAddr=?,");
+		}
+		if (regionCode != 0) {
+			sql.append("regionCode=?,");
+		}
+		
+		
+		
+		// 마지막 , 없애고
+		sql = sql.delete(sql.length() - 1, sql.length());
+		// where 이하 붙이기
+		sql.append(" where sellerID=?");
+		try {
+			pstmt = conn.prepareStatement(sql.toString());
+			// ?채우기
+			if (pwd != null) {
+				cnt++;
+				pstmt.setString(cnt, this.pwdEncrypt(pwd));
+			}
+			if (name != null) {
+				cnt++;
+				pstmt.setString(cnt, name);
+			}
+			if (storeName != null) {
+				cnt++;
+				pstmt.setString(cnt, storeName);
+			}
+			if (email != null) {
+				cnt++;
+				pstmt.setString(cnt, email);
+			}
+			if (storeMobile != null) {
+				cnt++;
+				pstmt.setString(cnt, storeMobile);
+			}
+			
+			if (storeAddr != null) {
+				cnt++;
+				pstmt.setString(cnt, storeAddr);
+			}
+			if (regionCode != 0) {
+				cnt++;
+				pstmt.setInt(cnt, regionCode);
+			}
+			pstmt.setString(++cnt, sellerID);
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}// updateCustomer
 	
 	
+	
+	public ArrayList<CustomerVO> viewCustomers(String storeName){
+		ArrayList<CustomerVO> list=null;
+		Connection conn=this.getConnection();
+		PreparedStatement pstmt=null;	
+		ResultSet rs=null;
+		String sql="select distinct c.userID, name,  birthDate, mobile , email, addr, enrollDate from customertbl c join ordertbl o on c.userID=o.userID where o.storeName = ? order by c.userID";
+		CustomerVO vo=null;
+		//3. PreparedStatement 객체생성
+		try {
+			pstmt=conn.prepareStatement(sql);
+			//? 채우기 x
+			pstmt.setString(1, storeName);
+			// 쿼리문 전송 결과 받기
+			rs=pstmt.executeQuery();
+			if(rs.next()) {//읽은튜플이 하나이상 있는가?
+				list=new ArrayList<CustomerVO>();//ArrayList 객체 생성
+				do {
+					vo=new CustomerVO(rs.getString("userID"),
+							rs.getString("name"),  rs.getString("birthDate"),
+							rs.getString("mobile"),rs.getString("email"),
+							rs.getString("addr"),1,rs.getTimestamp("enrolldate"));
+					list.add(vo);//ArrayList에 vo 객체 담기
+				}while(rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+	}
 	
 	
 	

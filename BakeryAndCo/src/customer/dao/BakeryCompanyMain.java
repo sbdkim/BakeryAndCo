@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class BakeryCompanyMain {
 
 	public static void main(String[] args) {
-		int menu = 0; 
+		int menu = 0;
 		boolean entireProgram = true;
 		Scanner sc = new Scanner(System.in);
 		CustomerDAOUtil util = new CustomerDAOUtil();
@@ -15,6 +15,7 @@ public class BakeryCompanyMain {
 		String name = null;
 		boolean result;
 		boolean isJoin = false;
+		boolean loginBoolean = true;
 
 		while (entireProgram == true) {
 			if (id == null) {
@@ -47,7 +48,7 @@ public class BakeryCompanyMain {
 			if (menu == 1) {
 
 				int subMenu;// subMenu for 로그인
-				while (true) {
+				while (loginBoolean) {
 					System.out.println("───────────────────────────────────");
 					System.out.println("[로그인]");
 					System.out.println("[1] 소비자 ");
@@ -159,25 +160,19 @@ public class BakeryCompanyMain {
 										} else {
 											System.out.println("[3] 소비자 메뉴로 다시 돌아갑니다");
 											System.out.println();
-											continue;//customerMenu로 돌아가기
+											continue;// customerMenu로 돌아가기
 										}
 
-										
-										
-										
-										
-										
-										
-										
-										
-									} else if (customerMenu == 2) { //주문하기
-										while(true) {
+									} else if (customerMenu == 2) { // 주문하기
+										while (true) {
 											int regionCode;
 											System.out.println("───────────────────────────────────");
 											System.out.println("[주문하기]");
-											//충청남도/충청북도/경상북도/경상남도/전라북도/전라남도/제주
-											System.out.println("[1. 서울특별시 | 2. 인천광역시 | 3. 부산광역시 | 4. 울산광역시 | 5. 대전광역시 | 6. 광주광역시 7. 대구광역시 | 8. 경기도]");
-											System.out.println("[9. 강원도 | 10. 충청남도 | 11. 충청북도 | 12. 경상북도 | 13. 경상남도 | 14. 전라북도 | 15. 전라남도 | 16. 제주]");
+											// 충청남도/충청북도/경상북도/경상남도/전라북도/전라남도/제주
+											System.out.println(
+													"[1. 서울특별시 | 2. 인천광역시 | 3. 부산광역시 | 4. 울산광역시 | 5. 대전광역시 | 6. 광주광역시 7. 대구광역시 | 8. 경기도]");
+											System.out.println(
+													"[9. 강원도 | 10. 충청남도 | 11. 충청북도 | 12. 경상북도 | 13. 경상남도 | 14. 전라북도 | 15. 전라남도 | 16. 제주]");
 											System.out.println("───────────────────────────────────");
 											try {
 												System.out.print("[상점지역을 선택하세요]: ");
@@ -195,100 +190,47 @@ public class BakeryCompanyMain {
 												sc.nextLine();
 												continue;
 											}
-											
+
 											result2 = util.showRegionStore(regionCode);
 											int numberofStores = util.showRegionStoreNumber(regionCode);
 											if (result2) {
 												System.out.println("───────────────────────────────────");
 												System.out.println();
-												while(true) {//상점들어가기
-													int storeSelected; //selected number
-									
+												while (true) {// 상점들어가기
+													int storeSelected; // selected number
+
 													try {
 														System.out.print("들어가실 상점번호를 입력하세요: ");
 														storeSelected = sc.nextInt();
 														sc.nextLine();
-													}catch(Exception e) {
+													} catch (Exception e) {
 														System.out.println("[오류: 입력하신 상점번호에 오류가 있습니다.. 다시 입력하세요]");
 														// e.printStackTrace();
 														sc.nextLine();
 														continue;
 													}
-													
-													if(storeSelected > numberofStores || storeSelected< 0) {
+
+													if (storeSelected > numberofStores || storeSelected < 0) {
 														System.out.println("[오류: 입력하신 상점번호에 오류가 있습니다.. 다시 입력하세요]");
 														// e.printStackTrace();
 														sc.nextLine();
 														continue;
 													}
-													
-													
-													
-													
-													
-													
-													
-												}//상점에들어가기
-												
-												
-												
+
+												} // 상점에들어가기
+
 											} else {
 												System.out.println("[입력하신 지역에 상점이 없습니다...소비자 메뉴로 돌아갑니다]");
 												System.out.println();
 												break;
-											}//입력한 지역에 상점 없음 - 소비자 메뉴 돌아가기
-											
-											
-											
-											
-											
-										} //while regionCode
-										//주문하기
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										//continue;//customerMenu로 돌아가기
+											} // 입력한 지역에 상점 없음 - 소비자 메뉴 돌아가기
+
+										} // while regionCode
+											// 주문하기
+
+										// continue;//customerMenu로 돌아가기
 									} else if (customerMenu == 3) {
-										//회원정보 조회
+										// 회원정보 조회
 										result2 = util.update(id, sc);
 										if (result2) {
 											System.out.println("[회원정보 수정 완료]");
@@ -297,10 +239,10 @@ public class BakeryCompanyMain {
 											System.out.println("[회원정보 실패]");
 											System.out.println();
 										}
-										
+
 										continue;
 									} else if (customerMenu == 4) {
-										//회원탈퇴
+										// 회원탈퇴
 										result2 = util.delete(sc);
 										if (result2) {
 											System.out.println("[회원탈퇴 완료]");
@@ -311,17 +253,21 @@ public class BakeryCompanyMain {
 											System.out.println("[회원탈퇴 실패]");
 											System.out.println();
 										}
-										
-										continue;//customerMenu로 돌아가기
+
+										continue;// customerMenu로 돌아가기
 									} else if (customerMenu == 5) {
 										System.out.println("[로그아웃 완료!]");
-										//로그아웃
+										// 로그아웃
 										id = null;
 										name = null;
 										isJoin = false;
 										break;
 									} else {
-										//프로그렘 종료
+										// 프로그렘 종료
+										System.out.println("[프로그램을 종료하겠습니다...]");
+										loginBoolean = false;
+										entireProgram = false;
+										break;
 									}
 								} // customerMenu while loop
 
@@ -333,37 +279,118 @@ public class BakeryCompanyMain {
 							isJoin = false;
 						}
 					} else if (subMenu == 2) {
+						
 						if (id == null) {// 로그인 진행
 							HashMap<String, String> map = util2.login(sc);
 							if (map != null) {
+								String storeName;
 								id = map.get("id");
 								name = map.get("name");
-
+								storeName = map.get("storeName");
 								System.out.println("[" + name + "님 로그인 성공]");
-
+								
 								// 판매자 로그인 상태
+								int sellerMenu;
+								boolean sellerRun = true;
+								while (sellerRun) {
+									System.out.println("───────────────────────────────────");
+									System.out.println("[판매자 메뉴]");
+									System.out.println("[1] 주문목록");
+									System.out.println("[2] 고객목록");
+									System.out.println("[3] 제품 목록 - 제품 등록/수정");
+									System.out.println("[4] 회원정보 수정");
+									System.out.println("[5] 회원탈퇴");
+									System.out.println("[6] 로그아웃");
+									System.out.println("[7] 프로그램 종료");
+									System.out.println("───────────────────────────────────");
+									try {
+										System.out.print("[메뉴번호를 선택하세요]: ");
+										sellerMenu = sc.nextInt();
+										sc.nextLine();
+									} catch (Exception e) {
+										System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+										// e.printStackTrace();
+										sc.nextLine();
+										continue;
+									}
+
+									if (sellerMenu > 7 || sellerMenu < 1) {
+										System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+										// e.printStackTrace();
+										sc.nextLine();
+										continue;
+									}
+
+									if (sellerMenu == 1) {
 								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
+										System.out.println("["+ storeName +"의 주문목록]");
+										
+										if (util2.viewStoreOrder(storeName)) {
+											System.out.println("[모든 주문목록 조회 완료]");
+											System.out.println();
+										} else {
+											System.out.println("[주문목록 조회 실패]");
+											System.out.println();
+										}
+									} else if (sellerMenu == 2) { //고객목록
+										System.out.println("["+ storeName +"의 고객목록]");
+										if (util2.viewCustomerList(storeName)) {
+											System.out.println(" 모든 고객 조회 완료]");
+											System.out.println();
+										} else {
+											System.out.println("[모든 고객 조회 실패]");
+											System.out.println();
+										}
+									} else if (sellerMenu == 3) { // 제품 목록 (제품 등록, 수정)***********************************
+										System.out.println("["+ storeName +"의 제품목록]");
+										if (util2.viewStoreProduct(storeName)) {
+											System.out.println("[제품목록 조회 완료]");
+											System.out.println();
+										} else {
+											System.out.println("[제품목록 조회 실패]");
+											System.out.println();
+										}
+										
+										
+										
+
+									} else if (sellerMenu == 4) {// 회원정보 수정 (완료)
+
+										if (util2.update(id, sc)) {
+											System.out.println("[회원정보 수정 완료]");
+											System.out.println();
+										} else {
+											System.out.println("[회원정보 실패]");
+											System.out.println();
+										}
+									} else if (sellerMenu == 5) {// 회원탈퇴
+										if (util2.delete(sc)) {
+											System.out.println("[회원탈퇴 완료]");
+											System.out.println();
+											sellerRun = false;
+											break;
+										} else {
+											System.out.println("[회원탈퇴 실패]");
+											System.out.println();
+										}
+
+										continue;// customerMenu로 돌아가기
+									} else if (sellerMenu == 6) {// 로그아웃
+										System.out.println("[로그아웃 완료!]");
+										// 로그아웃
+										id = null;
+										name = null;
+										isJoin = false;
+										break;
+									} else if (sellerMenu == 7) {// 프로그램 종료
+										System.out.println("[프로그램을 종료하겠습니다...]");
+										loginBoolean = false;
+										entireProgram = false;
+										break;
+
+									}
+
+								} // sellerRun while
 
 							} else
 								System.out.println("[로그인 실패]");

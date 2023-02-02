@@ -204,7 +204,7 @@ public class CustomerDAOUtil {
 		// 수정항목이 1개 이상
 		// 공백이 아니면 패턴체크
 		// 비번 입력 첫번째 enter 비빌번호 변경 안하겠다
-		String name = null, mobile = null, addr = null, pwd_check,  birthDate = null, email = null;
+		String name = null, mobile = null, addr = null, pwd_check,  email = null;
 		int cnt = 0;
 
 		while (true) {
