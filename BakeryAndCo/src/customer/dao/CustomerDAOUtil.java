@@ -273,22 +273,25 @@ public class CustomerDAOUtil {
 	
 	
 
-	public boolean delete(Scanner sc) {
+	public boolean delete(Scanner sc, String userID) {
 		// 아이디 비번 입력
-		String id, pwd;
+		boolean result = false;
+		String pwd, confirm;
 		// 아이디 패스워드 입력 받기
-		System.out.print("사용자 ID>>");
-		id = sc.nextLine().trim();
 		System.out.print("패스워드>>");
 		pwd = sc.nextLine().trim();
-		// MemberVO vo=dao.selectMember(id, pwd);
-		// 회원조회 하고 있으면 삭제 수행
-		// if(vo==null)return false;
-		// 삭제 수행
-		if (dao.customerDelete(id, pwd) == 1)
-			return true;
-		else
-			return false;
+
+		System.out.print("탈퇴하시겠습니까(y/n)>>");
+		confirm = sc.nextLine().trim();
+		
+		if(confirm.equals("y") || confirm.equals("Y")) {
+			if (dao.customerDelete(userID, pwd) == 1)
+				result = true;			
+		}else {
+			result = false;
+		}
+		return result;
+		
 	}// delete
 
 	// 회원가입

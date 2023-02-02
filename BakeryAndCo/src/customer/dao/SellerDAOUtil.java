@@ -269,7 +269,7 @@ public class SellerDAOUtil {
 		System.out.println("[현재 정보가 출력되었습니다]");
 		System.out.println(vo.toString());
 
-		String name = null, storeName = null, regionCode = null, storeMobile = null, storeAddr = null, pwd_check,
+		String name = null,  regionCode = null, storeMobile = null, storeAddr = null, pwd_check,
 				birthDate = null, email = null;
 		int regionCodeNum;
 		int cnt = 0;
@@ -303,13 +303,6 @@ public class SellerDAOUtil {
 		} else
 			cnt++;
 
-		System.out.print("가개이름 >>");
-		storeName = sc.nextLine().trim();
-		// 공백의 경우 다시 입력
-		if (storeName.length() == 0) {
-			storeName = null;
-		} else
-			cnt++;
 
 		while (true) {
 			try {

@@ -243,7 +243,7 @@ public class BakeryCompanyMain {
 										continue;
 									} else if (customerMenu == 4) {
 										// 회원탈퇴
-										result2 = util.delete(sc);
+										result2 = util.delete(sc, id);
 										if (result2) {
 											System.out.println("[회원탈퇴 완료]");
 											System.out.println();
