@@ -391,7 +391,7 @@ public class CustomerDAO {
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "select userID, name, birthDate, email, mobile, addr, enrollDate from customerTBL where userID=? and pwd=? and active='1' ";
+		String sql = "select userID, name, birthDate, email, mobile, addr, enrollDate, active from customerTBL where userID=? and pwd=? and active=1 ";
 		// 3. PreparedStatement 객체생성
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -401,9 +401,14 @@ public class CustomerDAO {
 			// 쿼리문 전송 결과 받기
 			rs = pstmt.executeQuery();
 			if (rs.next()) {// 읽은튜플이 있는가?
-				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"), rs.getString("birthDate"),
-						rs.getString("mobile"), rs.getString("email"), rs.getString("addr"), rs.getInt("active"),
-						rs.getTimestamp("enrollDate"));
+//				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"), rs.getString("birthDate"),
+//						rs.getString("mobile"), rs.getString("email"), rs.getString("addr"), rs.getInt("active"),
+//						rs.getTimestamp("enrollDate"));
+				vo = new CustomerVO(rs.getString(1), rs.getString(2), rs.getString(3),
+						rs.getString(5), rs.getString(4), rs.getString(6), rs.getInt(8),
+						rs.getTimestamp(7));
+				
+				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

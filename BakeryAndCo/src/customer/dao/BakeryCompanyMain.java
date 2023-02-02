@@ -77,7 +77,18 @@ public class BakeryCompanyMain {
 						id=null;name=null;isJoin=false;
 					}
 				}else if (subMenu ==2) {
-					
+					if(id==null) {//로그인 진행
+						HashMap<String,String> map=util2.login(sc);
+						if(map!=null) {
+							id=map.get("id");
+							name=map.get("name");
+							
+							System.out.println("[" + name+"님 로그인 성공]");				
+						}
+						else System.out.println("[로그인 실패]");
+					}else {//로그아웃
+						id=null;name=null;isJoin=false;
+					}
 				}else if (subMenu ==0){
 					
 				}else {
