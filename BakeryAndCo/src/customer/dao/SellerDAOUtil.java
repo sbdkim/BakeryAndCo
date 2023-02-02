@@ -137,43 +137,47 @@ import java.util.HashMap;
 		
 		public boolean viewProduct(Scanner sc) {
 		 
-				ProductVO vo=null;
-				dao.viewProducts();
-				if(vo==null)return false;
+			boolean result = false;
+			ArrayList<ProductVO> list = null;
+			list = dao.viewProducts();
+			if(list!=null) {
+				int i = 0;
+				for(ProductVO vo: list) {
+					i++;
+					System.out.println("[" + i + "]" +vo.getProdName()+vo.getScategory()+vo.getPrice()+vo.getInventory()+vo.getRegisterdate() );
+				}	
+				result = true;
+			}
 
-				System.out.println("----- 제품 목록 -----");
-				System.out.println("카테고리 : "+vo.getScategory()+"제품명 : "+vo.getProdName()+"가격 : "+vo.getPrice()+"재고량 : "+vo.getInventory()+"제품 설명 : "+vo.getDescription()+"제품등록일 : "+vo.getRegisterdate()+"별점 : "+vo.getRating());
-				System.out.println("----- 제품 목록 끝 -----");
-				return true;
-				
-				
+			return result;
 		}
-		
 		public boolean pwdUpdate(Scanner sc) {
-			SellerVO vo=null;
-			String id,password,mobile,name,pwdchk;
-			Date birthdate;
+			boolean result = false;
+			SellerVO vo= null;
+			String id,pwd,mob,name,pwdchk;
+		    Date birthdate=null;
+		
 			int cnt=0;
 			
 			while(true) {
 			System.out.print("사용자 ID를 입력하세요");
 			id=sc.nextLine().trim();
 			if(id.length()==0) System.out.print("ID는 필수적으로 입력해야합니다");
-			return false;
+	
 			System.out.print("패스워드를 입력하세요");
-			password=sc.nextLine().trim();	
-			
-			System.out.print("전화번호를 입력하세요");
-			mobile=sc.nextLine().trim();
-			
+			pwd=sc.nextLine().trim();	
 			
 			System.out.print("이름을 입력하세요");
-			mobile=sc.nextLine().trim();
+			name=sc.nextLine().trim();
+			
+			
+			System.out.print("전화번호를 입력하세요");
+			mob=sc.nextLine().trim();
 			
 			System.out.print("생년월일을 입력하세요");
-			mobile=sc.nextLine().trim();
-	
-			vo=dao.passwordReset(id,password, name, mobile, birthdate);
+			birthdate=sc.next();
+			System.out.println(vo.toString());
+			vo=dao.passwordReset(id, pwd, name, mob, birthdate);
 			if(vo==null) {
 				System.out.println("없는 판매자 입니다.");
 				continue;
@@ -184,43 +188,48 @@ import java.util.HashMap;
 			
 			while(true) {
 				System.out.print("패스워드(enter 수정안함)를 입력하세요>>");
-				password=sc.nextLine().trim();	
-				if(password.length()!=0) {
+				pwd=sc.nextLine().trim();	
+				if(pwd.length()!=0) {
 					
-					if(!this.pwdCheck(password)) {
+					if(!this.pwdCheck(pwd)) {
 						System.out.println("부적합한 비밀번호 형식 입니다. 영문자,특수문자,숫자조합(10~20자리)");
 						continue;					
 					}
 					System.out.print("패스워드를 다시 입력하세요>>");
 					pwdchk=sc.nextLine().trim();	
-					if(!password.equals(pwdchk)) {
+					if(!pwd.equals(pwdchk)) {
 						System.out.println("입력하신 패스워드 2개가 다릅니다.");
 						continue;						
 					}	
 					cnt++;//수정:패스워드가 오류가 없는경우
-				}else password=null;
+				}else pwd=null;
 				break;
 			}
-		
-			
-		}
-		
-		public boolean viewOrders(Scanner sc) {
-			
-		     OrderVO vo=null;
-			dao.viewOrders();
-			//없으면 false return		
-			if(vo==null)return false;
-			
-			System.out.println("----- 주문 목록 -----");
-			System.out.println("주문번호 : "+vo.getOrderNo()+"제품번호 : "+vo.getProdNum()+"제품명 : "+vo.getQuantity()+"주문자ID : "+vo.getProdprodName()+"주문수량 : "+vo.getInventory()+"총가격 : "+vo.getcost()+
-					"배송비 : "+vo.getShippingCost()+"리뷰 : "+vo.getReview()+"주문상태 : "+vo.getOrderCompleted+"주문한 날짜 : "+vo.getOrderDate);
-			System.out.println("----- 주문 목록 끝 -----");
 			return true;
 			
-			
-			
 		}
+		
+		
+		
+		
+		public boolean viewOrders(Scanner sc) {
+			String storename=null;
+			boolean result = false;
+			ArrayList<OrderVO> list = null;
+			list = dao.viewOrders(storename);
+			if(list!=null) {
+				int i = 0;
+				for(OrderVO vo: list) {
+					i++;
+					System.out.println("[" + i + "] " +vo.getorderNo()+vo.getuserID()+vo.getProdName()+vo.getquantity());
+				}	
+				result = true;
+			}
+
+			return result;
+		}
+
+	
 		
 		
 		
