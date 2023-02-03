@@ -614,6 +614,9 @@ public class SellerDAOUtil {
 					}
 				} // price
 
+				
+				
+				
 				while (true) {
 					System.out.print("상품 갯수>>");
 					inventoryString = sc.nextLine().trim();
@@ -637,6 +640,10 @@ public class SellerDAOUtil {
 					}
 
 				}
+				
+				
+				
+				
 				while (true) {
 					System.out.print("상품 설명 (간단하게)>>");
 					description = sc.nextLine().trim();

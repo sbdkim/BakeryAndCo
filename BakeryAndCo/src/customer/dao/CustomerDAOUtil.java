@@ -184,10 +184,14 @@ public class CustomerDAOUtil {
 		list = dao.viewCategory(storeName);
 		if(list!=null) {
 			int i = 0;
+			System.out.println("───────────────────────────────────");
 		for(ProductVO vo: list) {     
 			i++;
 			System.out.println("[" + i + "] " +vo.getCategory() ); //출력  
 		}	
+		System.out.println("[0] 장바구니로 이동");
+		System.out.println("[ENTER] 장바구니 비우고 나가기");
+		System.out.println("───────────────────────────────────");
 
 		//System.out.println(list.get(1).get);
 		
@@ -195,6 +199,20 @@ public class CustomerDAOUtil {
 	
 	return list;
 }
+
+	
+	
+ public ArrayList<CartVO> viewCart(){
+	 ArrayList<CartVO> list = null;
+	 list = dao.viewShoppingCart();
+	 if(list!= null) {
+		 for(CartVO v : list) {
+			 System.out.println(v.toString());
+		 }
+	 }
+
+	 return list;
+ }	
 	
 	
 	public ArrayList<ProductVO> viewStoreProduct(String storeName, String category) {
@@ -210,6 +228,14 @@ public class CustomerDAOUtil {
 		}
 
 		return list;
+	}
+	
+	public boolean emptyCart() {
+		boolean result = false;
+		if(result = dao.emptyCart()) result = true;
+		
+		return result;
+		
 	}
 	
 	

@@ -272,6 +272,50 @@ public class CustomerDAO {
 	
 	
 	
+	
+	 public ArrayList<CartVO> viewShoppingCart(){
+		 ArrayList<CartVO> list = null;
+		 Connection conn = this.getConnection();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql = null;
+			sql = "select userID, prodName, price, quantity from cartTBL";
+			try {
+				pstmt = conn.prepareStatement(sql);		
+				
+				rs = pstmt.executeQuery();
+				
+				if (rs.next()) {
+					list = new ArrayList<CartVO>();
+					do {
+									
+					list.add(new CartVO(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
+					
+					} while (rs.next());
+				}
+
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		 return list;
+	 }	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public ArrayList<ProductVO> viewProducts(String storeName ,String category) {
 		ArrayList<ProductVO> list = null;
 		Connection conn = this.getConnection();
@@ -621,6 +665,26 @@ public class CustomerDAO {
 		return result;
 		
 	}//addCart
+
+	public boolean emptyCart() {
+		int run = 0;
+		boolean result =false;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "delete from cartTBL";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			run = pstmt.executeUpdate();
+			if(run ==1) {result = true;}
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
 	
 	

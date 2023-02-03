@@ -14,7 +14,7 @@ public class BakeryCompanyMain {
 		SellerDAOUtil util2 = new SellerDAOUtil();
 		String id = null;
 		String name = null;
-		boolean result;
+		boolean result = false;
 		boolean isJoin = false;
 		boolean loginBoolean = true;
 
@@ -249,10 +249,25 @@ public class BakeryCompanyMain {
 														list2 = util.showCategory(storeName);
 														System.out.print("관심있으신 제품에 케타고리를 입력하시오>>");
 														categorySelectedString = sc.nextLine().trim();
+														
+														if(categorySelectedString.equals("0")) {
+															System.out.println("───────────────────────────────────");
+															System.out.println("[장바구니로 이동하셨습니다]");
+															list4 = util.viewCart(); //prints the cart;
+															//CART에 담은거 모든것 출력!!!!!!!!
+															
+															
+															
 
-														if (categorySelectedString.length() == 0) {
+															
+															
+														}else if (categorySelectedString.length() == 0) {
+															result = util.emptyCart(); 
+															if(result) System.out.println("[장바구니 비우기 완료]");
+															else System.out.println("[장바구니 비우기 완료]");
+															
 															System.out
-																	.println("[입력하신 케타고리가 없습니다.. 다시 가개 매뉴로 돌아갑니다...]");
+																	.println("[ENTER를 입력하셨습니다.. 다시 가개 매뉴로 돌아갑니다...]");
 															break;
 														} else {
 															try {
@@ -261,9 +276,7 @@ public class BakeryCompanyMain {
 																// 제품 출력
 																
 																
-																category = (list2.get(categorySelected - 1).getCategory()); 
-																System.out.println("───────────────────────────────────");
-																System.out.println("[" + category + " 을 선택하셨습니다]");
+																
 																
 																
 																
@@ -274,13 +287,17 @@ public class BakeryCompanyMain {
 																String selectedProduct = null;
 																int selectedProductNum;
 																while(selectProduct) {
+																	category = (list2.get(categorySelected - 1).getCategory()); 
+																	System.out.println("───────────────────────────────────");
+																	System.out.println("[" + category + " 을 선택하셨습니다]");
 																	list3 = util.viewStoreProduct(storeName, category); //PRINTS ALL THE PRODUCTS IN THAT CATEGORY (RETURN ARRAYLIST OF THE PRODUCTS)
 																	System.out.print("장바구니에 담으실 물건에 [번호]를 입력하세요: " );
 																	selectedProduct = sc.nextLine().trim();
 								
 																	
 																	if(selectedProduct.length() == 0) {
-																		System.out.println("[입력하신 물건이 없습니다.. 다시 케타고리로 돌아갑니다...]");
+																		
+																		System.out.println("[상품을 입력 안하셨습니다.. 다시 케타고리로 돌아갑니다...]");
 																		break;
 																	}else {
 																		try {
@@ -318,7 +335,7 @@ public class BakeryCompanyMain {
 																					
 																		}catch(Exception e) {
 																			System.out.println("입력하신 제품 입력 오류... 다시 입력하세요.");
-																			sc.nextLine();
+																			
 																			continue;
 																		}
 																	}
@@ -330,18 +347,12 @@ public class BakeryCompanyMain {
 																}
 																
 																
-																
-																
-																
-																
-																
-																
-																
-																
-																
-
+															
 															} catch (Exception e) {
-																System.out.println("입력하신 케타고리 입력 오류... 다시 입력하세요.");
+																result = util.emptyCart(); 
+																if(result) System.out.println("[장바구니 비우기 완료]");
+																else System.out.println("[장바구니 비우기 완료]");
+																System.out.println("[잘못입력하셨습니다...장바구니를 비우고 가개 매뉴로 돌아갑니다]");
 																sc.nextLine();
 																continue;
 															}
