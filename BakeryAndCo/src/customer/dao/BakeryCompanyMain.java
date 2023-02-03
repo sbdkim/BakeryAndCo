@@ -1,5 +1,6 @@
 package customer.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -109,6 +110,9 @@ public class BakeryCompanyMain {
 									int customerOrderMenu; // 소비자 주문내역 메뉴
 
 									boolean result2 = false;
+									ArrayList<SellerVO> list = null;
+									ArrayList<ProductVO> list2 = null;
+
 									if (customerMenu == 1) {
 
 										System.out.println("───────────────────────────────────");
@@ -164,8 +168,12 @@ public class BakeryCompanyMain {
 										}
 
 									} else if (customerMenu == 2) { // 주문하기
+																	// //**************************************************************************************************주문하기
+																	// 시작
 										while (true) {
 											int regionCode;
+											String sellerID, storeName, category;
+											int active;
 											System.out.println("───────────────────────────────────");
 											System.out.println("[주문하기]");
 											// 충청남도/충청북도/경상북도/경상남도/전라북도/전라남도/제주
@@ -191,9 +199,10 @@ public class BakeryCompanyMain {
 												continue;
 											}
 
-											result2 = util.showRegionStore(regionCode);
+											list = new ArrayList<SellerVO>(); // 지역에 있는 가격 모두 출력
+											list = util.showRegionStore(regionCode);
 											int numberofStores = util.showRegionStoreNumber(regionCode);
-											if (result2) {
+											if (list != null) {
 												System.out.println("───────────────────────────────────");
 												System.out.println();
 												while (true) {// 상점들어가기
@@ -217,6 +226,60 @@ public class BakeryCompanyMain {
 														continue;
 													}
 
+													storeName = (list.get(storeSelected - 1)).getStoreName();
+													// get store name fro the selected menu
+													System.out.println("[" + storeName + "에 오신것을 환영합니다!!]");
+													// ENTER THE STORE DONE!!!!!
+
+													list2 = new ArrayList<ProductVO>(); // 지역에 있는 가격 모두 출력
+													list2 = util.showCategory(storeName);
+													int categorySelected = 0;
+													String categorySelectedString;
+													while (true) {
+
+														System.out.print("관심있으신 제품에 케타고리를 입력하시오>>");
+														categorySelectedString = sc.nextLine().trim();
+
+														if (categorySelectedString.length() == 0) {
+															System.out
+																	.println("[입력하신 케타고리가 없습니다.. 다시 가개 매뉴로 돌아갑니다...]");
+															break;
+														} else {
+															try {
+																categorySelected = Integer
+																		.parseInt(categorySelectedString);
+																// 제품 출력
+																
+																
+																category = (list2.get(categorySelected - 1).getCategory()); 
+																System.out.println("[" + category + " 을 선택하셨습니다]");
+																
+																
+																
+																
+																util.viewStoreProduct(storeName, category);
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+
+															} catch (Exception e) {
+																System.out.println("입력하신 케타고리 입력 오류... 다시 입력하세요.");
+																sc.nextLine();
+																continue;
+															}
+
+														}
+
+													} // 케타고리에들어가기
+
+
 												} // 상점에들어가기
 
 											} else {
@@ -229,6 +292,9 @@ public class BakeryCompanyMain {
 											// 주문하기
 
 										// continue;//customerMenu로 돌아가기
+										// *************************************************************************************************************************************************
+										// 주문하기 끝
+
 									} else if (customerMenu == 3) {
 										// 회원정보 조회
 										result2 = util.update(id, sc);
@@ -341,8 +407,7 @@ public class BakeryCompanyMain {
 											System.out.println("[모든 고객 조회 실패]");
 											System.out.println();
 										}
-									} else if (sellerMenu == 3) { // 제품 목록 (제품 등록,
-																	// 수정)***********************************
+									} else if (sellerMenu == 3) {
 										System.out.println("[" + storeName + "의 제품목록]");
 
 										// 제품등록/ 제품 수정 메뉴
@@ -386,25 +451,15 @@ public class BakeryCompanyMain {
 													System.out.println("[제품 등록 실패]");
 												}
 											} else if (productMenu == 2) {// 제품수정하기
-												//먼저 제품목록 또 보여주기
+												// 먼저 제품목록 또 보여주기
 												util2.viewStoreProduct(storeName);
-																			
-												//여기에서 수정
-												
-												
-												if(util2.editProduct(sc, storeName)) {
+
+												if (util2.editProduct(sc, storeName)) {
 													System.out.println("제품 수정 완료");
-												}else {
+												} else {
 													System.out.println("제품 수정 실팬");
 												}
-												
-												
-												
-												
-												
-												
-												
-												
+
 											} else {
 												System.out.println("판매자 메뉴로 다시 돌아갑니다...");
 												productRun = false;

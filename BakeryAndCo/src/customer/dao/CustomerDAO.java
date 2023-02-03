@@ -222,7 +222,7 @@ public class CustomerDAO {
 				list = new ArrayList<SellerVO>();
 				do {
 					
-				list.add(new SellerVO(rs.getString(1), rs.getString(1), rs.getInt(3), rs.getInt(4)));
+				list.add(new SellerVO(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
 				
 				} while (rs.next());
 			}
@@ -234,6 +234,96 @@ public class CustomerDAO {
 
 		return list;
 	}
+	
+	
+	
+	
+	
+	public ArrayList<ProductVO> viewCategory(String storeName) {
+		ArrayList<ProductVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+
+		sql = "select distinct category from productTBL where storeName = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, storeName);
+			
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				list = new ArrayList<ProductVO>();
+				do {
+								
+				list.add(new ProductVO(rs.getString(1), storeName));
+				
+				} while (rs.next());
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(rs, pstmt, conn);
+
+		return list;
+	}
+	
+	
+	
+	public ArrayList<ProductVO> viewProducts(String storeName ,String category) {
+		ArrayList<ProductVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select prodNum,category,storeName,prodName,price,inventory,description,registerDate,rating from productTBL where storeName = ? AND category = ? order by prodNum";
+		ProductVO vo = null;
+		// 3. PreparedStatement 객체생성
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기 x
+			pstmt.setString(1, storeName);
+			pstmt.setString(2, category);
+			// 쿼리문 전송 결과 받기
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
+				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
+				do {
+					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
+							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
+							rs.getString("description"), rs.getDate("registerDate"), rs.getInt("rating"));
+					list.add(vo);// ArrayList에 vo 객체 담기
+				} while (rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 	

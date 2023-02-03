@@ -12,6 +12,22 @@ public class ProductVO {
 		super();
 	}
 
+	public ProductVO(String category, String storeName) {
+		super();
+		this.category = category;
+		this.storeName = storeName;
+	}
+	
+	
+	public ProductVO(int prodNum, String category, String storeName, String prodName) {
+		super();
+		this.prodNum = prodNum;
+		this.category = category;
+		this.storeName = storeName;
+		this.prodName = prodName;
+	}
+	
+	
 	public ProductVO(int prodNum, String category, String storeName, String prodName, int price, int inventory,
 			String description, Date registerdate, int rating) {
 		super();
@@ -25,6 +41,11 @@ public class ProductVO {
 		this.category = category;
 		this.registerdate = registerdate;
 	}
+	
+	
+	
+	
+	
 
 	public int getProNum() {
 		return prodNum;
