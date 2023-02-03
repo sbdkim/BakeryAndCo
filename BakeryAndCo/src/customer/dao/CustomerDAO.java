@@ -84,6 +84,61 @@ public class CustomerDAO {
 		return encrypted;
 	}
 
+	
+//  전체 매인 메뉴 [1]로그인 - [1] 소비자
+	public CustomerVO selectCustomer(String userID, String pwd) {
+		CustomerVO vo = null;
+
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select userID, name, birthDate, email, mobile, addr, enrollDate, active from customerTBL where userID=? and pwd=? and active=1 ";
+		// 3. PreparedStatement 객체생성
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기
+			pstmt.setString(1, userID);
+			pstmt.setString(2, pwdEncrypt(pwd));
+			// 쿼리문 전송 결과 받기
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				vo = new CustomerVO(rs.getString(1), rs.getString(2), rs.getString(3),
+						rs.getString(5), rs.getString(4), rs.getString(6), rs.getInt(8),
+						rs.getTimestamp(7));
+				
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
+		}
+		return vo;
+	}
+//  전체 매인 메뉴 [1]로그인 - [1] 소비자 - 비밀번호 제설정
+	public int resetPassword(String userID, String password, String mobile, String birthDate) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update customerTBL set pwd = ? where userID = ? AND mobile = ? AND birthDate = ?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, pwdEncrypt(password));
+			pstmt.setString(2, userID);
+			pstmt.setString(3, mobile);
+			pstmt.setString(4, birthDate);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}// resetPassword
+	
+	// 전체 매인 메뉴 [2]회원가입 - [1] 소비자
 	public int createCustomer(String userID, String pwd, String name, String birthDate, String mobile, String email,
 			String addr, int active) {
 		int result = 0;
@@ -122,29 +177,70 @@ public class CustomerDAO {
 		return result;
 	} // createCustomer
 
-	// password reset - userID, mobile, birthDate를 받아서 password를 reset
-	public int resetPassword(String userID, String password, String mobile, String birthDate) {
-		int result = 0;
+	// 전체 매인 메뉴 [2]회원가입 - [1] 소비자 - 회원가입할때 입력한 아이디가 존제하닌지 확인
+	public boolean selectCustomer(String userID) {
+		boolean result = false;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
-		String sql = "update customerTBL set pwd = ? where userID = ? AND mobile = ? AND birthDate = ?";
+		ResultSet rs = null;
+		String sql = "select userID from customerTBL where userID=? ";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기
+			pstmt.setString(1, userID);
+			// 쿼리문 전송 결과 받기
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 있는가?
+				result = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
+		}
+		return result;
+	}
+	
+	
+	
+	
+	//CUSTOMER MENU 1 - [1] 주문내역 - [1] 완료된 주문 목록
+	public ArrayList<OrderVO> viewCompletedOrder(String userID) {
+		ArrayList<OrderVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		OrderVO vo = null;
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '1' order by  orderNo desc";
 
 		try {
 			pstmt = conn.prepareStatement(sql);
 			// ?채우기
-			pstmt.setString(1, pwdEncrypt(password));
-			pstmt.setString(2, userID);
-			pstmt.setString(3, mobile);
-			pstmt.setString(4, birthDate);
-			result = pstmt.executeUpdate();
+			pstmt.setString(1, userID);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				list = new ArrayList<OrderVO>();
+
+				//// int orderNo, int prodNum, String prodName, String storeName, String userID,
+				//// int quantity,
+				// int cost, String shippingcost, String review, boolean orderCompleted, Date
+				//// orderdate
+				do {
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
+							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
+							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
+							rs.getDate("orderDate"));
+					list.add(vo);
+				} while (rs.next());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		this.close(pstmt, conn);
 
-		return result;
-	}// resetPassword
-
+		return list;
+	}// viewCompletedOrder
+	
 	public int writeReview(String orderNo, String review) {
 		int result = 0;
 		Connection conn = this.getConnection();
@@ -166,15 +262,200 @@ public class CustomerDAO {
 		return result;
 	}// writeReview
 	
-	
+	//CUSTOMER MENU 1 - [1] 주문내역 - [2] 진행중인 주문 목록
+	public ArrayList<OrderVO> viewOrderProcessing(String userID) {
+		ArrayList<OrderVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		OrderVO vo = null;
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '0' order by  orderNo desc";
 
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ?채우기
+			pstmt.setString(1, userID);
+			rs=pstmt.executeQuery();
+			if (rs.next()) {
+				list = new ArrayList<OrderVO>();
+
+				//// int orderNo, int prodNum, String prodName, String storeName, String userID,
+				//// int quantity,
+				// int cost, String shippingcost, String review, boolean orderCompleted, Date
+				//// orderdate
+				do {
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
+							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
+							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
+							rs.getDate("orderDate"));
+					list.add(vo);
+				} while (rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return list;
+	}// viewCurrentOrder
+
+	//CUSTOMER MENU 2 - [2] 주문하기 -  지역에 있는 가게 출력
+	public ArrayList<SellerVO> viewRegionStore(int regionCode) {
+		ArrayList<SellerVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+
+		sql = "select sellerID, storeName, regionCode, active from sellerTBL where regionCode = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, regionCode);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				list = new ArrayList<SellerVO>();
+				do {
+					
+				list.add(new SellerVO(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
+				
+				} while (rs.next());
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(rs, pstmt, conn);
+
+		return list;
+	}
+	//CUSTOMER MENU 2 - [2] 주문하기 -  들어온 가게의 모든 케타고리 출력
+	public ArrayList<ProductVO> viewCategory(String storeName) {
+		ArrayList<ProductVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+
+		sql = "select distinct category from productTBL where storeName = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, storeName);
+			
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				list = new ArrayList<ProductVO>();
+				do {
+								
+				list.add(new ProductVO(rs.getString(1), storeName));
+				
+				} while (rs.next());
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(rs, pstmt, conn);
+
+		return list;
+	}
+	
+	
+	// CUSTOMER MENU 2 - [2] 주문하기 -  들어온 가게의 케타고리 안에 있슨 모든 물건 
+	public ArrayList<ProductVO> viewProducts(String storeName ,String category) {
+		ArrayList<ProductVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select prodNum,category,storeName,prodName,price,inventory,description,registerDate,rating from productTBL where storeName = ? AND category = ? order by prodNum";
+		ProductVO vo = null;
+		// 3. PreparedStatement 객체생성
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기 x
+			pstmt.setString(1, storeName);
+			pstmt.setString(2, category);
+			// 쿼리문 전송 결과 받기
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
+				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
+				do {
+					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
+							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
+							rs.getString("description"), rs.getDate("registerDate"), rs.getInt("rating"));
+					list.add(vo);// ArrayList에 vo 객체 담기
+				} while (rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+	}
+	
+	
+	// CUSTOMER MENU 2 - [2] 주문하기 -  장바구니에 담기
+	public int addCart(String userID, int prodNum, String prodName, int price, int quantity) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "insert into CartTBL (userID, prodNum, prodName, price, quantity) values (?,?,?,?,?) ";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userID);
+			pstmt.setInt(2, prodNum);
+			pstmt.setString(3, prodName);
+			pstmt.setInt(4, price);
+			pstmt.setInt(5, quantity);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+		
+	}//addCart
+		
+	
+	
+	// CUSTOMER MENU 2 - [2] 주문하기 -  장바구니에 보기
+	 public ArrayList<CartVO> viewShoppingCart(){
+		 ArrayList<CartVO> list = null;
+		 Connection conn = this.getConnection();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql = null;
+			sql = "select userID, prodNum, prodName, price, quantity from cartTBL";
+			try {
+				pstmt = conn.prepareStatement(sql);		
+				
+				rs = pstmt.executeQuery();
+				
+				if (rs.next()) {
+					list = new ArrayList<CartVO>();
+					do {
+									
+					list.add(new CartVO(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getInt(4), rs.getInt(5)));
+					
+					} while (rs.next());
+				}
+
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		 return list;
+	 }	
 	
 	
 	
 	
-	
-	
-	//insert into orderTBL
+// CUSTOMER MENU 2 - [2] 주문하기 -  장바구니에 있는것들을 주문 테이블에 담기
 	public boolean checkout(String storeName, String userID, ArrayList<CartVO> list) {
 		boolean result = false;
 		String prodName, review;
@@ -221,8 +502,28 @@ public class CustomerDAO {
 		return result;
 	}
 	
+// CUSTOMER MENU 2 - [2] 주문하기 - 장바구니 비우기
+	public boolean emptyCart() {
+		int run = 0;
+		boolean result =false;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "delete from cartTBL";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			run = pstmt.executeUpdate();
+			if(run ==1) {result = true;}
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
-	
+	// CUSTOMER MENU 2 - [2] 주문하기 -  productTBL에서 주문한 주문한 갯수는 제거
 	public int minusProduct(String prodName, int quantity) {
 	      int result = 0 ;
 	      Connection conn = this.getConnection();
@@ -243,436 +544,12 @@ public class CustomerDAO {
 	      return result;      
 	   }
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	// 아직 store에서 완료 안된 주문 출력(미배송)
-
-	// 완료된 주문 출력
-	public ArrayList<OrderVO> viewCompletedOrder(String userID) {
-		ArrayList<OrderVO> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		OrderVO vo = null;
-		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '1' order by  orderNo desc";
-
-		try {
-			pstmt = conn.prepareStatement(sql);
-			// ?채우기
-			pstmt.setString(1, userID);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				list = new ArrayList<OrderVO>();
-
-				//// int orderNo, int prodNum, String prodName, String storeName, String userID,
-				//// int quantity,
-				// int cost, String shippingcost, String review, boolean orderCompleted, Date
-				//// orderdate
-				do {
-					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
-							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
-							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
-							rs.getDate("orderDate"));
-					list.add(vo);
-				} while (rs.next());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return list;
-	}// viewCompletedOrder
-
-	// 지역에 있는 가게 출력
-	public ArrayList<SellerVO> viewRegionStore(int regionCode) {
-		ArrayList<SellerVO> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = null;
-
-		sql = "select sellerID, storeName, regionCode, active from sellerTBL where regionCode = ?";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, regionCode);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				list = new ArrayList<SellerVO>();
-				do {
-					
-				list.add(new SellerVO(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
-				
-				} while (rs.next());
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(rs, pstmt, conn);
-
-		return list;
-	}
-	
-	
-	
-	
-	
-	public ArrayList<ProductVO> viewCategory(String storeName) {
-		ArrayList<ProductVO> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = null;
-
-		sql = "select distinct category from productTBL where storeName = ?";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, storeName);
-			
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				list = new ArrayList<ProductVO>();
-				do {
-								
-				list.add(new ProductVO(rs.getString(1), storeName));
-				
-				} while (rs.next());
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(rs, pstmt, conn);
-
-		return list;
-	}
-	
-	
-	
-	
-	 public ArrayList<CartVO> viewShoppingCart(){
-		 ArrayList<CartVO> list = null;
-		 Connection conn = this.getConnection();
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			String sql = null;
-			sql = "select userID, prodNum, prodName, price, quantity from cartTBL";
-			try {
-				pstmt = conn.prepareStatement(sql);		
-				
-				rs = pstmt.executeQuery();
-				
-				if (rs.next()) {
-					list = new ArrayList<CartVO>();
-					do {
-									
-					list.add(new CartVO(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getInt(4), rs.getInt(5)));
-					
-					} while (rs.next());
-				}
-
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		 return list;
-	 }	
-		
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public ArrayList<ProductVO> viewProducts(String storeName ,String category) {
-		ArrayList<ProductVO> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "select prodNum,category,storeName,prodName,price,inventory,description,registerDate,rating from productTBL where storeName = ? AND category = ? order by prodNum";
-		ProductVO vo = null;
-		// 3. PreparedStatement 객체생성
-		try {
-			pstmt = conn.prepareStatement(sql);
-			// ? 채우기 x
-			pstmt.setString(1, storeName);
-			pstmt.setString(2, category);
-			// 쿼리문 전송 결과 받기
-			rs = pstmt.executeQuery();
-			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
-				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
-				do {
-					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
-							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
-							rs.getString("description"), rs.getDate("registerDate"), rs.getInt("rating"));
-					list.add(vo);// ArrayList에 vo 객체 담기
-				} while (rs.next());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.close(rs, pstmt, conn);
-		}
-		return list;
-	}
-	
 
 
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	
-	
-	
-
-
-	public ArrayList<String> viewProductCategory(String storeName) {
-		ArrayList<String> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "select distinct category from productTBL where storeName = ?";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, storeName);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				list = new ArrayList<String>();
-				do {
-					list.add(rs.getString(1));
-				} while (rs.next());
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-	
-	
-	
-	
-	// <METHOD LIST>
-	// createCustomer - customer를 만들때 필요한 모든 필드를 받아서 customerTBL에 추가 (SQL Insert)
-	// resetPassword - userID, mobile, birthDate 를 입력 받아서 password를 제설정 (SQL Update)
-	// writeReview - customer에 orderNumber를 입력 받아서 orderTBL에 review 작성하기 (SQL
-	// Update)
-	// viewCompletedOrder - orderTBL에서 그 customer에 주문에 completedOrder '1'인 order 출력
-	// viewOrderProcessing - orderTBL에서 그 customer에 주문에 completedOrder '0'인 order 출력
-	// viewRegionStore - 지격에 있슨 store들 출력
-	// viewProductCategory - 들어간 store에 있는 category출력
-	// viewProduct - 들어간 store에 category안에 해당되는 모든 product 출력
-	// selectCustomer(userID) - 회원가입 - ID 반복되는지 확인
-	// selectCustomer(userID, pwd) - 로그인 할때
-	// customerDelete - 삭제는 아닌 customer에 active를 1에서 0으로 바꿔지는 메소드
-	// updateCustomer - 비밀번호를 입력하면 pwd, email, name, mobile, addr 수정 가능
-
-	// 지역에 있는 가게들 출력 - 스토 번호를 입력하면 그 스토에 관련된 모든 프로덕트 케티고리 출력
-	// LIST THE CATEGORY (list of Categories)
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	// 케티고리를 누르면 그 스토에 관련된 모든 케티고리에 해당되는 프로덕트 출력 updateCustomer
-	// LIST THE PRODUCTS IN THE CATEGORY
-	public ArrayList<ProductVO> viewProduct(int categoryNumber) {
-		ArrayList<ProductVO> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		ProductVO vo = null;
-		String sql = "select prodNum, prodName, price, inventory, description, registerDate from productTBL where  category = ?";
-
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, categoryNumber);
-			rs = pstmt.executeQuery();
-
-			if (rs.next()) {
-				list = new ArrayList<ProductVO>();
-				do {
-					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
-							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
-							rs.getString("description"), rs.getTimestamp("categoryNumber"), rs.getInt("rating"));
-				} while (rs.next());
-			}
-
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return list;
-	}
-
-	public ArrayList<OrderVO> viewOrderProcessing(String userID) {
-		ArrayList<OrderVO> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		OrderVO vo = null;
-		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '0' order by  orderNo desc";
-
-		try {
-			pstmt = conn.prepareStatement(sql);
-			// ?채우기
-			pstmt.setString(1, userID);
-			rs=pstmt.executeQuery();
-			if (rs.next()) {
-				list = new ArrayList<OrderVO>();
-
-				//// int orderNo, int prodNum, String prodName, String storeName, String userID,
-				//// int quantity,
-				// int cost, String shippingcost, String review, boolean orderCompleted, Date
-				//// orderdate
-				do {
-					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
-							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
-							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
-							rs.getDate("orderDate"));
-					list.add(vo);
-				} while (rs.next());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return list;
-	}// viewCurrentOrder
-
-	// selectCustomer - 회원가입할때 입력한 아이디가 존제하닌지 확인
-	public boolean selectCustomer(String userID) {
-		boolean result = false;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "select userID from customerTBL where userID=? ";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			// ? 채우기
-			pstmt.setString(1, userID);
-			// 쿼리문 전송 결과 받기
-			rs = pstmt.executeQuery();
-			if (rs.next()) {// 읽은튜플이 있는가?
-				result = true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.close(rs, pstmt, conn);
-		}
-		return result;
-	}
-
-	// customer userID &pwd 로 검색
-	public CustomerVO selectCustomer(String userID, String pwd) {
-		CustomerVO vo = null;
-
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "select userID, name, birthDate, email, mobile, addr, enrollDate, active from customerTBL where userID=? and pwd=? and active=1 ";
-		// 3. PreparedStatement 객체생성
-		try {
-			pstmt = conn.prepareStatement(sql);
-			// ? 채우기
-			pstmt.setString(1, userID);
-			pstmt.setString(2, pwdEncrypt(pwd));
-			// 쿼리문 전송 결과 받기
-			rs = pstmt.executeQuery();
-			if (rs.next()) {// 읽은튜플이 있는가?
-//				vo = new CustomerVO(rs.getString("userID"), rs.getString("name"), rs.getString("birthDate"),
-//						rs.getString("mobile"), rs.getString("email"), rs.getString("addr"), rs.getInt("active"),
-//						rs.getTimestamp("enrollDate"));
-				vo = new CustomerVO(rs.getString(1), rs.getString(2), rs.getString(3),
-						rs.getString(5), rs.getString(4), rs.getString(6), rs.getInt(8),
-						rs.getTimestamp(7));
-				
-				
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.close(rs, pstmt, conn);
-		}
-		return vo;
-	}
-
-	// id랑 pwd받아서 customerTBL에 customer계정을 active(false -0)으로 update한다
-	// DELETE하는게 아니라 active를 (0 - false)로 바꿔준다
-	public int customerDelete(String userID, String pwd) {
-		int result = 0;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		String sql = "update customerTBL set active = '0' where userID=? and pwd=?";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			// ?채우기
-			pstmt.setString(1, userID);
-			pstmt.setString(2, pwdEncrypt(pwd));
-			result = pstmt.executeUpdate();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return result;
-	}
-
+	// CUSTOMER MENU 3 - [3] 회원 정보 수정
 	public int updateCustomer(String userID, String pwd, String name, String email, String mobile, String addr) {
 		int result = 0;
 		Connection conn = this.getConnection();
@@ -732,50 +609,31 @@ public class CustomerDAO {
 		return result;
 	}// updateCustomer
 	
+	// CUSTOMER MENU 4 - [4] 회원탈퇴
+		public int customerDelete(String userID, String pwd) {
+			int result = 0;
+			Connection conn = this.getConnection();
+			PreparedStatement pstmt = null;
+			String sql = "update customerTBL set active = '0' where userID=? and pwd=?";
+			try {
+				pstmt = conn.prepareStatement(sql);
+				// ?채우기
+				pstmt.setString(1, userID);
+				pstmt.setString(2, pwdEncrypt(pwd));
+				result = pstmt.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			this.close(pstmt, conn);
+
+			return result;
+		}
 	
-	public int addCart(String userID, int prodNum, String prodName, int price, int quantity) {
-		int result = 0;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "insert into CartTBL (userID, prodNum, prodName, price, quantity) values (?,?,?,?,?) ";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, userID);
-			pstmt.setInt(2, prodNum);
-			pstmt.setString(3, prodName);
-			pstmt.setInt(4, price);
-			pstmt.setInt(5, quantity);
-			
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
+	
+	
 
-		return result;
-		
-	}//addCart
 
-	public boolean emptyCart() {
-		int run = 0;
-		boolean result =false;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "delete from cartTBL";
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			run = pstmt.executeUpdate();
-			if(run ==1) {result = true;}
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
 	
 	
 	
