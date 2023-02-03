@@ -71,7 +71,12 @@ public class BakeryCompanyMain {
 					// 1 customer login, 2 seller login 0 cancel
 					if (subMenu == 1) {
 						if (id == null) {// 로그인 진행
-							HashMap<String, String> map = util.login(sc);
+
+							System.out.println("--- 로그인 아이디/패스워드 입력 ----");
+							System.out.print("아이디>>");
+							id = sc.nextLine();
+
+							HashMap<String, String> map = util.login(sc, id);
 							if (map != null) {
 								id = map.get("id");
 								name = map.get("name");
@@ -171,7 +176,7 @@ public class BakeryCompanyMain {
 
 									} else if (customerMenu == 2) { // 주문하기
 																	// //**************************************************************************************************주문하기
-											boolean regionBoolean = true;						// 시작
+										boolean regionBoolean = true; // 시작
 										while (regionBoolean) {
 											int regionCode;
 											String regionCodeString;
@@ -185,18 +190,12 @@ public class BakeryCompanyMain {
 											System.out.println(
 													"[9. 강원도 | 10. 충청남도 | 11. 충청북도 | 12. 경상북도 | 13. 경상남도 | 14. 전라북도 | 15. 전라남도 | 16. 제주]");
 											System.out.println("───────────────────────────────────");
-											
-											
-											
-							
-											
-											
+
 											try {
 												System.out.print("[상점지역을 선택하세요]: ");
 												regionCode = sc.nextInt();
 												sc.nextLine();
-														
-												
+
 											} catch (Exception e) {
 												System.out.println("[오류: 입력하신 지역번호에 오류가 있습니다.. 다시 입력하세요]");
 												// e.printStackTrace();
@@ -224,18 +223,15 @@ public class BakeryCompanyMain {
 													String storeSelectedString;
 
 													System.out.print("들어가실 상점번호를 입력하세요: ");
-													
+
 													storeSelectedString = sc.nextLine().trim();
-													
-													
-													
+
 													if (storeSelectedString.length() == 0) {
 														// 스토 입력 안했다
 														System.out.println("상점번호를 입력 안하셨습니다... 소비자 메뉴로 돌아갑니다...");
 														regionBoolean = false;
 														break;
-														
-														
+
 													} else {
 														try {
 
@@ -352,7 +348,8 @@ public class BakeryCompanyMain {
 																							.get(selectedProductNum - 1)
 																							.getPrice();
 
-																					System.out.print("[담으실 갯수를 입력하세요]: ");
+																					System.out
+																							.print("[담으실 갯수를 입력하세요]: ");
 																					quantity = sc.nextInt();
 																					sc.nextLine();
 
@@ -459,8 +456,31 @@ public class BakeryCompanyMain {
 									}
 								} // customerMenu while loop
 
-							} else
+							} else {
 								System.out.println("[로그인 실패]");
+
+								// passwordReset if failed
+								String passwordReset;
+								System.out.print("[비밀번호를 제설정 하시겠습니까? (y/n)]: ");
+								passwordReset = sc.nextLine().trim();
+
+								if (passwordReset.equals("y") || passwordReset.equals("Y")) {
+									if (util.resetPassword(id, sc)) {
+										System.out.println("[비밀번호 제설정 완료!]");
+										continue;
+									} else {
+										System.out.println("[비밀번호 제설정 실패]");
+										continue;
+									}
+
+								} else {
+									System.out.println("[비밀번호 제설정을 종료합니다...]");
+									continue;
+
+								}
+
+							}
+
 						} else {// 로그아웃
 							id = null;
 							name = null;
@@ -469,7 +489,11 @@ public class BakeryCompanyMain {
 					} else if (subMenu == 2) {
 
 						if (id == null) {// 로그인 진행
-							HashMap<String, String> map = util2.login(sc);
+
+							System.out.println("--- 로그인 아이디/패스워드 입력 ----");
+							System.out.print("아이디>>");
+							id = sc.nextLine();
+							HashMap<String, String> map = util2.login(sc, id);
 							if (map != null) {
 								String storeName;
 								id = map.get("id");
@@ -583,21 +607,19 @@ public class BakeryCompanyMain {
 													System.out.println("제품 수정 실팬");
 												}
 
-											} else if(productMenu == 3) {
+											} else if (productMenu == 3) {
 												util2.viewStoreProduct(storeName);
-												
+
 												if (util2.deleteProduct(sc, storeName)) {
 													System.out.println("[제품 삭제 완료!]");
 												} else {
 													System.out.println("[제품 삭제 실패]");
 												}
-											
-											
-											
-											}else {
-													System.out.println("판매자 메뉴로 다시 돌아갑니다...");
-													productRun = false;
-													break;
+
+											} else {
+												System.out.println("판매자 메뉴로 다시 돌아갑니다...");
+												productRun = false;
+												break;
 
 											}
 
@@ -643,6 +665,27 @@ public class BakeryCompanyMain {
 
 							} else
 								System.out.println("[로그인 실패]");
+
+							// passwordReset if failed
+							String passwordReset;
+							System.out.print("[비밀번호를 제설정 하시겠습니까? (y/n)]: ");
+							passwordReset = sc.nextLine().trim();
+
+							if (passwordReset.equals("y") || passwordReset.equals("Y")) {
+								if (util2.resetPassword(id, sc)) {
+									System.out.println("[비밀번호 제설정 완료!]");
+									continue;
+								} else {
+									System.out.println("[비밀번호 제설정 실패]");
+									continue;
+								}
+
+							} else {
+								System.out.println("[비밀번호 제설정을 종료합니다...]");
+								continue;
+
+							}
+
 						} else {// 로그아웃
 							id = null;
 							name = null;

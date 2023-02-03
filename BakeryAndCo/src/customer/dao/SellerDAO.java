@@ -70,7 +70,7 @@ public class SellerDAO {
 			e.printStackTrace();
 		}
 	}
-
+	//비밀번호 암호화
 	private String pwdEncrypt(String pwd) {
 		MessageDigest md = null;
 
@@ -86,21 +86,15 @@ public class SellerDAO {
 		return encrypted;
 	}
 
-	/*
-	 * 생성해야하는 메소드 LIST: - (DONE) createSeller - (DONE) registerProduct - (DONE)
-	 * passwordReset - viewOrders - orderTBL 참고하고 그 스토에 들어온 주문 출력 날짜 시간 -
-	 * viewCustomers - viewProducts - editProduct - unregisterSeller
-	 */
-
-	// customer userID &pwd 로 검색
+	
+	
+	//  전체 매인 메뉴 [1]로그인 - [2] 판매자
 	public SellerVO selectSeller(String sellerID, String pwd) {
 		SellerVO vo = null;
-
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = "select * from sellerTBL where sellerID=? and pwd=? and active = '1' ";
-		// 3. PreparedStatement 객체생성
 		try {
 			pstmt = conn.prepareStatement(sql);
 			// ? 채우기
@@ -123,12 +117,12 @@ public class SellerDAO {
 		return vo;
 	}
 
-	// password reset - sellerID, mobile, birthDate를 받아서 password를 reset
+	// //  전체 매인 메뉴 [1]로그인 - [2] 판매자 - 비밀번호 제설정 password reset - sellerID, mobile, birthDate를 받아서 password를 reset
 	public int passwordReset(String sellerID, String password, String storeName, String mobile, String birthDate) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
-		String sql = "update sellerTBL set pwd = ? where sellerID = ? AND mobile = ? AND birthDate = ? AND storeName = ? AND active = '1' ";
+		String sql = "update sellerTBL set pwd = ? where sellerID = ? AND storeMobile = ? AND birthDate = ? AND storeName = ? AND active = '1' ";
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -148,8 +142,9 @@ public class SellerDAO {
 		return result;
 	}// passwordRest
 
-//seller생성
-
+	
+	
+	// 전체 매인 메뉴 [2]회원가입 - [2] 판매자
 	public int createSeller(String sellerID, String pwd, String name, String birthDate, String storeName,
 			String storeMobile, String email, String storeAddr, int active, int regionCode) {
 		int result = 0;
@@ -191,13 +186,7 @@ public class SellerDAO {
 
 	
 
-	
-
-
-
-	
-	//***********************************SELLER********************************************************
-	
+	// 전체 매인 메뉴 [2]회원가입 - [2] 판매자 - 등록할떄 sellerID반복 안되는지 확인
 	public boolean selectSeller(String sellerID) {
 		boolean result = false;
 		Connection conn = this.getConnection();
@@ -221,137 +210,7 @@ public class SellerDAO {
 		return result;
 	}
 
-	public int updateSeller(String sellerID, String pwd, String name, String email, String storeMobile,
-			String storeAddr, int regionCode) {// String storeName,
-		int result = 0;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		StringBuilder sql = new StringBuilder("update sellerTBL set ");
 
-		int cnt = 0;// 수정 필드(열) 개수
-		if (pwd != null) {
-			sql.append("pwd=?,");
-		}
-		if (name != null) {
-			sql.append("name=?,");
-		}
-		if (email != null) {
-			sql.append("email=?,");
-		} // email
-		if (storeMobile != null) {
-			sql.append("storeMobile=?,");
-		}
-		if (storeAddr != null) {
-			sql.append("storeAddr=?,");
-		}
-		if (regionCode != 0) {
-			sql.append("regionCode=?,");
-		}
-
-		// 마지막 , 없애고
-		sql = sql.delete(sql.length() - 1, sql.length());
-		// where 이하 붙이기
-		sql.append(" where sellerID=?");
-		try {
-			pstmt = conn.prepareStatement(sql.toString());
-			// ?채우기
-			if (pwd != null) {
-				cnt++;
-				pstmt.setString(cnt, this.pwdEncrypt(pwd));
-			}
-			if (name != null) {
-				cnt++;
-				pstmt.setString(cnt, name);
-			}
-			if (email != null) {
-				cnt++;
-				pstmt.setString(cnt, email);
-			}
-			if (storeMobile != null) {
-				cnt++;
-				pstmt.setString(cnt, storeMobile);
-			}
-
-			if (storeAddr != null) {
-				cnt++;
-				pstmt.setString(cnt, storeAddr);
-			}
-			if (regionCode != 0) {
-				cnt++;
-				pstmt.setInt(cnt, regionCode);
-			}
-			pstmt.setString(++cnt, sellerID);
-			result = pstmt.executeUpdate();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return result;
-	}// updateCustomer
-	
-	//*********************************** PRODUCT********************************************************
-
-
-	
-
-//id랑 pwd받아서 sellerTBL에 seller계정을 active(false -0)으로 update한다
-	public int SellerDelete(String sellerID, String pwd) {
-		int result = 0;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		String sql = "update sellerTBL set active = '0' where SellerID=? and pwd=?";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, sellerID);
-			pstmt.setString(2, pwdEncrypt(pwd));
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return result;
-	}
-	
-	//***********************************ORDER********************************************************
-//	//view all order 
-//		public ArrayList<OrderVO> viewOrder(String storeName) {
-//			ArrayList<OrderVO> list = null;
-//			Connection conn = this.getConnection();
-//			PreparedStatement pstmt = null;
-//			ResultSet rs = null;
-//			String sql = "select * from orderTBL where storeName = ?";
-//			OrderVO vo = null;
-//
-//			try {
-//				pstmt = conn.prepareStatement(sql);
-//				pstmt.setString(1, storeName);
-//				rs = pstmt.executeQuery();
-//
-//				if (rs.next()) {// 읽은튜플이 하나이상 있는가?
-//					list = new ArrayList<OrderVO>();// ArrayList 객체 생성
-//					do {
-//						vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
-//								rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
-//								rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
-//								rs.getDate("orderDate"));
-//						list.add(vo);// ArrayList에 vo 객체 담기
-//					} while (rs.next());
-//				}
-//
-//			} catch (SQLException e) {
-//
-//				e.printStackTrace();
-//			} finally {
-//				this.close(rs, pstmt, conn);
-//			}
-//
-//			return list;
-//		}// viewOrder
-
-	
 	//SELLER MENU 1 - [1] 주문목록
 	public ArrayList<OrderVO> viewOrders(String storeName) {
 		ArrayList<OrderVO> list = null;
@@ -556,7 +415,97 @@ public class SellerDAO {
 			return result;	
 		}
 		
+		//SELLER MENU 4 - [4] 회원정보 수정
+		public int updateSeller(String sellerID, String pwd, String name, String email, String storeMobile,
+				String storeAddr, int regionCode) {// String storeName,
+			int result = 0;
+			Connection conn = this.getConnection();
+			PreparedStatement pstmt = null;
+			StringBuilder sql = new StringBuilder("update sellerTBL set ");
+
+			int cnt = 0;// 수정 필드(열) 개수
+			if (pwd != null) {
+				sql.append("pwd=?,");
+			}
+			if (name != null) {
+				sql.append("name=?,");
+			}
+			if (email != null) {
+				sql.append("email=?,");
+			} // email
+			if (storeMobile != null) {
+				sql.append("storeMobile=?,");
+			}
+			if (storeAddr != null) {
+				sql.append("storeAddr=?,");
+			}
+			if (regionCode != 0) {
+				sql.append("regionCode=?,");
+			}
+
+			// 마지막 , 없애고
+			sql = sql.delete(sql.length() - 1, sql.length());
+			// where 이하 붙이기
+			sql.append(" where sellerID=?");
+			try {
+				pstmt = conn.prepareStatement(sql.toString());
+				// ?채우기
+				if (pwd != null) {
+					cnt++;
+					pstmt.setString(cnt, this.pwdEncrypt(pwd));
+				}
+				if (name != null) {
+					cnt++;
+					pstmt.setString(cnt, name);
+				}
+				if (email != null) {
+					cnt++;
+					pstmt.setString(cnt, email);
+				}
+				if (storeMobile != null) {
+					cnt++;
+					pstmt.setString(cnt, storeMobile);
+				}
+
+				if (storeAddr != null) {
+					cnt++;
+					pstmt.setString(cnt, storeAddr);
+				}
+				if (regionCode != 0) {
+					cnt++;
+					pstmt.setInt(cnt, regionCode);
+				}
+				pstmt.setString(++cnt, sellerID);
+				result = pstmt.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			this.close(pstmt, conn);
+
+			return result;
+		}// updateSeller
 		
+		
+		//SELLER MENU 5 - [5] 회원탈퇴
+		public int SellerDelete(String sellerID, String pwd) {
+			int result = 0;
+			Connection conn = this.getConnection();
+			PreparedStatement pstmt = null;
+			String sql = "update sellerTBL set active = '0' where SellerID=? and pwd=?";
+			//삭제하면 정보가 남아있지 않아서 ACTIVE만 0으로 바꿔주기
+			try {
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, sellerID);
+				pstmt.setString(2, pwdEncrypt(pwd));
+				result = pstmt.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			this.close(pstmt, conn);
+
+			return result;
+		}
 		
 		
 

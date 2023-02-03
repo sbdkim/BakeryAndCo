@@ -17,29 +17,11 @@ public class SellerDAOUtil {
 		dao = SellerDAO.getInstance();
 	}
 
-	public String login2(Scanner sc) {
-		String id = null;
-		String password = null;
-		System.out.println("--- 로그인 아이디/패스워드 입력 ----");
-		System.out.print("아이디>>");
-		id = sc.nextLine();
-		System.out.print("패스워드>>");
-		password = sc.nextLine();
-		SellerVO vo = dao.selectSeller(id, password);
-		if (vo != null)
-			id = vo.getSellerID();
-		else
-			id = null;
-		return id;
-	}
 
-	public HashMap<String, String> login(Scanner sc) {
+
+	public HashMap<String, String> login(Scanner sc , String id) {
 		HashMap<String, String> map = null;
-		String id = null;
 		String password = null;
-		System.out.println("--- 로그인 아이디/패스워드 입력 ----");
-		System.out.print("아이디>>");
-		id = sc.nextLine();
 		System.out.print("패스워드>>");
 		password = sc.nextLine();
 		SellerVO vo = dao.selectSeller(id, password);
@@ -726,5 +708,106 @@ public class SellerDAOUtil {
 		return result;
 
 	}
+	
+	
+	
+	
+	public boolean resetPassword(String sellerID, Scanner sc) {
+		boolean result = false;
+		int resetSuccess;
+		String pwd, pwdCheck, mobile, birthDate, storeName;
+
+		System.out.println("[비밀번호를 제설정 하기 위해서 올바른 정보를 입력하시오]");
+		
+		while (true) {
+			// 전화번호 입력
+			System.out.print("휴대폰 번호>>");
+			mobile = sc.nextLine().trim();
+			// 1. 패턴체크
+			if (!mobileCheck(mobile)) {
+				System.out.println("전화번호 형식이 틀립니다.xxx-xxxx-xxxx");
+				continue;
+			}
+			// 패턴 틀린경우 다시 입력
+			break;
+		}
+		
+		while (true) {
+			// 전화번호 입력
+			System.out.print("생년월일(1900-01-01) >>");
+			birthDate = sc.nextLine().trim();
+			
+			// 1. 패턴체크
+			if (!dateCheck(birthDate)) {
+				System.out.println("생년월일 입력한 포멧 오류");
+				continue;
+			}
+			// 패턴 틀린경우 다시 입력
+			break;
+		}
+		
+		while (true) {
+			// 이름 입력
+			System.out.print("가개이름 >>");
+			storeName = sc.nextLine().trim();
+			// 공백의 경우 다시 입력
+			if (storeName.length() == 0) {
+				System.out.println("이름은 필수 항목 입니다.");
+				continue;
+			}
+			break;
+		}
+		
+		System.out.println("[세로운 비밀번호을 입력합니다]");
+		while (true) {
+			// 패스워드 입력
+			System.out.print("패스워드 ID(영문자,숫자,특수문자 조합(10~20자리)>>");
+			pwd = sc.nextLine().trim();
+			// 1. 패턴체크
+			if (!pwdCheck(pwd)) {
+				System.out.println("부적합한 비밀번호 형식 입니다. 영문자,특수문자,숫자조합(10~20자리)");
+				continue;
+			}
+			// 패스워드 체크 입력
+			System.out.print("패스워드 다시 입력 >>");
+			pwdCheck = sc.nextLine().trim();
+			// 두 패스워드 비교 틀린경우 다시 입력
+			if (!pwd.equals(pwdCheck)) {
+				System.out.println("입력하신 패스워드 2개가 다릅니다.");
+				continue;
+			}
+			break;
+		}
+		
+		resetSuccess = dao.passwordReset(sellerID, pwd, storeName, mobile, birthDate);
+		if (resetSuccess == 1) result = true;
+		else result = false;
+		
+		return result;
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }// SellerDAOUtil
