@@ -171,11 +171,12 @@ public class BakeryCompanyMain {
 
 									} else if (customerMenu == 2) { // 주문하기
 																	// //**************************************************************************************************주문하기
-																	// 시작
-										while (true) {
+											boolean regionBoolean = true;						// 시작
+										while (regionBoolean) {
 											int regionCode;
-											String sellerID, storeName, category, prodName ;
-											int active, quantity, price, prodNum = 0; 
+											String regionCodeString;
+											String sellerID, storeName, category, prodName;
+											int active, quantity, price, prodNum = 0;
 											System.out.println("───────────────────────────────────");
 											System.out.println("[주문하기]");
 											// 충청남도/충청북도/경상북도/경상남도/전라북도/전라남도/제주
@@ -184,10 +185,18 @@ public class BakeryCompanyMain {
 											System.out.println(
 													"[9. 강원도 | 10. 충청남도 | 11. 충청북도 | 12. 경상북도 | 13. 경상남도 | 14. 전라북도 | 15. 전라남도 | 16. 제주]");
 											System.out.println("───────────────────────────────────");
+											
+											
+											
+							
+											
+											
 											try {
 												System.out.print("[상점지역을 선택하세요]: ");
 												regionCode = sc.nextInt();
 												sc.nextLine();
+														
+												
 											} catch (Exception e) {
 												System.out.println("[오류: 입력하신 지역번호에 오류가 있습니다.. 다시 입력하세요]");
 												// e.printStackTrace();
@@ -205,183 +214,195 @@ public class BakeryCompanyMain {
 											list = util.hasRegionStore(regionCode);
 											int numberofStores = util.showRegionStoreNumber(regionCode);
 											if (list != null) {
-												
+
 												while (true) {// 상점들어가기
 													list = util.showRegionStore(regionCode);
 													System.out.println("───────────────────────────────────");
 													System.out.println();
-													
+
 													int storeSelected; // selected number
+													String storeSelectedString;
 
-													try {
-														System.out.print("들어가실 상점번호를 입력하세요: ");
-														storeSelected = sc.nextInt();
-														sc.nextLine();
-													} catch (Exception e) {
-														System.out.println("[오류: 입력하신 상점번호에 오류가 있습니다.. 다시 입력하세요]");
-														// e.printStackTrace();
-														sc.nextLine();
-														continue;
-													}
-
-													if (storeSelected > numberofStores || storeSelected < 0) {
-														System.out.println("[오류: 입력하신 상점번호에 오류가 있습니다.. 다시 입력하세요]");
-														// e.printStackTrace();
-														sc.nextLine();
-														continue;
-													}
-
-													storeName = (list.get(storeSelected - 1)).getStoreName();
-													// get store name fro the selected menu
-													System.out.println();
-													System.out.println();
-													System.out.println("[" + storeName + "에 오신것을 환영합니다!!]");
-													// ENTER THE STORE DONE!!!!!
-
-													list2 = new ArrayList<ProductVO>(); // 지역에 있는 가개 모두 출력
-												//	list3 = new ArrayList<ProductVO>();//
+													System.out.print("들어가실 상점번호를 입력하세요: ");
 													
-												//	list4 = new ArrayList<CartVO>();
-													int categorySelected = 0;
-													String categorySelectedString;
-													while (true) {
-														System.out.println("───────────────────────────────────");
-														list2 = util.showCategory(storeName);
-														System.out.print("관심있으신 제품에 케타고리를 입력하시오>>");
-														categorySelectedString = sc.nextLine().trim();
+													storeSelectedString = sc.nextLine().trim();
+													
+													
+													
+													if (storeSelectedString.length() == 0) {
+														// 스토 입력 안했다
+														System.out.println("상점번호를 입력 안하셨습니다... 소비자 메뉴로 돌아갑니다...");
+														regionBoolean = false;
+														break;
 														
-														if(categorySelectedString.equals("0")) {
-															System.out.println("───────────────────────────────────");
-															System.out.println("[장바구니로 이동하셨습니다]");
-															list4 = util.viewCart(); //prints the cart;
-															//CART에 담은거 모든것 출력!!!!!!!!
-															System.out.println("───────────────────────────────────");
-															util.total(list4); //총 개수, 총 금액 출력
-															System.out.println("───────────────────────────────────");
-															result = util.checkout(sc, storeName, id, list4);
-															if(result) {
-																System.out.println("[결제완료!]");
-																util.emptyCart(); 
-																break;
-															}else {
-																System.out.println("[결제실페]");
-																util.emptyCart(); 
-																break;
-															}
-															
-															
-															
-															//총 개수, 총 금액 출력하고 
-															// 카트에 있슨것을 구매 하시겠습니까??/ \Y/N
-															//Y 를 받으면 --> 주문들을 ProductTBL로 넘겨주기
-															
-															//하고 계시는거 - 장바구니에 담으면 producTBL에서 개수 줄기
-															
-															
+														
+													} else {
+														try {
 
-															
-															
-														}else if (categorySelectedString.length() == 0) {
-															result = util.emptyCart(); 
-															if(result) System.out.println("[장바구니 비우기 완료]");
-															else System.out.println("[장바구니 비우기 완료]");
-															
-															System.out
-																	.println("[ENTER를 입력하셨습니다.. 다시 가개 매뉴로 돌아갑니다...]");
-															break;
-														} else {
-															try {
-																categorySelected = Integer
-																		.parseInt(categorySelectedString);
-																// 제품 출력
-																
-																
-																
-																
-																
-																
-																
-																
-																
-																boolean selectProduct = true;
-																String selectedProduct = null;
-																int selectedProductNum;
-																while(selectProduct) {
-																	category = (list2.get(categorySelected - 1).getCategory()); 
-																	System.out.println("───────────────────────────────────");
-																	System.out.println("[" + category + " 을 선택하셨습니다]");
-																	list3 = util.viewStoreProduct(storeName, category); //PRINTS ALL THE PRODUCTS IN THAT CATEGORY (RETURN ARRAYLIST OF THE PRODUCTS)
-																	System.out.print("장바구니에 담으실 물건에 [번호]를 입력하세요: " );
-																	selectedProduct = sc.nextLine().trim();
-								
-																	
-																	if(selectedProduct.length() == 0) {
-																		
-																		System.out.println("[상품을 입력 안하셨습니다.. 다시 케타고리로 돌아갑니다...]");
-																		break;
-																	}else {
-																		try {
-																			//프로덕트 list2에 있는 index number를 입력 받았다. 
-																			selectedProductNum = Integer.parseInt(selectedProduct);
-																			
-																			
-																			//index를 사용해서 가 ProductList list2 에 있는 prodName이랑 price를 받는다.
-																			prodName = list3.get(selectedProductNum-1).getProdName();
-																			price = list3.get(selectedProductNum-1).getPrice(); 
-																			
-																			System.out.print("담으실 갯수를 입력하세요");
-																			quantity = sc.nextInt();
-																			sc.nextLine();
-																			
-																			int added = util.addToCart(id, prodNum, prodName, price, quantity);
-																			if(added == 1) {
-																				System.out.println("[장바구니에 담으쎴습니다]");
-																				
-																			}else {
-																				System.out.println("[장바구니에 담기 실패]");
-																			}
-																			
-																					
-																					
-																					
-																					
-																					
-																					
-																					
-																					
-																					
-																					
-																					
-																					
-																					
-																		}catch(Exception e) {
-																			System.out.println("입력하신 제품 입력 오류... 다시 입력하세요.");
-																			
-																			continue;
-																		}
-																	}
-																	
-																	
-																	
-																	
-																	
-																}
-																
-																
-															
-															} catch (Exception e) {
-																result = util.emptyCart(); 
-																if(result) System.out.println("[장바구니 비우기 완료]");
-																else System.out.println("[장바구니 비우기 완료]");
-																System.out.println("[잘못입력하셨습니다...장바구니를 비우고 가개 매뉴로 돌아갑니다]");
+															storeSelected = Integer.parseInt(storeSelectedString);
+															if (storeSelected > numberofStores || storeSelected < 0) {
+																System.out.println(
+																		"[오류: 입력하신 상점번호에 오류가 있습니다.. 다시 입력하세요]");
+																// e.printStackTrace();
 																sc.nextLine();
 																continue;
 															}
 
+															storeName = (list.get(storeSelected - 1)).getStoreName();
+															// get store name fro the selected menu
+															System.out.println();
+															System.out.println();
+															System.out.println("[" + storeName + "에 오신것을 환영합니다!!]");
+
+															// ENTER THE STORE DONE!!!!!
+
+															list2 = new ArrayList<ProductVO>(); // 지역에 있는 가개 모두 출력
+															// list3 = new ArrayList<ProductVO>();//
+
+															// list4 = new ArrayList<CartVO>();
+															int categorySelected = 0;
+															String categorySelectedString;
+															while (true) {
+																System.out
+																		.println("───────────────────────────────────");
+																list2 = util.showCategory(storeName);
+																System.out.print("관심있으신 제품에 케타고리를 입력하시오>>");
+																categorySelectedString = sc.nextLine().trim();
+
+																if (categorySelectedString.equals("0")) {
+																	System.out.println(
+																			"───────────────────────────────────");
+																	System.out.println("[장바구니로 이동하셨습니다]");
+																	list4 = util.viewCart(); // prints the cart;
+																	// CART에 담은거 모든것 출력!!!!!!!!
+																	System.out.println(
+																			"───────────────────────────────────");
+																	util.total(list4); // 총 개수, 총 금액 출력
+																	System.out.println(
+																			"───────────────────────────────────");
+																	result = util.checkout(sc, storeName, id, list4);
+																	if (result) {
+																		System.out.println("[결제완료!]");
+																		util.emptyCart();
+																		break;
+																	} else {
+																		System.out.println("[결제실페]");
+																		util.emptyCart();
+																		break;
+																	}
+
+																	// 총 개수, 총 금액 출력하고
+																	// 카트에 있슨것을 구매 하시겠습니까??/ \Y/N
+																	// Y 를 받으면 --> 주문들을 ProductTBL로 넘겨주기
+
+																	// 하고 계시는거 - 장바구니에 담으면 producTBL에서 개수 줄기
+
+																} else if (categorySelectedString.length() == 0) {
+																	result = util.emptyCart();
+																	if (result)
+																		System.out.println("[장바구니 비우기 완료]");
+																	else
+																		System.out.println("[장바구니 비우기 완료]");
+
+																	System.out.println(
+																			"[ENTER를 입력하셨습니다.. 다시 가개 매뉴로 돌아갑니다...]");
+																	break;
+																} else {
+																	try {
+																		categorySelected = Integer
+																				.parseInt(categorySelectedString);
+																		// 제품 출력
+
+																		boolean selectProduct = true;
+																		String selectedProduct = null;
+																		int selectedProductNum;
+																		while (selectProduct) {
+																			category = (list2.get(categorySelected - 1)
+																					.getCategory());
+																			System.out.println(
+																					"───────────────────────────────────");
+																			System.out.println(
+																					"[" + category + " 을 선택하셨습니다]");
+																			list3 = util.viewStoreProduct(storeName,
+																					category); // PRINTS ALL THE
+																								// PRODUCTS IN THAT
+																								// CATEGORY (RETURN
+																								// ARRAYLIST OF THE
+																								// PRODUCTS)
+																			System.out.print(
+																					"장바구니에 담으실 물건에 [번호]를 입력하세요: ");
+																			selectedProduct = sc.nextLine().trim();
+
+																			if (selectedProduct.length() == 0) {
+
+																				System.out.println(
+																						"[상품을 입력 안하셨습니다.. 다시 케타고리로 돌아갑니다...]");
+																				break;
+																			} else {
+																				try {
+																					// 프로덕트 list2에 있는 index number를 입력
+																					// 받았다.
+																					selectedProductNum = Integer
+																							.parseInt(selectedProduct);
+
+																					// index를 사용해서 가 ProductList list2 에
+																					// 있는 prodName이랑 price를 받는다.
+																					prodName = list3
+																							.get(selectedProductNum - 1)
+																							.getProdName();
+																					price = list3
+																							.get(selectedProductNum - 1)
+																							.getPrice();
+
+																					System.out.print("담으실 갯수를 입력하세요");
+																					quantity = sc.nextInt();
+																					sc.nextLine();
+
+																					int added = util.addToCart(id,
+																							prodNum, prodName, price,
+																							quantity);
+																					if (added == 1) {
+																						System.out.println(
+																								"[장바구니에 담으쎴습니다]");
+
+																					} else {
+																						System.out.println(
+																								"[장바구니에 담기 실패]");
+																					}
+
+																				} catch (Exception e) {
+																					System.out.println(
+																							"입력하신 제품 입력 오류... 다시 입력하세요.");
+
+																					continue;
+																				}
+																			}
+
+																		}
+
+																	} catch (Exception e) {
+																		result = util.emptyCart();
+																		if (result)
+																			System.out.println("[장바구니 비우기 완료]");
+																		else
+																			System.out.println("[장바구니 비우기 완료]");
+																		System.out.println(
+																				"[잘못입력하셨습니다...장바구니를 비우고 가개 매뉴로 돌아갑니다]");
+																		sc.nextLine();
+																		continue;
+																	}
+
+																}
+
+															} // 케타고리에들어가기
+
+														} catch (Exception e) {
+															System.out.println("[오류: 입력하신 상점번호에 오류가 있습니다.. 다시 입력하세요]");
+															// e.printStackTrace();
+															sc.nextLine();
+															continue;
 														}
-
-													} // 케타고리에들어가기
-
+													}
 
 												} // 상점에들어가기
 
