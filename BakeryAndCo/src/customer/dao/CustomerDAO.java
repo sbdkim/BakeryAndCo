@@ -597,5 +597,33 @@ public class CustomerDAO {
 
 		return result;
 	}// updateCustomer
+	
+	
+	public int addCart(String userID, String prodName, int price, int quantity) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "insert into CartTBL (userID, prodName, price, quantity) values (?,?,?,?) ";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userID);
+			pstmt.setString(2, prodName);
+			pstmt.setInt(3, price);
+			pstmt.setInt(4, quantity);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+		
+	}//addCart
+	
+	
+	
+	
 
 }// customerDAO

@@ -122,7 +122,7 @@ public class ProductVO {
 	@Override
 	public String toString() {
 
-		return "ProductVO : [ID: " + prodNum + ", Category: " + category + ", 가게이름: " + storeName + ", 제품이름: " + prodName + ", 가격: " + price + ", 재고량: "
+		return "[ID: " + prodNum + ", Category: " + category + ", 가게이름: " + storeName + ", 제품이름: " + prodName + ", 가격: " + price + ", 재고량: "
 				+ inventory + ", 상품설명: " + description + ", 등록일: " + registerdate + ", 별점: " + rating + "]";
 	}
 

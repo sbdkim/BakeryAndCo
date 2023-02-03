@@ -156,6 +156,29 @@ public class CustomerDAOUtil {
 		return list;
 	}
 	
+	
+	public ArrayList<SellerVO> hasRegionStore(int regionCode) {
+
+		ArrayList<SellerVO> list = null; // 이 리스트에 담긴 SellerVO에는 sellerID, storeName, regionCode, active이거 4개가 담겨있다
+		list = dao.viewRegionStore(regionCode);
+		if(list!=null) {
+				int i = 0;
+			for(SellerVO vo: list) {     
+				i++;
+				
+			}	
+
+			//System.out.println(list.get(1).get);
+			
+		}
+		
+		return list;
+	}
+	
+	
+	
+	
+	
 	public ArrayList<ProductVO> showCategory(String storeName){
 		ArrayList<ProductVO> list = null; // 이 리스트에 담긴 SellerVO에는 sellerID, storeName, regionCode, active이거 4개가 담겨있다
 		list = dao.viewCategory(storeName);
@@ -174,7 +197,20 @@ public class CustomerDAOUtil {
 }
 	
 	
-	//public boolean selectRegionStore(int )
+	public ArrayList<ProductVO> viewStoreProduct(String storeName, String category) {
+		ArrayList<ProductVO> list = null;
+		list = dao.viewProducts(storeName, category);
+		if (list != null) {
+			int i = 0;
+			for (ProductVO v : list) {
+				i++;
+				System.out.println("[" +i + "] "+ v.toString());
+			}
+
+		}
+
+		return list;
+	}
 	
 	
 	
@@ -199,6 +235,13 @@ public class CustomerDAOUtil {
 		return i;
 	
 	}
+	
+	
+	
+	
+	
+	
+
 	
 
 
@@ -442,17 +485,14 @@ public class CustomerDAOUtil {
 	
 	
 	
-	public boolean viewStoreProduct(String storeName, String category) {
-		boolean result = false;
-		ArrayList<ProductVO> list = null;
-		list = dao.viewProducts(storeName, category);
-		if (list != null) {
-			for (ProductVO v : list) {
-				System.out.println(v.toString());
-			}
-			result = true;
-		}
 
+	
+	
+	public int addToCart(String userID, String prodName, int price, int quantity) {
+		int result = 0;
+		
+		result = dao.addCart(userID, prodName, price, quantity);
+		
 		return result;
 	}
 	

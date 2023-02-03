@@ -112,6 +112,8 @@ public class BakeryCompanyMain {
 									boolean result2 = false;
 									ArrayList<SellerVO> list = null;
 									ArrayList<ProductVO> list2 = null;
+									ArrayList<ProductVO> list3 = null;
+									ArrayList<CartVO> list4 = null;
 
 									if (customerMenu == 1) {
 
@@ -172,8 +174,8 @@ public class BakeryCompanyMain {
 																	// 시작
 										while (true) {
 											int regionCode;
-											String sellerID, storeName, category;
-											int active;
+											String sellerID, storeName, category, prodName ;
+											int active, quantity, price; 
 											System.out.println("───────────────────────────────────");
 											System.out.println("[주문하기]");
 											// 충청남도/충청북도/경상북도/경상남도/전라북도/전라남도/제주
@@ -200,12 +202,15 @@ public class BakeryCompanyMain {
 											}
 
 											list = new ArrayList<SellerVO>(); // 지역에 있는 가격 모두 출력
-											list = util.showRegionStore(regionCode);
+											list = util.hasRegionStore(regionCode);
 											int numberofStores = util.showRegionStoreNumber(regionCode);
 											if (list != null) {
-												System.out.println("───────────────────────────────────");
-												System.out.println();
+												
 												while (true) {// 상점들어가기
+													list = util.showRegionStore(regionCode);
+													System.out.println("───────────────────────────────────");
+													System.out.println();
+													
 													int storeSelected; // selected number
 
 													try {
@@ -233,8 +238,10 @@ public class BakeryCompanyMain {
 													System.out.println("[" + storeName + "에 오신것을 환영합니다!!]");
 													// ENTER THE STORE DONE!!!!!
 
-													list2 = new ArrayList<ProductVO>(); // 지역에 있는 가격 모두 출력
+													list2 = new ArrayList<ProductVO>(); // 지역에 있는 가개 모두 출력
+												//	list3 = new ArrayList<ProductVO>();//
 													
+												//	list4 = new ArrayList<CartVO>();
 													int categorySelected = 0;
 													String categorySelectedString;
 													while (true) {
@@ -261,7 +268,67 @@ public class BakeryCompanyMain {
 																
 																
 																
-																util.viewStoreProduct(storeName, category);
+																
+																
+																boolean selectProduct = true;
+																String selectedProduct = null;
+																int selectedProductNum;
+																while(selectProduct) {
+																	list3 = util.viewStoreProduct(storeName, category); //PRINTS ALL THE PRODUCTS IN THAT CATEGORY (RETURN ARRAYLIST OF THE PRODUCTS)
+																	System.out.print("장바구니에 담으실 물건에 [번호]를 입력하세요: " );
+																	selectedProduct = sc.nextLine().trim();
+								
+																	
+																	if(selectedProduct.length() == 0) {
+																		System.out.println("[입력하신 물건이 없습니다.. 다시 케타고리로 돌아갑니다...]");
+																		break;
+																	}else {
+																		try {
+																			//프로덕트 list2에 있는 index number를 입력 받았다. 
+																			selectedProductNum = Integer.parseInt(selectedProduct);
+																			
+																			
+																			//index를 사용해서 가 ProductList list2 에 있는 prodName이랑 price를 받는다.
+																			prodName = list3.get(selectedProductNum-1).getProdName();
+																			price = list3.get(selectedProductNum-1).getPrice(); 
+																			
+																			System.out.print("담으실 갯수를 입력하세요");
+																			quantity = sc.nextInt();
+																			sc.nextLine();
+																			
+																			int added = util.addToCart(id, prodName, price, quantity);
+																			if(added == 1) {
+																				System.out.println("[장바구니에 담으쎴습니다]");
+																			}else {
+																				System.out.println("[장바구니에 담기 실패]");
+																			}
+																			
+																					
+																					
+																					
+																					
+																					
+																					
+																					
+																					
+																					
+																					
+																					
+																					
+																					
+																		}catch(Exception e) {
+																			System.out.println("입력하신 제품 입력 오류... 다시 입력하세요.");
+																			sc.nextLine();
+																			continue;
+																		}
+																	}
+																	
+																	
+																	
+																	
+																	
+																}
+																
 																
 																
 																
