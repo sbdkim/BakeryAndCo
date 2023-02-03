@@ -623,15 +623,16 @@ public class CustomerDAO {
 	}//addCart
 	
 	
-	public int minusProduct(String prodName, int inventory) {
+	public int minusProduct(String prodName, int quantity) {
 		int result = 0 ;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
-		String sql = "update productTBL set inventory = inventory-1 where prodName=?";
+		String sql = "update productTBL set inventory = inventory-? where prodName=?";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, prodName);
+				pstmt.setInt(1, quantity);
+				pstmt.setString(2, prodName);
 			result = pstmt.executeUpdate();
 
 		} catch (SQLException e) {
