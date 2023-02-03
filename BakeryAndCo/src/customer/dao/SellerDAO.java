@@ -117,7 +117,7 @@ public class SellerDAO {
 		return vo;
 	}
 
-	// //  전체 매인 메뉴 [1]로그인 - [2] 판매자 - 비밀번호 제설정 password reset - sellerID, mobile, birthDate를 받아서 password를 reset
+	// 전체 매인 메뉴 [1]로그인 - [2] 판매자 - 비밀번호 제설정 password reset - sellerID, mobile, birthDate를 받아서 password를 reset
 	public int passwordReset(String sellerID, String password, String storeName, String mobile, String birthDate) {
 		int result = 0;
 		Connection conn = this.getConnection();
