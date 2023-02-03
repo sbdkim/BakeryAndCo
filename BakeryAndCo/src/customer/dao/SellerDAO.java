@@ -364,6 +364,33 @@ public class SellerDAO {
 
 		return result;
 	}
+	
+	
+	
+	
+	public int deleteProduct(int prodNum) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "delete from productTBL where prodNum = ? ";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, prodNum);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+		return result;	
+	}
+	
+	
+	
+	
+	
+	
 
 //	public int editProduct(int prodNum, String category, String storeName, String prodName, int price, int inventory,
 //			String description, Date registerDate, int rating) {

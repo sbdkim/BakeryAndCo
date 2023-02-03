@@ -263,8 +263,6 @@ public class BakeryCompanyMain {
 															int categorySelected = 0;
 															String categorySelectedString;
 															while (true) {
-																System.out
-																		.println("───────────────────────────────────");
 																list2 = util.showCategory(storeName);
 																System.out.print("관심있으신 제품에 케타고리를 입력하시오>>");
 																categorySelectedString = sc.nextLine().trim();
@@ -330,7 +328,7 @@ public class BakeryCompanyMain {
 																								// ARRAYLIST OF THE
 																								// PRODUCTS)
 																			System.out.print(
-																					"장바구니에 담으실 물건에 [번호]를 입력하세요: ");
+																					"[장바구니에 담으실 물건에 [번호]를 입력하세요]: ");
 																			selectedProduct = sc.nextLine().trim();
 
 																			if (selectedProduct.length() == 0) {
@@ -354,7 +352,7 @@ public class BakeryCompanyMain {
 																							.get(selectedProductNum - 1)
 																							.getPrice();
 
-																					System.out.print("담으실 갯수를 입력하세요");
+																					System.out.print("[담으실 갯수를 입력하세요]: ");
 																					quantity = sc.nextInt();
 																					sc.nextLine();
 
@@ -487,7 +485,7 @@ public class BakeryCompanyMain {
 									System.out.println("[판매자 메뉴]");
 									System.out.println("[1] 주문목록");
 									System.out.println("[2] 고객목록");
-									System.out.println("[3] 제품 목록 - 제품 등록/수정");
+									System.out.println("[3] 제품 목록");
 									System.out.println("[4] 회원정보 수정");
 									System.out.println("[5] 회원탈퇴");
 									System.out.println("[6] 로그아웃");
@@ -548,7 +546,8 @@ public class BakeryCompanyMain {
 											System.out.println("[제품목록 메뉴]");
 											System.out.println("[1] 제품등록");
 											System.out.println("[2] 제품수정");
-											System.out.println("[3] 취소, 판매자 메뉴로 돌아가기");
+											System.out.println("[3] 제품삭제");
+											System.out.println("[4] 취소, 판매자 메뉴로 돌아가기");
 											System.out.println("───────────────────────────────────");
 											try {
 												System.out.print("[메뉴번호를 선택하세요]: ");
@@ -561,7 +560,7 @@ public class BakeryCompanyMain {
 												continue;
 											}
 
-											if (productMenu > 4 || sellerMenu < 1) {
+											if (productMenu > 4 || productMenu < 1) {
 												System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 												// e.printStackTrace();
 												sc.nextLine();
@@ -584,10 +583,21 @@ public class BakeryCompanyMain {
 													System.out.println("제품 수정 실팬");
 												}
 
-											} else {
-												System.out.println("판매자 메뉴로 다시 돌아갑니다...");
-												productRun = false;
-												break;
+											} else if(productMenu == 3) {
+												util2.viewStoreProduct(storeName);
+												
+												if (util2.deleteProduct(sc, storeName)) {
+													System.out.println("[제품 삭제 완료!]");
+												} else {
+													System.out.println("[제품 삭제 실패]");
+												}
+											
+											
+											
+											}else {
+													System.out.println("판매자 메뉴로 다시 돌아갑니다...");
+													productRun = false;
+													break;
 
 											}
 

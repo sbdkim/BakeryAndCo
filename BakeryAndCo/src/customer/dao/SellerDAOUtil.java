@@ -386,11 +386,11 @@ public class SellerDAOUtil {
 
 		System.out.print("탈퇴하시겠습니까(y/n)>>");
 		confirm = sc.nextLine().trim();
-		
-		if(confirm.equals("y") || confirm.equals("Y")) {
+
+		if (confirm.equals("y") || confirm.equals("Y")) {
 			if (dao.SellerDelete(userID, pwd) == 1)
-				result = true;			
-		}else {
+				result = true;
+		} else {
 			result = false;
 		}
 		return result;
@@ -442,8 +442,7 @@ public class SellerDAOUtil {
 		boolean result = false;
 		boolean createBoolean = true;
 		int runMethod;
-		String category = null, prodName = null, description = null,  priceString = null,
-				inventoryString = null;
+		String category = null, prodName = null, description = null, priceString = null, inventoryString = null;
 		int price = 0, inventory = 0, rating;
 
 		// 하나씩 입력받기
@@ -550,6 +549,70 @@ public class SellerDAOUtil {
 		return result;
 
 	}
+	
+	
+	
+	
+	
+	public boolean deleteProduct(Scanner sc, String storName) {
+		boolean result = false;
+		boolean methodRun = true;
+		String prodNumString, confirm;
+		int prodNum;
+		while(methodRun) {
+			System.out.print("[삭제하실 제품에 번호를 입력하세요]: ");
+			prodNumString = sc.nextLine().trim();
+			if (prodNumString.length() == 0) {
+				System.out.println("입력하신 제품번호가 없습니다... 삭제를 종료하겠습니다");
+				methodRun = false;
+				break;
+			} else {
+				try {
+					prodNum = Integer.parseInt(prodNumString);					
+				} catch (Exception e) {
+					System.out.println("입력하신 제품번호에 오류가 있습니다... 삭제를 종료하겠습니다");
+					methodRun = false;
+					break;
+				}
+
+				
+				System.out.print("제품을 삭제하시겠습니까(y/n)>>");
+				confirm = sc.nextLine().trim();
+
+				if (confirm.equals("y") || confirm.equals("Y")) {
+					if (dao.deleteProduct(prodNum) == 1)
+						
+						result = true;
+						break;
+				} else {
+					result = false;
+					break;
+				}
+				
+			}
+		}//while methodRun
+		
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	public boolean editProduct(Scanner sc, String storeName) {
 		boolean result = false;
@@ -579,7 +642,7 @@ public class SellerDAOUtil {
 				while (true) {
 					System.out.print("상품 종류(enter 수정안함) >>");
 					category = sc.nextLine().trim();
-					if(category.length() ==0) {
+					if (category.length() == 0) {
 						category = null;
 					}
 					break;
@@ -589,7 +652,7 @@ public class SellerDAOUtil {
 				while (true) {
 					System.out.print("상품 이름>>");
 					prodName = sc.nextLine().trim();
-					if(prodName.length() ==0) {
+					if (prodName.length() == 0) {
 						prodName = null;
 					}
 					break;
@@ -614,9 +677,6 @@ public class SellerDAOUtil {
 					}
 				} // price
 
-				
-				
-				
 				while (true) {
 					System.out.print("상품 갯수>>");
 					inventoryString = sc.nextLine().trim();
@@ -640,14 +700,11 @@ public class SellerDAOUtil {
 					}
 
 				}
-				
-				
-				
-				
+
 				while (true) {
 					System.out.print("상품 설명 (간단하게)>>");
 					description = sc.nextLine().trim();
-					if(description.length() ==0) {
+					if (description.length() == 0) {
 						description = null;
 					}
 					break;
