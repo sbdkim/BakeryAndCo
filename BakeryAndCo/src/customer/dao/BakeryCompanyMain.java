@@ -228,15 +228,18 @@ public class BakeryCompanyMain {
 
 													storeName = (list.get(storeSelected - 1)).getStoreName();
 													// get store name fro the selected menu
+													System.out.println();
+													System.out.println();
 													System.out.println("[" + storeName + "에 오신것을 환영합니다!!]");
 													// ENTER THE STORE DONE!!!!!
 
 													list2 = new ArrayList<ProductVO>(); // 지역에 있는 가격 모두 출력
-													list2 = util.showCategory(storeName);
+													
 													int categorySelected = 0;
 													String categorySelectedString;
 													while (true) {
-
+														System.out.println("───────────────────────────────────");
+														list2 = util.showCategory(storeName);
 														System.out.print("관심있으신 제품에 케타고리를 입력하시오>>");
 														categorySelectedString = sc.nextLine().trim();
 
@@ -252,6 +255,7 @@ public class BakeryCompanyMain {
 																
 																
 																category = (list2.get(categorySelected - 1).getCategory()); 
+																System.out.println("───────────────────────────────────");
 																System.out.println("[" + category + " 을 선택하셨습니다]");
 																
 																
