@@ -175,7 +175,7 @@ public class CustomerDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		OrderVO vo = null;
-		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '1' order by  orderDate desc";
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '1' order by  orderNo desc";
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -339,7 +339,7 @@ public class CustomerDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		OrderVO vo = null;
-		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '0' order by  orderDate desc";
+		String sql = "select * from orderTBL where  userID = ? AND orderCompleted = '0' order by  orderNo desc";
 
 		try {
 			pstmt = conn.prepareStatement(sql);

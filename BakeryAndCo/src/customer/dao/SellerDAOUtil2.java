@@ -7,12 +7,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // 여기에 들어갈 메소드들은 메뉴 출력, 입력받기, 그리고 DAO로 입력받은것을 념겨줘서 결과를 DAO에서 받기
-public class SellerDAOUtil {
+public class SellerDAOUtil2 {
 
 	private Matcher match;
 	SellerDAO dao = null;
 
-	public SellerDAOUtil() {
+	public SellerDAOUtil2() {
 		super();
 		dao = SellerDAO.getInstance();
 	}
@@ -377,23 +377,22 @@ public class SellerDAOUtil {
 		return false;
 	}// update
 
-	public boolean delete(Scanner sc, String userID) {
-		boolean result = false;
-		String pwd, confirm;
+	public boolean delete(Scanner sc) {
+		// 아이디 비번 입력
+		String id, pwd;
 		// 아이디 패스워드 입력 받기
+		System.out.print("사용자 ID>>");
+		id = sc.nextLine().trim();
 		System.out.print("패스워드>>");
 		pwd = sc.nextLine().trim();
-
-		System.out.print("탈퇴하시겠습니까(y/n)>>");
-		confirm = sc.nextLine().trim();
-		
-		if(confirm.equals("y") || confirm.equals("Y")) {
-			if (dao.SellerDelete(userID, pwd) == 1)
-				result = true;			
-		}else {
-			result = false;
-		}
-		return result;
+		// MemberVO vo=dao.selectMember(id, pwd);
+		// 회원조회 하고 있으면 삭제 수행
+		// if(vo==null)return false;
+		// 삭제 수행
+		if (dao.SellerDelete(id, pwd) == 1)
+			return true;
+		else
+			return false;
 	}// delete
 
 	public boolean viewStoreOrder(String storeName) {
@@ -440,105 +439,58 @@ public class SellerDAOUtil {
 
 	public boolean createProduct(Scanner sc, String storeName) {
 		boolean result = false;
-		boolean createBoolean = true;
 		int runMethod;
-		String category = null, prodName = null, description = null,  priceString = null,
-				inventoryString = null;
-		int price = 0, inventory = 0, rating;
+		String category, prodName, description, registerDate;
+		int price, inventory, rating;
 
 		// 하나씩 입력받기
 		// prodNum은 prod_seq로 증가
-		while (createBoolean) {
-			while (true) {
-				System.out.print("상품 종류>>");
-				category = sc.nextLine().trim();
+		while (true) {
+			System.out.print("상품 종류>>");
+			category = sc.nextLine().trim();
+			break;
+		}
+		// storeName, received from this method
 
-				// 아무것도 입력 안 한 경우에 종료
-				if (category.length() == 0) {
-					System.out.println("[입력을 안하셨습니다.. 등록을 종료합니다.]");
-					createBoolean = false;
-				}
-
-				break;
+		while (true) {
+			System.out.print("상품 이름>>");
+			prodName = sc.nextLine().trim();
+			break;
+		}
+		// price
+		while (true) {
+			System.out.print("상품 가격>>");
+			try {
+				price = sc.nextInt();
+				sc.nextLine();
+			} catch (Exception e) {
+				System.out.println("가격 입력 오류... 다시 입력하세요.");
+				sc.nextLine();
+				continue;
 			}
-			// storeName, received from this method
+			break;
 
-			if (createBoolean = false) {
-				break;//
+		}
+
+		while (true) {
+			System.out.print("상품 갯수>>");
+			try {
+				inventory = sc.nextInt();
+				sc.nextLine();
+			} catch (Exception e) {
+				System.out.println("갯수 입력 오류... 다시 입력하세요.");
+				sc.nextLine();
+				continue;
 			}
+			break;
+		}
+		while (true) {
+			System.out.print("상품 설명 (간단하게)>>");
+			description = sc.nextLine().trim();
+			break;
+		}
 
-			while (true) {
-				System.out.print("상품 이름>>");
-				prodName = sc.nextLine().trim();
-				if (prodName.length() == 0) {
-					System.out.println("[입력을 안하셨습니다.. 다시 입력하세요.]");
-					sc.nextLine();
-					continue;
-				} else {
-					break;
-				}
-
-			}
-			// price
-			while (true) {
-				System.out.print("상품 가격>>");
-				priceString = sc.nextLine().trim();
-
-				if (priceString.length() == 0) {
-					System.out.println("가격 입력 안하셨습니다... 다시 입력하세요.");
-					sc.nextLine();
-					continue;
-				} else {
-
-					try {
-						price = Integer.parseInt(priceString);
-					} catch (Exception e) {
-						System.out.println("가격 입력 오류... 다시 입력하세요.");
-						sc.nextLine();
-						continue;
-					}
-					break;
-				}
-
-			}
-
-			while (true) {
-				System.out.print("상품 갯수>>");
-				inventoryString = sc.nextLine().trim();
-
-				if (inventoryString.length() == 0) {
-					System.out.println("갯수 입력 안하셨습니다... 다시 입력하세요.");
-					sc.nextLine();
-					continue;
-				} else {
-
-					try {
-						inventory = Integer.parseInt(inventoryString);
-					} catch (Exception e) {
-						System.out.println("갯수 입력 오류... 다시 입력하세요.");
-						sc.nextLine();
-						continue;
-					}
-					break;
-				}
-
-			}
-
-			while (true) {
-				System.out.print("상품 설명 (간단하게)>>");
-				description = sc.nextLine().trim();
-				if (prodName.length() == 0) {
-					System.out.println("[설명을 입력 안하셨습니다.. 다시 입력하세요.]");
-					sc.nextLine();
-					continue;
-				} else {
-					break;
-				}
-
-			}
-
-		} // createBoolean
-			// 입력 다 받은 후 DAO에서 메소드 부르기
+		// 입력 다 받은 후 DAO에서 메소드 부르기
 
 		runMethod = dao.registerProduct(category, storeName, prodName, price, inventory, description);
 
@@ -579,9 +531,6 @@ public class SellerDAOUtil {
 				while (true) {
 					System.out.print("상품 종류(enter 수정안함) >>");
 					category = sc.nextLine().trim();
-					if(category.length() ==0) {
-						category = null;
-					}
 					break;
 				}
 				// storeName, received from this method
@@ -589,9 +538,6 @@ public class SellerDAOUtil {
 				while (true) {
 					System.out.print("상품 이름>>");
 					prodName = sc.nextLine().trim();
-					if(prodName.length() ==0) {
-						prodName = null;
-					}
 					break;
 				}
 				// price
@@ -640,9 +586,6 @@ public class SellerDAOUtil {
 				while (true) {
 					System.out.print("상품 설명 (간단하게)>>");
 					description = sc.nextLine().trim();
-					if(description.length() ==0) {
-						description = null;
-					}
 					break;
 				}
 

@@ -285,6 +285,9 @@ public class SellerDAO {
 		return list;
 	}// viewOrder
 
+	
+	
+	
 //editProduct
 	public int editProduct(int prodNum, int price, int inventory, String storeName, String prodName, String description,
 			String category) {
@@ -306,7 +309,7 @@ public class SellerDAO {
 			sql.append("description=?,");
 		}
 		if (category != null) {
-			sql.append("caterogy=?,");
+			sql.append("category=?,");
 		}
 		sql = sql.delete(sql.length() - 1, sql.length());
 		sql.append(" where prodNum=?");
@@ -362,74 +365,74 @@ public class SellerDAO {
 		return result;
 	}
 
-	public int editProduct(int prodNum, String category, String storeName, String prodName, int price, int inventory,
-			String description, Date registerDate, int rating) {
-		int result = 0;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		StringBuilder sql = new StringBuilder("update Producttbl set ");
-		int cnt = 0;// 수정 필드(열) 개수
-		if (category != null) {
-			sql.append("category=?,");
-		}
-		if (storeName != null) {
-			sql.append("storeName=?,");
-		}
-		if (prodName != null) {
-			sql.append("prodName=?,");
-		}
-		if (price != 0) {
-			sql.append("price=?,");
-		}
-
-		sql.append("inventory=?,");
-
-		if (description != null) {
-			sql.append("description=?,");
-		}
-		if (registerDate != null) {
-			sql.append("registerDate=?,");
-		}
-
-		sql.append("rating=?,");
-
-		// 마지막 , 없애고
-		sql = sql.delete(sql.length() - 1, sql.length());
-
-		sql.append(" where prodNum=?");
-		try {
-			pstmt = conn.prepareStatement(sql.toString());
-			// ?채우기
-			if (category != null) {
-				cnt++;
-				pstmt.setString(cnt, this.pwdEncrypt(category));
-			}
-			if (storeName != null) {
-				cnt++;
-				pstmt.setString(cnt, storeName);
-			}
-			if (price != 0) {
-				cnt++;
-				pstmt.setInt(cnt, price);
-			}
-			pstmt.setInt(++cnt, inventory);
-
-			if (description != null) {
-				cnt++;
-				pstmt.setString(cnt, description);
-			}
-			pstmt.setInt(++cnt, rating);
-
-			pstmt.setInt(++cnt, prodNum);
-			result = pstmt.executeUpdate();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return result;
-	}
+//	public int editProduct(int prodNum, String category, String storeName, String prodName, int price, int inventory,
+//			String description, Date registerDate, int rating) {
+//		int result = 0;
+//		Connection conn = this.getConnection();
+//		PreparedStatement pstmt = null;
+//		StringBuilder sql = new StringBuilder("update Producttbl set ");
+//		int cnt = 0;// 수정 필드(열) 개수
+//		if (category != null) {
+//			sql.append("category=?,");
+//		}
+//		if (storeName != null) {
+//			sql.append("storeName=?,");
+//		}
+//		if (prodName != null) {
+//			sql.append("prodName=?,");
+//		}
+//		if (price != 0) {
+//			sql.append("price=?,");
+//		}
+//
+//		sql.append("inventory=?,");
+//
+//		if (description != null) {
+//			sql.append("description=?,");
+//		}
+//		if (registerDate != null) {
+//			sql.append("registerDate=?,");
+//		}
+//
+//		sql.append("rating=?,");
+//
+//		// 마지막 , 없애고
+//		sql = sql.delete(sql.length() - 1, sql.length());
+//
+//		sql.append(" where prodNum=?");
+//		try {
+//			pstmt = conn.prepareStatement(sql.toString());
+//			// ?채우기
+//			if (category != null) {
+//				cnt++;
+//				pstmt.setString(cnt, this.pwdEncrypt(category));
+//			}
+//			if (storeName != null) {
+//				cnt++;
+//				pstmt.setString(cnt, storeName);
+//			}
+//			if (price != 0) {
+//				cnt++;
+//				pstmt.setInt(cnt, price);
+//			}
+//			pstmt.setInt(++cnt, inventory);
+//
+//			if (description != null) {
+//				cnt++;
+//				pstmt.setString(cnt, description);
+//			}
+//			pstmt.setInt(++cnt, rating);
+//
+//			pstmt.setInt(++cnt, prodNum);
+//			result = pstmt.executeUpdate();
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		this.close(pstmt, conn);
+//
+//		return result;
+//	}
 
 	public ArrayList<OrderVO> viewOrders(String storeName) {
 		ArrayList<OrderVO> list = null;

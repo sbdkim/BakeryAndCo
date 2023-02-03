@@ -386,7 +386,25 @@ public class BakeryCompanyMain {
 													System.out.println("[제품 등록 실패]");
 												}
 											} else if (productMenu == 2) {// 제품수정하기
-
+												//먼저 제품목록 또 보여주기
+												util2.viewStoreProduct(storeName);
+																			
+												//여기에서 수정
+												
+												
+												if(util2.editProduct(sc, storeName)) {
+													System.out.println("제품 수정 완료");
+												}else {
+													System.out.println("제품 수정 실팬");
+												}
+												
+												
+												
+												
+												
+												
+												
+												
 											} else {
 												System.out.println("판매자 메뉴로 다시 돌아갑니다...");
 												productRun = false;
@@ -406,7 +424,7 @@ public class BakeryCompanyMain {
 											System.out.println();
 										}
 									} else if (sellerMenu == 5) {// 회원탈퇴
-										if (util2.delete(sc)) {
+										if (util2.delete(sc, id)) {
 											System.out.println("[회원탈퇴 완료]");
 											System.out.println();
 											sellerRun = false;
