@@ -175,7 +175,7 @@ public class BakeryCompanyMain {
 										while (true) {
 											int regionCode;
 											String sellerID, storeName, category, prodName ;
-											int active, quantity, price; 
+											int active, quantity, price, prodNum = 0; 
 											System.out.println("───────────────────────────────────");
 											System.out.println("[주문하기]");
 											// 충청남도/충청북도/경상북도/경상남도/전라북도/전라남도/제주
@@ -255,7 +255,27 @@ public class BakeryCompanyMain {
 															System.out.println("[장바구니로 이동하셨습니다]");
 															list4 = util.viewCart(); //prints the cart;
 															//CART에 담은거 모든것 출력!!!!!!!!
+															System.out.println("───────────────────────────────────");
+															util.total(list4); //총 개수, 총 금액 출력
+															System.out.println("───────────────────────────────────");
+															result = util.checkout(sc, storeName, id, list4);
+															if(result) {
+																System.out.println("[결제완료!]");
+																util.emptyCart(); 
+																break;
+															}else {
+																System.out.println("[결제실페]");
+																util.emptyCart(); 
+																break;
+															}
 															
+															
+															
+															//총 개수, 총 금액 출력하고 
+															// 카트에 있슨것을 구매 하시겠습니까??/ \Y/N
+															//Y 를 받으면 --> 주문들을 ProductTBL로 넘겨주기
+															
+															//하고 계시는거 - 장바구니에 담으면 producTBL에서 개수 줄기
 															
 															
 
@@ -313,9 +333,10 @@ public class BakeryCompanyMain {
 																			quantity = sc.nextInt();
 																			sc.nextLine();
 																			
-																			int added = util.addToCart(id, prodName, price, quantity);
+																			int added = util.addToCart(id, prodNum, prodName, price, quantity);
 																			if(added == 1) {
 																				System.out.println("[장바구니에 담으쎴습니다]");
+																				
 																			}else {
 																				System.out.println("[장바구니에 담기 실패]");
 																			}

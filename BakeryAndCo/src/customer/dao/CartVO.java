@@ -3,6 +3,7 @@ package customer.dao;
 public class CartVO {
 
 	String userID, prodName;
+	int prodNum;
 	int quantity;
 	int price;
 	
@@ -10,9 +11,10 @@ public class CartVO {
 		super();
 	}
 	
-	public CartVO(String userID, String prodName, int price, int quantity) {
+	public CartVO(String userID, int prodNum, String prodName, int price, int quantity) {
 		super();
 		this.userID = userID;
+		this.prodNum = prodNum;
 		this.prodName = prodName;
 		this.price = price;
 		this.quantity = quantity;
@@ -55,9 +57,17 @@ public class CartVO {
 	}
 	
 	
+	public int getProdNum() {
+		return prodNum;
+	}
+
+	public void setProdNum(int prodNum) {
+		this.prodNum = prodNum;
+	}
+
 	@Override
 	public String toString() {
-		return "CartVO : [ID: "  + userID + ", 제품명: " + prodName + ", 갯수: " + quantity + ", 가격: " + price +"]";
+		return "CartVO : [ID: "  + userID + ", 제품번호: " + prodNum +", 제품명: " + prodName + ", 갯수: " + quantity + ", 가격: " + price +"]";
 	}
 	
 	

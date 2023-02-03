@@ -237,8 +237,8 @@ public class CustomerDAOUtil {
 		return result;
 		
 	}
-	
-	
+	//prints total items in cart and total cost
+
 	
 	
 	
@@ -364,6 +364,57 @@ public class CustomerDAOUtil {
 		}
 		return false;
 	}// update
+	
+	
+	public boolean checkout(Scanner sc, String storeName, String userID,  ArrayList<CartVO> list) {
+		// 아이디 비번 입력
+		boolean result = false;
+		String confirm;
+		System.out.print("[카트에 있는것을 체크아웃하시겠습니까? (Y/N)]:");
+		confirm = sc.nextLine().trim();
+		if(confirm.equals("y") || confirm.equals("Y")) {
+			//여기에서 결재 (cartTBL에서 orderTBL로 넘겨주기);
+
+				result = dao.checkout(storeName, userID,  list);	
+
+		}else {
+			result = false;
+		}
+		return result;
+		
+	}// delete
+	
+	
+	
+	
+	
+	
+	
+	
+	public int total(ArrayList<CartVO> list) {
+		int result =0;
+		int totalItems=0, totalCost=0;
+		if(list!= null) {
+			for(CartVO v: list) {
+				v.getPrice();
+				v.getQuantity();
+				totalItems += v.getQuantity();
+				totalCost += (v.getPrice() * v.getQuantity());
+			}
+			System.out.println("카트에 있는 총 개수: " +totalItems);
+			System.out.println("총 금액: "+ totalCost);
+			
+		}
+		
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -514,10 +565,10 @@ public class CustomerDAOUtil {
 
 	
 	
-	public int addToCart(String userID, String prodName, int price, int quantity) {
+	public int addToCart(String userID, int prodNum, String prodName, int price, int quantity) {
 		int result = 0;
 		
-		result = dao.addCart(userID, prodName, price, quantity);
+		result = dao.addCart(userID, prodNum, prodName, price, quantity);
 		
 		return result;
 	}

@@ -165,6 +165,75 @@ public class CustomerDAO {
 
 		return result;
 	}// writeReview
+	
+	
+
+	
+	
+	
+	
+	
+	
+	//insert into orderTBL
+	public boolean checkout(String storeName, String userID, ArrayList<CartVO> list) {
+		boolean result = false;
+		String prodName, review;
+		int cost, quantity, prodNum;
+		double shippingCost;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "insert into orderTBL  (orderNo, prodNum, prodName, storeName, userID, quantity, cost, shippingCost, review, orderCompleted, orderDate) "
+				+ "values (order_seq.nextval, ?,?,?,?,?,?,?,?, 0, sysdate)";
+		try {
+			
+			// ?채우기
+
+			for(CartVO v : list) {
+				pstmt = conn.prepareStatement(sql);				
+				
+				cost = v.getPrice();
+				quantity = v.getQuantity();
+				prodName = v.getProdName();
+				prodNum = v.getProdNum();
+				shippingCost = cost * 0.2;
+				review = null;
+				
+				pstmt.setInt(1, prodNum);
+				pstmt.setString(2, prodName);
+				pstmt.setString(3, storeName);
+				pstmt.setString(4, userID);
+				pstmt.setInt(5, quantity);
+				pstmt.setInt(6, cost);
+				pstmt.setDouble(7, shippingCost);
+				pstmt.setString(8, review);
+				
+
+				if(pstmt.executeUpdate() ==1) {
+					result = true;
+				}
+			}//for loop
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	// 아직 store에서 완료 안된 주문 출력(미배송)
 
@@ -279,7 +348,7 @@ public class CustomerDAO {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			String sql = null;
-			sql = "select userID, prodName, price, quantity from cartTBL";
+			sql = "select userID, prodNum, prodName, price, quantity from cartTBL";
 			try {
 				pstmt = conn.prepareStatement(sql);		
 				
@@ -289,7 +358,7 @@ public class CustomerDAO {
 					list = new ArrayList<CartVO>();
 					do {
 									
-					list.add(new CartVO(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
+					list.add(new CartVO(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getInt(4), rs.getInt(5)));
 					
 					} while (rs.next());
 				}
@@ -347,6 +416,9 @@ public class CustomerDAO {
 		}
 		return list;
 	}
+	
+
+
 	
 	
 	
@@ -643,18 +715,19 @@ public class CustomerDAO {
 	}// updateCustomer
 	
 	
-	public int addCart(String userID, String prodName, int price, int quantity) {
+	public int addCart(String userID, int prodNum, String prodName, int price, int quantity) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "insert into CartTBL (userID, prodName, price, quantity) values (?,?,?,?) ";
+		String sql = "insert into CartTBL (userID, prodNum, prodName, price, quantity) values (?,?,?,?,?) ";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userID);
-			pstmt.setString(2, prodName);
-			pstmt.setInt(3, price);
-			pstmt.setInt(4, quantity);
+			pstmt.setInt(2, prodNum);
+			pstmt.setString(3, prodName);
+			pstmt.setInt(4, price);
+			pstmt.setInt(5, quantity);
 			
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
