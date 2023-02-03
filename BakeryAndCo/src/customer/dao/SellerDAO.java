@@ -189,310 +189,15 @@ public class SellerDAO {
 		return result;
 	} // createSeller
 
-	// product을 등록하려면 등록할떄 필요한 필드들을 다 입력 받아서 sql문에 넣어야 한다.
-	public int registerProduct(String category, String storeName, String prodName, int price, int inventory,
-			String description) {
-		int result = 0;
-		Connection conn = this.getConnection();
-		String sql = null;
-		sql = "insert into productTBL(prodNum, category, storeName, prodName, price, inventory, description, registerDate) "
-				+ "values (prod_seq.nextval, ?, ?,?,?,?,?, sysdate)";
-
-		PreparedStatement pstmt = null;
-		try {
-			// 4. PreparedStatement 객체 생성하기
-			pstmt = conn.prepareStatement(sql);
-			// 5. ? 값 설정하기
-			pstmt.setString(1, category);
-			pstmt.setString(2, storeName);
-			pstmt.setString(3, prodName);
-			pstmt.setInt(4, price);
-			pstmt.setInt(5, inventory);
-			pstmt.setString(6, description);
-
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.close(pstmt, conn);
-		}
-		return result;
-	}
-
-	public ArrayList<ProductVO> viewProducts(String storeName) {
-		ArrayList<ProductVO> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "select prodNum,category,storeName,prodName,price,inventory,description,registerDate,rating from productTBL where storeName = ? order by prodNum";
-		ProductVO vo = null;
-		// 3. PreparedStatement 객체생성
-		try {
-			pstmt = conn.prepareStatement(sql);
-			// ? 채우기 x
-			pstmt.setString(1, storeName);
-			// 쿼리문 전송 결과 받기
-			rs = pstmt.executeQuery();
-			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
-				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
-				do {
-					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
-							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
-							rs.getString("description"), rs.getDate("registerDate"), rs.getInt("rating"));
-					list.add(vo);// ArrayList에 vo 객체 담기
-				} while (rs.next());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			this.close(rs, pstmt, conn);
-		}
-		return list;
-	}
-
-//view all order 
-	public ArrayList<OrderVO> viewOrder(String storeName) {
-		ArrayList<OrderVO> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "select * from orderTBL where storeName = ?";
-		OrderVO vo = null;
-
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, storeName);
-			rs = pstmt.executeQuery();
-
-			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
-				list = new ArrayList<OrderVO>();// ArrayList 객체 생성
-				do {
-					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
-							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
-							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
-							rs.getDate("orderDate"));
-					list.add(vo);// ArrayList에 vo 객체 담기
-				} while (rs.next());
-			}
-
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		} finally {
-			this.close(rs, pstmt, conn);
-		}
-
-		return list;
-	}// viewOrder
-
-	
-	
-	
-//editProduct
-	public int editProduct(int prodNum, int price, int inventory, String storeName, String prodName, String description,
-			String category) {
-		int result = 0;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		StringBuilder sql = new StringBuilder("update productTBL set ");
-		int cnt = 0;
-		if (price != -1) {
-			sql.append("price=?,");
-		}
-		if (inventory != -1) {
-			sql.append("inventory=?,");
-		}
-		if (storeName != null) {
-			sql.append("storeName=?,");
-		}
-		if (description != null) {
-			sql.append("description=?,");
-		}
-		if (category != null) {
-			sql.append("category=?,");
-		}
-		sql = sql.delete(sql.length() - 1, sql.length());
-		sql.append(" where prodNum=?");
-		try {
-			pstmt = conn.prepareStatement(sql.toString());
-			if (price != -1) {
-				cnt++;
-				pstmt.setInt(cnt, price);
-			}
-			if (inventory != -1) {
-				cnt++;
-				pstmt.setInt(cnt, inventory);
-			}
-			if (storeName != null) {
-				cnt++;
-				pstmt.setString(cnt, storeName);
-			}
-			if (description != null) {
-				cnt++;
-				pstmt.setString(cnt, description);
-			}
-			if (category != null) {
-				cnt++;
-				pstmt.setString(cnt, category);
-			}
-			pstmt.setInt(++cnt, prodNum);
-			result = pstmt.executeUpdate();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return result;
-	}// editProduct
-
-//id랑 pwd받아서 sellerTBL에 seller계정을 active(false -0)으로 update한다
-	public int SellerDelete(String sellerID, String pwd) {
-		int result = 0;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		String sql = "update sellerTBL set active = '0' where SellerID=? and pwd=?";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, sellerID);
-			pstmt.setString(2, pwdEncrypt(pwd));
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-
-		return result;
-	}
-	
-	
-	
-	
-	public int deleteProduct(int prodNum) {
-		int result = 0;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		String sql = "delete from productTBL where prodNum = ? ";
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, prodNum);
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.close(pstmt, conn);
-		return result;	
-	}
-	
-	
-	
-	
-	
 	
 
-//	public int editProduct(int prodNum, String category, String storeName, String prodName, int price, int inventory,
-//			String description, Date registerDate, int rating) {
-//		int result = 0;
-//		Connection conn = this.getConnection();
-//		PreparedStatement pstmt = null;
-//		StringBuilder sql = new StringBuilder("update Producttbl set ");
-//		int cnt = 0;// 수정 필드(열) 개수
-//		if (category != null) {
-//			sql.append("category=?,");
-//		}
-//		if (storeName != null) {
-//			sql.append("storeName=?,");
-//		}
-//		if (prodName != null) {
-//			sql.append("prodName=?,");
-//		}
-//		if (price != 0) {
-//			sql.append("price=?,");
-//		}
-//
-//		sql.append("inventory=?,");
-//
-//		if (description != null) {
-//			sql.append("description=?,");
-//		}
-//		if (registerDate != null) {
-//			sql.append("registerDate=?,");
-//		}
-//
-//		sql.append("rating=?,");
-//
-//		// 마지막 , 없애고
-//		sql = sql.delete(sql.length() - 1, sql.length());
-//
-//		sql.append(" where prodNum=?");
-//		try {
-//			pstmt = conn.prepareStatement(sql.toString());
-//			// ?채우기
-//			if (category != null) {
-//				cnt++;
-//				pstmt.setString(cnt, this.pwdEncrypt(category));
-//			}
-//			if (storeName != null) {
-//				cnt++;
-//				pstmt.setString(cnt, storeName);
-//			}
-//			if (price != 0) {
-//				cnt++;
-//				pstmt.setInt(cnt, price);
-//			}
-//			pstmt.setInt(++cnt, inventory);
-//
-//			if (description != null) {
-//				cnt++;
-//				pstmt.setString(cnt, description);
-//			}
-//			pstmt.setInt(++cnt, rating);
-//
-//			pstmt.setInt(++cnt, prodNum);
-//			result = pstmt.executeUpdate();
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		this.close(pstmt, conn);
-//
-//		return result;
-//	}
+	
 
-	public ArrayList<OrderVO> viewOrders(String storeName) {
-		ArrayList<OrderVO> list = null;
-		Connection conn = this.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "select * from ordertbl where storeName = ? order by orderDate";
-		OrderVO vo = null;
-		// 3. PreparedStatement 객체생성
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, storeName);
-			// 쿼리문 전송 결과 받기
-			rs = pstmt.executeQuery();
-			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
-				list = new ArrayList<OrderVO>();// ArrayList 객체 생성
-				do {
-					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
-							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
-							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
-							rs.getDate("orderDate"));
-					list.add(vo);// ArrayList에 vo 객체 담기
-				} while (rs.next());
-			}
-		} catch (SQLException e) {
-			// e.printStackTrace();
-		} finally {
-			this.close(rs, pstmt, conn);
-		}
-		return list;
 
-	}
 
+	
+	//***********************************SELLER********************************************************
+	
 	public boolean selectSeller(String sellerID) {
 		boolean result = false;
 		Connection conn = this.getConnection();
@@ -585,7 +290,101 @@ public class SellerDAO {
 
 		return result;
 	}// updateCustomer
+	
+	//*********************************** PRODUCT********************************************************
 
+
+	
+
+//id랑 pwd받아서 sellerTBL에 seller계정을 active(false -0)으로 update한다
+	public int SellerDelete(String sellerID, String pwd) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update sellerTBL set active = '0' where SellerID=? and pwd=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, sellerID);
+			pstmt.setString(2, pwdEncrypt(pwd));
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;
+	}
+	
+	//***********************************ORDER********************************************************
+//	//view all order 
+//		public ArrayList<OrderVO> viewOrder(String storeName) {
+//			ArrayList<OrderVO> list = null;
+//			Connection conn = this.getConnection();
+//			PreparedStatement pstmt = null;
+//			ResultSet rs = null;
+//			String sql = "select * from orderTBL where storeName = ?";
+//			OrderVO vo = null;
+//
+//			try {
+//				pstmt = conn.prepareStatement(sql);
+//				pstmt.setString(1, storeName);
+//				rs = pstmt.executeQuery();
+//
+//				if (rs.next()) {// 읽은튜플이 하나이상 있는가?
+//					list = new ArrayList<OrderVO>();// ArrayList 객체 생성
+//					do {
+//						vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
+//								rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
+//								rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
+//								rs.getDate("orderDate"));
+//						list.add(vo);// ArrayList에 vo 객체 담기
+//					} while (rs.next());
+//				}
+//
+//			} catch (SQLException e) {
+//
+//				e.printStackTrace();
+//			} finally {
+//				this.close(rs, pstmt, conn);
+//			}
+//
+//			return list;
+//		}// viewOrder
+
+	
+	//SELLER MENU 1 - [1] 주문목록
+	public ArrayList<OrderVO> viewOrders(String storeName) {
+		ArrayList<OrderVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select * from ordertbl where storeName = ? order by orderDate";
+		OrderVO vo = null;
+		// 3. PreparedStatement 객체생성
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, storeName);
+			// 쿼리문 전송 결과 받기
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
+				list = new ArrayList<OrderVO>();// ArrayList 객체 생성
+				do {
+					vo = new OrderVO(rs.getInt("orderNo"), rs.getInt("prodNum"), rs.getString("prodName"),
+							rs.getString("storeName"), rs.getString("userID"), rs.getInt("quantity"), rs.getInt("cost"),
+							rs.getString("shippingCost"), rs.getString("review"), rs.getInt("orderCompleted"),
+							rs.getDate("orderDate"));
+					list.add(vo);// ArrayList에 vo 객체 담기
+				} while (rs.next());
+			}
+		} catch (SQLException e) {
+			// e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+
+	}
+	//SELLER MENU 2 - [2] 고객목록
 	public ArrayList<CustomerVO> viewCustomers(String storeName) {
 		ArrayList<CustomerVO> list = null;
 		Connection conn = this.getConnection();
@@ -616,5 +415,149 @@ public class SellerDAO {
 		}
 		return list;
 	}
+
+	//SELLER MENU 3 - [3] 제품 목록
+	public ArrayList<ProductVO> viewProducts(String storeName) {
+		ArrayList<ProductVO> list = null;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select prodNum,category,storeName,prodName,price,inventory,description,registerDate,rating from productTBL where storeName = ? order by prodNum";
+		ProductVO vo = null;
+		// 3. PreparedStatement 객체생성
+		try {
+			pstmt = conn.prepareStatement(sql);
+			// ? 채우기 x
+			pstmt.setString(1, storeName);
+			// 쿼리문 전송 결과 받기
+			rs = pstmt.executeQuery();
+			if (rs.next()) {// 읽은튜플이 하나이상 있는가?
+				list = new ArrayList<ProductVO>();// ArrayList 객체 생성
+				do {
+					vo = new ProductVO(rs.getInt("prodNum"), rs.getString("category"), rs.getString("storeName"),
+							rs.getString("prodName"), rs.getInt("price"), rs.getInt("inventory"),
+							rs.getString("description"), rs.getDate("registerDate"), rs.getInt("rating"));
+					list.add(vo);// ArrayList에 vo 객체 담기
+				} while (rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(rs, pstmt, conn);
+		}
+		return list;
+	}
+	
+	
+	//SELLER MENU 3 [3] 제품 목록 - PRODUCT MENU 1 - [1] 제품등록
+		public int registerProduct(String category, String storeName, String prodName, int price, int inventory,
+				String description) {
+			int result = 0;
+			Connection conn = this.getConnection();
+			String sql = null;
+			sql = "insert into productTBL(prodNum, category, storeName, prodName, price, inventory, description, registerDate) "
+					+ "values (prod_seq.nextval, ?, ?,?,?,?,?, sysdate)";
+
+			PreparedStatement pstmt = null;
+			try {
+				// 4. PreparedStatement 객체 생성하기
+				pstmt = conn.prepareStatement(sql);
+				// 5. ? 값 설정하기
+				pstmt.setString(1, category);
+				pstmt.setString(2, storeName);
+				pstmt.setString(3, prodName);
+				pstmt.setInt(4, price);
+				pstmt.setInt(5, inventory);
+				pstmt.setString(6, description);
+
+				result = pstmt.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				this.close(pstmt, conn);
+			}
+			return result;
+		}
+		
+		//SELLER MENU 3 [3] 제품 목록 - PRODUCT MENU 1 - [2] 제품수정
+		public int editProduct(int prodNum, int price, int inventory, String storeName, String prodName, String description,
+				String category) {
+			int result = 0;
+			Connection conn = this.getConnection();
+			PreparedStatement pstmt = null;
+			StringBuilder sql = new StringBuilder("update productTBL set ");
+			int cnt = 0;
+			if (price != -1) {
+				sql.append("price=?,");
+			}
+			if (inventory != -1) {
+				sql.append("inventory=?,");
+			}
+			if (storeName != null) {
+				sql.append("storeName=?,");
+			}
+			if (description != null) {
+				sql.append("description=?,");
+			}
+			if (category != null) {
+				sql.append("category=?,");
+			}
+			sql = sql.delete(sql.length() - 1, sql.length());
+			sql.append(" where prodNum=?");
+			try {
+				pstmt = conn.prepareStatement(sql.toString());
+				if (price != -1) {
+					cnt++;
+					pstmt.setInt(cnt, price);
+				}
+				if (inventory != -1) {
+					cnt++;
+					pstmt.setInt(cnt, inventory);
+				}
+				if (storeName != null) {
+					cnt++;
+					pstmt.setString(cnt, storeName);
+				}
+				if (description != null) {
+					cnt++;
+					pstmt.setString(cnt, description);
+				}
+				if (category != null) {
+					cnt++;
+					pstmt.setString(cnt, category);
+				}
+				pstmt.setInt(++cnt, prodNum);
+				result = pstmt.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			this.close(pstmt, conn);
+
+			return result;
+		}// editProduct
+		
+		//SELLER MENU 3 [3] 제품 목록 - PRODUCT MENU 1 - [3]  제품삭제
+		public int deleteProduct(int prodNum) {
+			int result = 0;
+			Connection conn = this.getConnection();
+			PreparedStatement pstmt = null;
+			String sql = "delete from productTBL where prodNum = ? ";
+			
+			try {
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, prodNum);
+				result = pstmt.executeUpdate();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.close(pstmt, conn);
+			return result;	
+		}
+		
+		
+		
+		
 
 }// sellerDAO
