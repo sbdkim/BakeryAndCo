@@ -1,19 +1,14 @@
-package customer.dao;
+package examc;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
-  
-public class CustomerDAO {
 
+public class CustDAO {
 	static {
 		try {
 			Class.forName("oracle.jdbc.OracleDriver");
@@ -22,19 +17,18 @@ public class CustomerDAO {
 			System.exit(0);
 		}
 	}
+	public static CustDAO dao = null;
 
-	public static CustomerDAO dao = null;
-
-	private CustomerDAO() {
+	private CustDAO() {
 	}
 
-	public static CustomerDAO getInstance() {
+	public static CustDAO getInstance() {
 		if (dao == null) {
-			dao = new CustomerDAO();
+			dao = new CustDAO();
 		}
 		return dao;
 	}
-
+	
 	private Connection getConnection() {
 		Connection conn = null;
 		String url = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -72,41 +66,19 @@ public class CustomerDAO {
 		}
 	}
 	
-
-	private String pwdEncrypt(String password) {
-		MessageDigest md = null;
-		String encrypted = "";
-		try {
-			md = MessageDigest.getInstance("SHA-256");
-			md.update(password.getBytes());
-			encrypted = String.format("%064x", new BigInteger(1, md.digest()));
-			// System.out.println(hex);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		return encrypted;
-	}
-	//메소드 여기에 추가 
-	
-	public int createCustomer(String userID, String password, String name, String mobile, String addr) {
+	//cust회원가입 완료
+	public int createCust(String id, String pwd, String name, String mobile) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		String sql = null;
-		if (addr == null) {
-			sql = "insert into customerTBL(userID, pwd, name, mobile, enrolldate)" + " values (?,?,?,?, sysdate)";
-		} else {
-			sql = "insert into customerTBL(userID, pwd, name, mobile, addr, enrolldate)" + " values (?,?,?,?,?, sysdate)";
-		}
+			sql = "insert into cust values (?,?,?,?)";
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, userID);
-			pstmt.setString(2, pwdEncrypt(password));
+			pstmt.setString(1, id);
+			pstmt.setString(2, pwd);
 			pstmt.setString(3, name);
 			pstmt.setString(4, mobile);
-			if (addr != null)
-				pstmt.setString(5, addr);
-			// 쿼리문 전송+결과 받기
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -114,33 +86,30 @@ public class CustomerDAO {
 			this.close(pstmt, conn);
 		}
 		return result;
+		
+		
 	} // customerTBLInsert
 	
 	
 		//고객 조회
-		public ArrayList<CustomerVO> selectCustomerALL(){
-			ArrayList<CustomerVO> list =null;
+		public ArrayList<CustVO> selectCustALL(){//
+			ArrayList<CustVO> list =null;
 			Connection conn = this.getConnection();
 			PreparedStatement pstmt=null;	
 			ResultSet rs=null;
-			CustomerVO vo=null;
-			String sql="select * from CustomerTBL order by userID";
-			//userID,pwd,name,birthDate,mobile,email,addr,active,enrolldate 
-			//3. PreparedStatement 객체생성
+			CustVO vo=null;
+			String sql="select * from cust";   //order by id
 			try {
 				pstmt=conn.prepareStatement(sql);
 				//? 채우기 x
 				// 쿼리문 전송 결과 받기
 				rs=pstmt.executeQuery();
 				if(rs.next()) {//읽은튜플이 하나이상 있는가?
-					list=new ArrayList<CustomerVO>();//ArrayList 객체 생성
+					list=new ArrayList<CustVO>();//ArrayList 객체 생성
 					do {
-						vo=new CustomerVO(rs.getString("userID") ,  rs.getString("name") , rs.getString("pwd") ,
-								rs.getString("birthDate") , rs.getString("email")  , rs.getString("mobile"),
-								rs.getString("addr") ,rs.getInt("active") ,rs.getDate("enrollDate") );
-						//String userID, String pwd, String name, String birthDate, String mobile, String email, String addr,
-						//int active, Timestamp enrollDate
-						list.add(vo);//ArrayList에 vo 객체 담기
+						vo=new CustVO(rs.getString("id") ,  rs.getString("pwd") , rs.getString("name") ,
+								rs.getString("mobile") ,rs.getInt("active") );
+						list.add(vo);
 					}while(rs.next());
 				}
 			} catch (SQLException e) {
@@ -152,20 +121,40 @@ public class CustomerDAO {
 		}
 		
 		//고객 조회
-			public CustomerVO selectCustomer(String userID,String pwd){
-				CustomerVO vo=null;
+		public CustVO selectCust(){
+			CustVO vo=null;
+			Connection conn = this.getConnection();
+			PreparedStatement pstmt=null;	
+			ResultSet rs=null;
+			String sql="select * from Cust";
+			try {
+				pstmt=conn.prepareStatement(sql);
+				rs=pstmt.executeQuery();
+				if(rs.next()) {
+					vo=new CustVO(rs.getString(1) , rs.getString(2) , rs.getString(3) , rs.getString(4) );
+					}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}finally {
+				this.close(rs, pstmt, conn);
+			}
+			return vo;
+		}
+		
+		
+		
+			public CustVO selectCust(String id,String pwd){
+				CustVO vo=null;
 				Connection conn = this.getConnection();
 				PreparedStatement pstmt=null;	
 				ResultSet rs=null;
-				String sql="select userID,pwd,name,email,mobile,addr,birthDate,enrollDate from CustomerTBL where userID=? and pwd=?";
+				String sql="select * from Cust where id=? and pwd=?";
 				try {
 					pstmt=conn.prepareStatement(sql);
-					pstmt.setString(1, userID);pstmt.setString(2, pwdEncrypt(pwd));
-					// 쿼리문 전송 결과 받기
+					pstmt.setString(1, id);pstmt.setString(2, pwd);
 					rs=pstmt.executeQuery();
-					if(rs.next()) {//읽은튜플이 하나이상 있는가?
-						vo=new CustomerVO(rs.getString(1) , rs.getString(2) , rs.getString(3) , rs.getString(4) ,
-								rs.getString(5)  , rs.getString(6), rs.getInt(7) ,rs.getDate(8) );
+					if(rs.next()) {
+						vo=new CustVO(rs.getString(1) , rs.getString(2) , rs.getString(3) , rs.getString(4) );
 						}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -176,17 +165,17 @@ public class CustomerDAO {
 			}
 			
 			//id로 검색  이미 사용중인 id true반환, 없으면 false 반환
-			public boolean selectCustomer(String userID) {
+			public boolean selectCust(String id) {
 				boolean result=false;
 				Connection conn=this.getConnection();
 				PreparedStatement pstmt=null;	
 				ResultSet rs=null;
-				String sql=	"select userID from customertbl where userID=? ";
+				String sql=	"select id from cust where id=? ";
 				//3. PreparedStatement 객체생성
 				try {
 					pstmt=conn.prepareStatement(sql);
 					//? 채우기
-					pstmt.setString(1, userID);
+					pstmt.setString(1, id);
 					// 쿼리문 전송 결과 받기
 					rs=pstmt.executeQuery();
 					if(rs.next()) {//읽은튜플이 있는가?	
@@ -203,24 +192,19 @@ public class CustomerDAO {
 			
 		
 			//Create Customer .. 회원가입
-			public int insertCustomer(String userID, String pwd, String name, String birthDate, String mobile, String email, String addr,
-					int active, Date enrollDate) {
+			public int insertCust(String id, String pwd, String name, String mobile) {
 				int result=0;
 				Connection conn=this.getConnection();
 				PreparedStatement pstmt=null;	
 				String sql=null;
-					sql="insert into customertbl(userID, pwd, name, email, mobile,  addr, birthDate, enrollDate)";
-					sql+=" values(?,?,?,?,?,?,?,?,sysdate)";
+					sql="insert into cust values(id, pwd, name,  mobile)";
 				try {
 					pstmt=conn.prepareStatement(sql);
 					//?채우기
-					pstmt.setString(1, userID);
-					pstmt.setString(2, pwdEncrypt(pwd));
+					pstmt.setString(1, id);
+					pstmt.setString(2, pwd);
 					pstmt.setString(3, name);
-					pstmt.setString(5, email);
-					pstmt.setString(6, mobile);
-					pstmt.setString(7, addr);
-					pstmt.setString(8, birthDate);
+					pstmt.setString(4, mobile);
 					result=pstmt.executeUpdate();
 					
 				} catch (SQLException e) {
@@ -230,18 +214,17 @@ public class CustomerDAO {
 				return result;
 			}
 			
-			//비밀번호 바꾸기 or 초기화 //update
-			public int passwordReset(String UserID,String pwd) {
+			public int passwordReset(String id,String pwd) {
 				int result=0;
 				
 				Connection conn=this.getConnection();
 				PreparedStatement pstmt=null;	
-				String sql="update customertbl set pwd=? where id=?";
+				String sql="update cust set pwd=? where id=?";
 				try {
 					pstmt=conn.prepareStatement(sql);
 					//?채우기			
-					pstmt.setString(1, pwdEncrypt(pwd));
-					pstmt.setString(2, UserID);
+					pstmt.setString(1, pwd);
+					pstmt.setString(2, id);
 					result=pstmt.executeUpdate();			
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -253,16 +236,16 @@ public class CustomerDAO {
 			
 
 //			- unregisterCustomer
-			public int CustomerDelete(String userID,String pwd) {
+			public int CustDelete(String id,String pwd) {
 				int result=0;
 				Connection conn=this.getConnection();
 				PreparedStatement pstmt=null;	
-				String sql="delete from customerTBL where userID=? and pwd=?";
+				String sql="delete from cust where id=? and pwd=?";
 				try {
 					pstmt=conn.prepareStatement(sql);
 					//?채우기
-					pstmt.setString(1, userID);
-					pstmt.setString(2, pwdEncrypt(pwd));
+					pstmt.setString(1, id);
+					pstmt.setString(2, pwd);
 					result=pstmt.executeUpdate();
 					
 				} catch (SQLException e) {
@@ -275,11 +258,11 @@ public class CustomerDAO {
 			
 			
 //			- updateCustomer// 
-			public int updateCustomer(String userID,  String pwd, String name,  String email, String  mobile, String addr) {
+			public int updateCust(String id,  String pwd, String name,   String  mobile) {
 				int result=0;
 				Connection conn=this.getConnection();
 				PreparedStatement pstmt=null;	
-				StringBuilder sql=new StringBuilder("update customerTBL set ");
+				StringBuilder sql=new StringBuilder("update cust set ");
 				int cnt=0;//수정 필드(열) 개수
 				if(pwd!=null) {			
 					sql.append("pwd=?,");
@@ -287,21 +270,9 @@ public class CustomerDAO {
 				if(name!=null) {
 					sql.append("name=?,");
 				}
-				
-				if(email!=null) {
-					sql.append("email=?,");
-				}//email
 				if(mobile!=null) {
 					sql.append("mobile=?,");
 				}
-				
-				if(addr!=null) {
-					sql.append("addr=?,");
-				}
-//				if(birthDate!=null) {
-//					sql.append("birthDate=?,");
-//				}//birthDate
-				
 				//마지막 , 없애고 
 				sql=sql.delete(sql.length()-1, sql.length());
 				//where 이하 붙이기
@@ -311,26 +282,18 @@ public class CustomerDAO {
 					//?채우기
 					if(pwd!=null) {
 						cnt++;
-						pstmt.setString(cnt, this.pwdEncrypt(pwd));
+						pstmt.setString(cnt, pwd);
 					}
 					if(name!=null) {
 						cnt++;
 						pstmt.setString(cnt,name);
 					}
 					
-					if(email!=null) {
-						cnt++;
-						pstmt.setString(cnt,email);
-					}
 					if(mobile!=null) {
 						cnt++;
 						pstmt.setString(cnt,mobile);
 					}
-					if(addr!=null) {
-						cnt++;
-						pstmt.setString(cnt,addr);
-					}
-					pstmt.setString(++cnt, userID);
+					pstmt.setString(++cnt, id);
 					result=pstmt.executeUpdate();
 					
 				} catch (SQLException e) {
@@ -340,27 +303,23 @@ public class CustomerDAO {
 				
 				return result;
 			}
-			
-			
-			//회원탈퇴를 active에 1이었던 것을 0으로 변경
-			public int unregisterCustomer(String userID,  String pwd) {
+	
+			public int updateCust(String id,  String pwd) {
 				int result=0;
 				Connection conn=this.getConnection();
 				PreparedStatement pstmt=null;	
-				String sql="update customerTBL set active = 0 where userid = ? and pwd = ?";
+				String sql="update cust set active = 0 where id = ? ";
 				try {
 					pstmt=conn.prepareStatement(sql);
-					pstmt.setString(1, userID);
-					pstmt.setString(2, pwdEncrypt(pwd));
+					pstmt.setString(1, id);
 					result=pstmt.executeUpdate();
 					
 				} catch (SQLException e) {
 					e.printStackTrace();
-				}finally {
-					this.close(pstmt, conn);			
 				}
+				this.close(pstmt, conn);			
+				
 				return result;
 			}
-			
-
+	
 }

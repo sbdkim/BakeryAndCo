@@ -8,7 +8,7 @@ public class CustomerVO {
 		private String userID, pwd, name, email, mobile, addr, birthDate;
 		
 		private int active;
-		private Timestamp enrollDate;
+		private Date enrollDate;
 
 		// constructors
 		public CustomerVO() {
@@ -16,7 +16,7 @@ public class CustomerVO {
 		}
 
 		public CustomerVO(String userID, String pwd, String name, String birthDate, String mobile, String email, String addr,
-				int active, Timestamp enrollDate) {
+				int active, Date enrollDate) {
 			super();
 			this.userID = userID;
 			this.pwd = pwd;
@@ -30,7 +30,7 @@ public class CustomerVO {
 		}
 
 		public CustomerVO(String userID, String name, String birthDate, String mobile, String email, String addr, int active,
-				Timestamp enrollDate) {
+				Date enrollDate) {
 			super();
 			this.userID = userID;
 			this.name = name;
@@ -98,7 +98,7 @@ public class CustomerVO {
 			this.birthDate = birthDate;
 		}
 
-		public Timestamp getEnrollDate() {
+		public Date getEnrollDate() {
 			return enrollDate;
 		}
 

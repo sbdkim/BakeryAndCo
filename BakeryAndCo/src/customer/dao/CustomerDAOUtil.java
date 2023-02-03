@@ -124,7 +124,7 @@ public class CustomerDAOUtil {
 					userID=sc.nextLine().trim();
 					if(userID.length()==0) return false;
 					System.out.print("패스워드>>");
-					password=sc.nextLine().trim();	
+					password=sc.nextLine().trim();
 					vo=dao.selectCustomer(userID, password);
 					if(vo==null) {
 						System.out.println("없는 사용자 입니다.");
@@ -280,7 +280,7 @@ public class CustomerDAOUtil {
 			}
 			
 			///회원탈퇴로 active 1--> 0 변경.
-			public boolean unregisterCustomer(Scanner sc) {
+			public void unregisterCustomer(Scanner sc) {
 				//아이디 비번 입력
 				String id,password;
 				//아이디 패스워드 입력 받기
@@ -288,12 +288,40 @@ public class CustomerDAOUtil {
 				id=sc.nextLine().trim();
 				System.out.print("패스워드>>");
 				password=sc.nextLine().trim();		
-				if(dao.unregisterCustomer(id, password)==1) {
+				dao.unregisterCustomer(id, password);
 					System.out.println(id+ " 님 회원 탈퇴가 완료되었습니다. 이용해주셔서 감사합니다.");
-					return true;
-					}
-				else return false;
 			}
+			
+			
+			//회정정보 조회 id,password 입력받아서 있으면 출력 해주고 true 반환, 그렇지않으면 false반환
+			public boolean showCustomer(Scanner sc) {
+				String id,password;
+				//아이디 패스워드 입력 받기
+				System.out.print("사용자 ID>>");
+				id=sc.nextLine().trim();
+				System.out.print("패스워드>>");
+				password=sc.nextLine().trim();		
+				CustomerVO vo=null;
+				//dao 에 있는 dao.selectMember(String id, String password)
+				vo=dao.selectCustomer(id,password);
+				//없으면 false return		
+				if(vo==null)return false;
+				//있으면 출력 true return
+				System.out.println("----- 회원 정보 -----");
+				System.out.println("아이디 : "+vo.getUserID());
+				System.out.println("이름  : "+vo.getName());
+				System.out.println("전화번호 : "+vo.getMobile());
+				if(vo.getAddr()!=null)
+					System.out.println("주소 : "+vo.getAddr());
+//				if(vo.getActive()==1)
+//					System.out.println("등급 : 일반사용자");
+//				else System.out.println("등급 : 관리자");
+				System.out.println("----- 회원 정보 끝 -----");
+				return true;
+			}
+			
+			
+			
 			
 	
 	

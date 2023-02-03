@@ -1,8 +1,6 @@
 package customer.dao;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
  
@@ -11,9 +9,8 @@ public class BakerCompanyMain {
 	public static void main(String[] args) {
 		int menu = 0;
 		CustomerDAO dao = CustomerDAO.getInstance();
-		ProductDAO pdao=ProductDAO.getInstance();
-		OrderDAO ordao=OrderDAO.getInstance();
 		
+		ArrayList<CustomerVO> cvo = null;
 		ArrayList<ProductVO> pvo = null;
 		
 		CustomerDAOUtil util = new CustomerDAOUtil();
@@ -24,11 +21,13 @@ public class BakerCompanyMain {
 //		String userID=null, pwd=null,  name=null,  gender=null,  email=null, mobile=null, addr=null;
 //		Date birthDate=null;
 //		Timestamp enrollDate=null ;
- 
+		
 		while (true) {
 			System.out.println("-----Bread & Co. Main Menu -----");
 			System.out.println("[1] 회원가입");
 			System.out.println("[2] 로그인");
+			System.out.println("[3] 부분조회");
+			System.out.println("[4] 모두조회");
 			System.out.println("---------------------------------");
 			System.out.print("[번호를 선택하세요]: ");
 			try {
@@ -43,7 +42,6 @@ public class BakerCompanyMain {
 			if (menu == 0)
 				break;
 			switch (menu) {
-
 			case 1: //회원가입
 				util.createCustomer(sc);
 				break;
@@ -53,54 +51,27 @@ public class BakerCompanyMain {
 					if(map!=null) {
 						id=map.get("userID");
 						name=map.get("name");
-						System.out.println(name+"님 로그인 성공");				
+						System.out.println(name+"님 로그인 성공");		
+						CustomerVO vo = dao.selectCustomer(id, name);
+						System.out.println(vo.toString());
 					}
 					else System.out.println("로그인 실패");
 				}else {//로그아웃
 					id=null;name=null;isJoin=false;
 				}
 				
-				//로그인 이후 진행
-				System.out.println("------------------");
-				System.out.println("상점목록");
-				System.out.println("1. 파리바게트");
-				System.out.println("2. 뚜레쥬르");
-				System.out.println("------------------");
-				System.out.println("3. 회원탈퇴");
-				System.out.println("------------------");
-				int submenu=0;
-				System.out.print("상점 선택 (1,2)>>");
-				submenu = sc.nextInt();sc.nextLine();
-				if(submenu==1) {//파리바게트
-					pvo = pdao.selectProductALL();
-					if(pvo!=null)
-						for(ProductVO v : pvo)
-							System.out.println(v.toString());
-				}else if(submenu==2) {
-					
-				}else if(submenu==3) {
-					util.unregisterCustomer(sc);
-				}
-				
-				
-				break;
-				
-				
-				
-				
-				
-				
-				
 			case 3 : 
-				
+				if(util.showCustomer(sc))System.out.println("조회성공");
+				else System.out.println("조회실패");
 				break;
+				
 			case 4 : 
+				cvo=dao.selectCustomerALL();
+				System.out.println(cvo);
 				
 				break;
-			case 5 : 
-				
-				break;
-				
+//			case 5 : 
+//				break;
 			}
 
 		} // end of while
