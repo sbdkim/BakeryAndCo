@@ -484,10 +484,6 @@ public class CustomerDAOUtil {
 	
 	
 	
-	
-
-	
-	
 	public int addToCart(String userID, String prodName, int price, int quantity) {
 		int result = 0;
 		
@@ -504,7 +500,13 @@ public class CustomerDAOUtil {
 		return result;
 	}
 	
-	
+	public int plusToProduct(String prodName, int inventory) {
+		int result = 0;
+		
+		result = dao.plusProduct(prodName, inventory);
+		
+		return result;
+	}
 
 
 

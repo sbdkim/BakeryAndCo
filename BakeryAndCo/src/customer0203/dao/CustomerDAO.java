@@ -643,7 +643,25 @@ public class CustomerDAO {
 		return result;		
 	}
 	
-	
+	public int plusProduct(String prodName, int quantity) {
+		int result = 0 ;
+		Connection conn = this.getConnection();
+		PreparedStatement pstmt = null;
+		String sql = "update productTBL set inventory = inventory+? where prodName=?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, quantity);
+				pstmt.setString(2, prodName);
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		this.close(pstmt, conn);
+
+		return result;		
+	}
 	
 	
 

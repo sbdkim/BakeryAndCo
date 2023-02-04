@@ -9,6 +9,7 @@ public class BakeryCompanyMain {
 
 	public static void main(String[] args) {
 		int menu = 0;
+		String smenu;
 		boolean entireProgram = true;
 		Scanner sc = new Scanner(System.in);
 		CustomerDAOUtil util = new CustomerDAOUtil();
@@ -25,21 +26,19 @@ public class BakeryCompanyMain {
 				System.out.println("--------Bread & Co. Main Menu -----");
 				System.out.println("───────────────────────────────────");
 				if (!isJoin)
-					System.out.println("[1] 로그인");
+				System.out.println("[1] 로그인");
 				System.out.println("[2] 회원가입");
 				System.out.println("[0] Bread & Co. 종료");
 				System.out.println("───────────────────────────────────");
 
 				System.out.print("[번호를 선택하세요]: ");
 			}
-
 			try {
-				menu = sc.nextInt();
-				sc.nextLine();
+				smenu=sc.nextLine();//menu = sc.nextInt();sc.nextLine();
+				menu = Integer.parseInt(smenu);
 			} catch (Exception e) {
 				System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 				// e.printStackTrace();
-				sc.nextLine();
 				continue;
 			}
 			if (menu == 0) {
@@ -50,6 +49,7 @@ public class BakeryCompanyMain {
 			if (menu == 1) {
 
 				int subMenu;// subMenu for 로그인
+				String ssubMenu;
 				while (loginBoolean) {
 					System.out.println("───────────────────────────────────");
 					System.out.println("[로그인]");
@@ -60,13 +60,11 @@ public class BakeryCompanyMain {
 					System.out.print("[로그인 하실 메뉴를 선택하세요]: ");
 
 					try {
-
-						subMenu = sc.nextInt();
-						sc.nextLine();
+						ssubMenu = sc.nextLine();
+						subMenu = Integer.parseInt(ssubMenu);
 					} catch (Exception e) {
 						System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 						// e.printStackTrace();
-						sc.nextLine();
 						continue;
 					}
 					// 1 customer login, 2 seller login 0 cancel
@@ -95,10 +93,11 @@ public class BakeryCompanyMain {
 										System.out.print("[메뉴번호를 선택하세요]: ");
 										customerMenu = sc.nextInt();
 										sc.nextLine();
+										
+										
 									} catch (Exception e) {
 										System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
-										// e.printStackTrace();
-										sc.nextLine();
+//										 e.printStackTrace();
 										continue;
 									}
 
@@ -254,13 +253,11 @@ public class BakeryCompanyMain {
 														categorySelectedString = sc.nextLine().trim();
 
 														if (categorySelectedString.length() == 0) {
-															System.out
-																	.println("[입력하신 케타고리가 없습니다.. 다시 가개 매뉴로 돌아갑니다...]");
+															System.out.println("[입력하신 케타고리가 없습니다.. 다시 가개 매뉴로 돌아갑니다...]");
 															break;
 														} else {
 															try {
-																categorySelected = Integer
-																		.parseInt(categorySelectedString);
+																categorySelected = Integer.parseInt(categorySelectedString);
 																// 제품 출력
 																
 																
@@ -299,9 +296,16 @@ public class BakeryCompanyMain {
 																			quantity = sc.nextInt();
 																			sc.nextLine();
 																			
-																			
+																			//장바구니에 회원정보 및 상품정보 추가 (상품을 고르는 즉시)
 																			int added = util.addToCart(id, prodName, price, quantity);
+																			
+																			//장바구니에 담은만큼 상품수량 감소 (결제가 완료되면)
 																			int minus = util.minusToProduct(prodName,quantity);
+																			
+																			//장바구니에 담고나서 (결제를 하지 않고 나오면)
+																			//int plus = util.plusToProduct(prodName,quantity);
+																			
+																			
 																			
 																			if(added == 1) {
 																				System.out.println("[장바구니에 담으쎴습니다]");
@@ -309,8 +313,13 @@ public class BakeryCompanyMain {
 																				System.out.println("[장바구니에 담기 실패]");
 																			}
 																			
-																					
-																					
+																			
+																			
+																			
+																			
+																			
+//																			장바구니에서 그냥 나올 때,		
+//																			util.plusToProduct(prodName,quantity);
 																					
 																					
 																					
@@ -644,7 +653,7 @@ public class BakeryCompanyMain {
 					}
 				} // 회원가입 while loop
 			} else {
-				System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+				System.out.println("[오류: 658번째 줄 :  입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 				System.out.println();
 				break;
 			}
