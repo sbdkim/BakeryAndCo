@@ -33,7 +33,7 @@ public class ProductDAO {
 		Connection conn = null;
 		String url = "jdbc:oracle:thin:@localhost:1521:xe";
 		try {
-			conn = DriverManager.getConnection(url, "JAVADB", "1234");
+			conn = DriverManager.getConnection(url, "JAVADB01", "1234");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(0);

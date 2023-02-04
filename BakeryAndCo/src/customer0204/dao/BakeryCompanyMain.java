@@ -8,6 +8,7 @@ public class BakeryCompanyMain {
 
 	public static void main(String[] args) {
 		int menu = 0;
+		String smenu;
 		boolean entireProgram = true;
 		Scanner sc = new Scanner(System.in);
 		CustomerDAOUtil util = new CustomerDAOUtil();
@@ -21,7 +22,7 @@ public class BakeryCompanyMain {
 		while (entireProgram == true) {
 			if (id == null) {
 				System.out.println("___________________________________");
-				System.out.println("--------Bread & Co. Main Menu -----");
+				System.out.println("--------Bread & Co. Main Menu 0204-----");
 				System.out.println("───────────────────────────────────");
 				if (!isJoin)
 					System.out.println("[1] 로그인");
@@ -33,12 +34,11 @@ public class BakeryCompanyMain {
 			}
 
 			try {
-				menu = sc.nextInt();
-				sc.nextLine();
+				smenu=sc.nextLine();
+				menu = Integer.parseInt(smenu);
 			} catch (Exception e) {
 				System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 				// e.printStackTrace();
-				sc.nextLine();
 				continue;
 			}
 			if (menu == 0) {
@@ -49,6 +49,7 @@ public class BakeryCompanyMain {
 			if (menu == 1) {
 
 				int subMenu;// subMenu for 로그인
+				String ssubMenu;
 				while (loginBoolean) {
 					System.out.println("───────────────────────────────────");
 					System.out.println("[로그인]");
@@ -59,13 +60,11 @@ public class BakeryCompanyMain {
 					System.out.print("[로그인 하실 메뉴를 선택하세요]: ");
 
 					try {
-
-						subMenu = sc.nextInt();
-						sc.nextLine();
+						ssubMenu =sc.nextLine();
+						subMenu = Integer.parseInt(ssubMenu);
 					} catch (Exception e) {
 						System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 						// e.printStackTrace();
-						sc.nextLine();
 						continue;
 					}
 					// 1 customer login, 2 seller login 0 cancel
@@ -83,6 +82,7 @@ public class BakeryCompanyMain {
 
 								System.out.println("[" + name + "님 로그인 성공]");
 								int customerMenu; // 소비자 메뉴
+								String scustomerMenu;
 								boolean customerRun = true;
 								while (customerRun) {
 									System.out.println("───────────────────────────────────");
@@ -97,23 +97,21 @@ public class BakeryCompanyMain {
 									try {
 										// customer 로그인한 상테
 										System.out.print("[메뉴번호를 선택하세요]: ");
-										customerMenu = sc.nextInt();
-										sc.nextLine();
+										scustomerMenu=sc.nextLine();
+										customerMenu = Integer.parseInt(scustomerMenu);
 									} catch (Exception e) {
 										System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 										// e.printStackTrace();
-										sc.nextLine();
 										continue;
 									}
 
 									if (customerMenu > 6 || customerMenu < 1) {
 										System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 										// e.printStackTrace();
-										sc.nextLine();
 										continue;
 									}
 									int customerOrderMenu; // 소비자 주문내역 메뉴
-
+									String scustomerOrderMenu;
 									boolean result2 = false;
 									ArrayList<SellerVO> list = null;
 									ArrayList<ProductVO> list2 = null;
@@ -130,12 +128,12 @@ public class BakeryCompanyMain {
 										System.out.println("───────────────────────────────────");
 										try {
 											System.out.print("[메뉴번호를 선택하세요]: ");
-											customerOrderMenu = sc.nextInt();
-											sc.nextLine();
+											scustomerOrderMenu=sc.nextLine();
+											customerOrderMenu = Integer.parseInt(scustomerOrderMenu);
+											
 										} catch (Exception e) {
 											System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 											// e.printStackTrace();
-											sc.nextLine();
 											continue;
 										}
 
@@ -179,6 +177,7 @@ public class BakeryCompanyMain {
 										boolean regionBoolean = true; // 시작
 										while (regionBoolean) {
 											int regionCode;
+											String sregionCode;
 											String regionCodeString;
 											String sellerID, storeName, category, prodName;
 											int active, quantity, price, prodNum = 0;
@@ -193,19 +192,16 @@ public class BakeryCompanyMain {
 
 											try {
 												System.out.print("[상점지역을 선택하세요]: ");
-												regionCode = sc.nextInt();
-												sc.nextLine();
-
+												sregionCode=sc.nextLine();
+												regionCode = Integer.parseInt(sregionCode);
 											} catch (Exception e) {
 												System.out.println("[오류: 입력하신 지역번호에 오류가 있습니다.. 다시 입력하세요]");
 												// e.printStackTrace();
-												sc.nextLine();
 												continue;
 											}
 											if (regionCode > 3 || regionCode < 1) {
 												System.out.println("[오류: 입력하신 지역번호에 오류가 있습니다.. 다시 입력하세요]");
 												// e.printStackTrace();
-												sc.nextLine();
 												continue;
 											}
 
@@ -503,6 +499,7 @@ public class BakeryCompanyMain {
 
 								// 판매자 로그인 상태
 								int sellerMenu;
+								String ssellerMenu;
 								boolean sellerRun = true;
 								while (sellerRun) {
 									System.out.println("───────────────────────────────────");
@@ -517,19 +514,18 @@ public class BakeryCompanyMain {
 									System.out.println("───────────────────────────────────");
 									try {
 										System.out.print("[메뉴번호를 선택하세요]: ");
-										sellerMenu = sc.nextInt();
-										sc.nextLine();
+										
+										ssellerMenu= sc.nextLine();
+										sellerMenu = Integer.parseInt(ssellerMenu);
 									} catch (Exception e) {
 										System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 										// e.printStackTrace();
-										sc.nextLine();
 										continue;
 									}
 
 									if (sellerMenu > 7 || sellerMenu < 1) {
 										System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 										// e.printStackTrace();
-										sc.nextLine();
 										continue;
 									}
 
@@ -558,6 +554,7 @@ public class BakeryCompanyMain {
 
 										// 제품등록/ 제품 수정 메뉴
 										int productMenu;
+										String sproductMenu;
 										boolean productRun = true;
 										while (productRun) {
 											if (util2.viewStoreProduct(storeName)) {
@@ -575,19 +572,17 @@ public class BakeryCompanyMain {
 											System.out.println("───────────────────────────────────");
 											try {
 												System.out.print("[메뉴번호를 선택하세요]: ");
-												productMenu = sc.nextInt();
-												sc.nextLine();
+												sproductMenu= sc.nextLine();
+												productMenu = Integer.parseInt(sproductMenu);
 											} catch (Exception e) {
 												System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 												// e.printStackTrace();
-												sc.nextLine();
 												continue;
 											}
 
 											if (productMenu > 4 || productMenu < 1) {
 												System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 												// e.printStackTrace();
-												sc.nextLine();
 												continue;
 											}
 
@@ -704,6 +699,7 @@ public class BakeryCompanyMain {
 				System.out.println("[선택: 2] 회원가입을 선택하셨습니다");
 				while (true) {
 					int subMenu2; // subMenu for 회원가입
+					String ssubMenu2;
 					try {
 						System.out.println("───────────────────────────────────");
 						System.out.println("[회원가입]");
@@ -712,12 +708,11 @@ public class BakeryCompanyMain {
 						System.out.println("[0] 취소, 매인 메뉴로 ");
 						System.out.println("───────────────────────────────────");
 						System.out.print("[회원가입 하실 메뉴를 선택하세요]: ");
-						subMenu2 = sc.nextInt();
-						sc.nextLine();
+						ssubMenu2=sc.nextLine();
+						subMenu2 = Integer.parseInt(ssubMenu2);
 					} catch (Exception e) {
 						System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 						// e.printStackTrace();
-						sc.nextLine();
 						continue;
 					}
 					if (subMenu2 == 1) { // 소비자 회원가입
