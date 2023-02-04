@@ -8,8 +8,8 @@ import java.util.Scanner;
 public class BakeryCompanyMain {
 
 	public static void main(String[] args) {
-		int menu = 0;
-		String smenu;
+		int menu = 0;//기존 메뉴 (String smenu를 Integer.parseInt 로 변환해서 menu 사용
+		String smenu;//엔터키 오류메시지 띄우려고 생성함
 		boolean entireProgram = true;
 		Scanner sc = new Scanner(System.in);
 		CustomerDAOUtil util = new CustomerDAOUtil();
@@ -34,11 +34,12 @@ public class BakeryCompanyMain {
 				System.out.print("[번호를 선택하세요]: ");
 			}
 			try {
-				smenu=sc.nextLine();//menu = sc.nextInt();sc.nextLine();
-				menu = Integer.parseInt(smenu);
+				smenu=sc.nextLine();//추가
+				menu = Integer.parseInt(smenu);//추가
 			} catch (Exception e) {
 				System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 				// e.printStackTrace();
+				//sc.nextLine(); 삭제함.
 				continue;
 			}
 			if (menu == 0) {
@@ -49,7 +50,7 @@ public class BakeryCompanyMain {
 			if (menu == 1) {
 
 				int subMenu;// subMenu for 로그인
-				String ssubMenu;
+				String ssubMenu;//추가
 				while (loginBoolean) {
 					System.out.println("───────────────────────────────────");
 					System.out.println("[로그인]");
@@ -60,11 +61,12 @@ public class BakeryCompanyMain {
 					System.out.print("[로그인 하실 메뉴를 선택하세요]: ");
 
 					try {
-						ssubMenu = sc.nextLine();
-						subMenu = Integer.parseInt(ssubMenu);
+						ssubMenu = sc.nextLine();//추가
+						subMenu = Integer.parseInt(ssubMenu);//추가
 					} catch (Exception e) {
 						System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 						// e.printStackTrace();
+						//nextLine 삭제
 						continue;
 					}
 					// 1 customer login, 2 seller login 0 cancel
@@ -77,6 +79,7 @@ public class BakeryCompanyMain {
 
 								System.out.println("[" + name + "님 로그인 성공]");
 								int customerMenu; // 소비자 메뉴
+								String scustomerMenu;
 								boolean customerRun = true;
 								while (customerRun) {
 									System.out.println("───────────────────────────────────");
@@ -91,10 +94,8 @@ public class BakeryCompanyMain {
 									try {
 										// customer 로그인한 상테
 										System.out.print("[메뉴번호를 선택하세요]: ");
-										customerMenu = sc.nextInt();
-										sc.nextLine();
-										
-										
+										scustomerMenu = sc.nextLine();
+										customerMenu = Integer.parseInt(scustomerMenu);
 									} catch (Exception e) {
 										System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 //										 e.printStackTrace();
@@ -104,8 +105,6 @@ public class BakeryCompanyMain {
 									if (customerMenu > 6 || customerMenu < 1) {
 										System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
 										// e.printStackTrace();
-										sc.nextLine();
-										continue;
 									}
 									int customerOrderMenu; // 소비자 주문내역 메뉴
 
