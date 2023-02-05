@@ -1,4 +1,4 @@
-package customer.dao;
+package bakeryComapny;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -120,7 +120,7 @@ public class CustomerVO {
 	@Override
 	public String toString() {
 
-		return "CustomerVO : [ID: " + userID + ", 이름: " + name + ", 생년월일: " + birthDate + ", 전화번호: " + mobile
+		return "[ID: " + userID + ", 이름: " + name + ", 생년월일: " + birthDate + ", 전화번호: " + mobile
 				+ ", 이메일: " + email + ", 주소: " + addr + ", 활성: " + active + ", 등록날짜: " + enrollDate + "]";
 
 	}

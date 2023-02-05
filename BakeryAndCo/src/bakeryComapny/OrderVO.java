@@ -1,4 +1,4 @@
-package customer.dao;
+package bakeryComapny;
 
 import java.sql.Date;
 
@@ -117,7 +117,7 @@ public class OrderVO {
 
 	@Override
 	public String toString() {
-		return "OrderVO [orderNo=" + orderNo + ", prodNum=" + prodNum + ", prodName=" + prodName + ", storeName="
+		return "[orderNo=" + orderNo + ", prodNum=" + prodNum + ", prodName=" + prodName + ", storeName="
 				+ storeName + ", userID=" + userID + ", quantity=" + quantity + ", cost=" + cost + ", shippingCost="
 				+ shippingCost + ", review=" + review + ", orderCompleted=" + orderCompleted + ", orderDate="
 				+ orderDate + "]";

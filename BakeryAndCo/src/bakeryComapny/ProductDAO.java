@@ -1,4 +1,4 @@
-package customer.dao;
+package bakeryComapny;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
