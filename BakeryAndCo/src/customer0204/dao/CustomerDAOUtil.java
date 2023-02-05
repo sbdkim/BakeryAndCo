@@ -570,9 +570,21 @@ public class CustomerDAOUtil {
 
 	}// delete
 	
+	public int minusToProduct(String prodName, int inventory) {
+	      int result = 0;
+	      
+	      result = dao.minusProduct(prodName, inventory);
+	      
+	      return result;
+	   }
 	
-	
-	
+	public int plusToProduct(String prodName, int inventory) {
+		int result = 0;
+		
+		result = dao.plusProduct(prodName, inventory);
+		
+		return result;
+	}
 	
 	
 

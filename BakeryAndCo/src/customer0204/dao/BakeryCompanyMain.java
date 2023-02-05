@@ -343,7 +343,7 @@ public class BakeryCompanyMain {
 																					price = list3
 																							.get(selectedProductNum - 1)
 																							.getPrice();
-
+																					
 																					System.out
 																							.print("[담으실 갯수를 입력하세요]: ");
 																					quantity = sc.nextInt();
@@ -353,12 +353,16 @@ public class BakeryCompanyMain {
 																							prodNum, prodName, price,
 																							quantity);
 																					if (added == 1) {
+																						int minus = util.minusToProduct(prodName,quantity);
 																						System.out.println(
 																								"[장바구니에 담으쎴습니다]");
 
 																					} else {
 																						System.out.println(
 																								"[장바구니에 담기 실패]");
+																						
+																						
+																						
 																					}
 
 																				} catch (Exception e) {
