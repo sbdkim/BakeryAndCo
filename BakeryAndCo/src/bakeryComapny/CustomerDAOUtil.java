@@ -16,7 +16,6 @@ public class CustomerDAOUtil {
 		dao = CustomerDAO.getInstance();
 	}
 
-
 	public boolean idCheck(String id) {
 		String pattern = "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z[0-9]]{8,20}$";
 		boolean chk = false;
@@ -72,7 +71,7 @@ public class CustomerDAOUtil {
 		}
 		return chk;
 	}
-	
+
 //  전체 매인 메뉴 [1]로그인 - [1] 소비자
 	public HashMap<String, String> login(Scanner sc, String id) {
 		HashMap<String, String> map = null;
@@ -87,8 +86,7 @@ public class CustomerDAOUtil {
 		}
 		return map;
 	}
-	
-	
+
 //  전체 매인 메뉴 [1]로그인 - [1] 소비자 - 비밀번호 제설정
 	public boolean resetPassword(String userID, Scanner sc) {
 		boolean result = false;
@@ -154,8 +152,7 @@ public class CustomerDAOUtil {
 		return result;
 
 	}
-	
-	
+
 	// 전체 매인 메뉴 [2]회원가입 - [1] 소비자
 	public boolean registerCustomer(Scanner sc) {
 		boolean result = false;
@@ -268,8 +265,8 @@ public class CustomerDAOUtil {
 
 		return result;
 	}// registerCustomer
-	
-	//CUSTOMER MENU 1 - [1] 주문내역 - [1] 완료된 주문 목록
+
+	// CUSTOMER MENU 1 - [1] 주문내역 - [1] 완료된 주문 목록
 	public boolean showCompletedOrder(String id) {
 		boolean result = false;
 		ArrayList<OrderVO> list = null;
@@ -283,9 +280,8 @@ public class CustomerDAOUtil {
 
 		return result;
 	}
-	
-	
-	//CUSTOMER MENU 1 - [1] 주문내역 - [2] 진행중인 주문 목록
+
+	// CUSTOMER MENU 1 - [1] 주문내역 - [2] 진행중인 주문 목록
 	public boolean showCurrentOrder(String id) {
 		boolean result = false;
 		ArrayList<OrderVO> list = null;
@@ -299,10 +295,8 @@ public class CustomerDAOUtil {
 
 		return result;
 	}
-	
-	
-	
-	//CUSTOMER MENU 2 - [2] 주문하기 -  지역에 있는 가게 출력
+
+	// CUSTOMER MENU 2 - [2] 주문하기 - 지역에 있는 가게 출력
 	public ArrayList<SellerVO> showRegionStore(int regionCode) {
 
 		ArrayList<SellerVO> list = null; // 이 리스트에 담긴 SellerVO에는 sellerID, storeName, regionCode, active이거 4개가 담겨있다
@@ -317,6 +311,7 @@ public class CustomerDAOUtil {
 		}
 		return list;
 	}
+
 	public ArrayList<SellerVO> hasRegionStore(int regionCode) {
 		ArrayList<SellerVO> list = null; // 이 리스트에 담긴 SellerVO에는 sellerID, storeName, regionCode, active이거 4개가 담겨있다
 		list = dao.viewRegionStore(regionCode);
@@ -328,7 +323,7 @@ public class CustomerDAOUtil {
 		}
 		return list;
 	}
-	
+
 	public int showRegionStoreNumber(int regionCode) {
 		ArrayList<SellerVO> list = null;
 		int i = 0;
@@ -342,10 +337,8 @@ public class CustomerDAOUtil {
 		}
 		return i;
 	}
-	
-	
-	
-	//CUSTOMER MENU 2 - [2] 주문하기 -  들어온 가게의 모든 케타고리 출력
+
+	// CUSTOMER MENU 2 - [2] 주문하기 - 들어온 가게의 모든 케타고리 출력
 	public ArrayList<ProductVO> showCategory(String storeName) {
 		ArrayList<ProductVO> list = null; // 이 리스트에 담긴 SellerVO에는 sellerID, storeName, regionCode, active이거 4개가 담겨있다
 		list = dao.viewCategory(storeName);
@@ -364,9 +357,8 @@ public class CustomerDAOUtil {
 
 		return list;
 	}
-	
-	
-	// CUSTOMER MENU 2 - [2] 주문하기 -  들어온 가게의 케타고리 안에 있슨 모든 물건 
+
+	// CUSTOMER MENU 2 - [2] 주문하기 - 들어온 가게의 케타고리 안에 있슨 모든 물건
 	public ArrayList<ProductVO> viewStoreProduct(String storeName, String category) {
 		ArrayList<ProductVO> list = null;
 		list = dao.viewProducts(storeName, category);
@@ -380,10 +372,8 @@ public class CustomerDAOUtil {
 
 		return list;
 	}
-	
-	
-	
-	// CUSTOMER MENU 2 - [2] 주문하기 -  장바구니에 담기
+
+	// CUSTOMER MENU 2 - [2] 주문하기 - 장바구니에 담기
 	public int addToCart(String userID, int prodNum, String prodName, int price, int quantity) {
 		int result = 0;
 
@@ -391,8 +381,8 @@ public class CustomerDAOUtil {
 
 		return result;
 	}
-	
-	// CUSTOMER MENU 2 - [2] 주문하기 -  장바구니에 보기
+
+	// CUSTOMER MENU 2 - [2] 주문하기 - 장바구니에 보기
 	public ArrayList<CartVO> viewCart() {
 		ArrayList<CartVO> list = null;
 		list = dao.viewShoppingCart();
@@ -405,7 +395,7 @@ public class CustomerDAOUtil {
 		return list;
 	}
 
-	// CUSTOMER MENU 2 - [2] 주문하기 -  장바구니에 있는것들을 주문 테이블에 담기
+	// CUSTOMER MENU 2 - [2] 주문하기 - 장바구니에 있는것들을 주문 테이블에 담기
 	public boolean checkout(Scanner sc, String storeName, String userID, ArrayList<CartVO> list) {
 		// 아이디 비번 입력
 		boolean result = false;
@@ -423,6 +413,7 @@ public class CustomerDAOUtil {
 		return result;
 
 	}
+
 	// CUSTOMER MENU 2 - [2] 주문하기 - 총 개수 총 금액 출력
 	public int total(ArrayList<CartVO> list) {
 		int result = 0;
@@ -441,9 +432,8 @@ public class CustomerDAOUtil {
 
 		return result;
 	}
-	
 
-//CUSTOMER MENU 2 - [2] 주문하기 - 장바구니 비우기
+	//CUSTOMER MENU 2 - [2] 주문하기 - 장바구니 비우기
 
 	public boolean emptyCart() {
 		boolean result = false;
@@ -453,7 +443,24 @@ public class CustomerDAOUtil {
 		return result;
 	}
 
-	
+	// CUSTOMER MENU 2 - [2] 주문하기 - productTBL에서 주문한 주문한 갯수는 제거
+	public int minusToProduct(String prodName, int inventory) {
+		int result = 0;
+
+		result = dao.minusProduct(prodName, inventory);
+
+		return result;
+	}
+
+	// CUSTOMER MENU 2 - [2] 주문하기 - productTBL에서 주문한 주문안하고 나가면 갯수는 다시 추가
+	public int plusToProduct(String prodName, int inventory) {
+		int result = 0;
+
+		result = dao.plusProduct(prodName, inventory);
+
+		return result;
+	}
+
 	// CUSTOMER MENU 3 - [3] 회원 정보 수정
 	public boolean update(String userID, Scanner sc) {
 		// 아이디/패스워드 입력 받아서 조회
@@ -543,11 +550,7 @@ public class CustomerDAOUtil {
 		}
 		return false;
 	}// update
-	
-	
-	
-	
-	
+
 	// CUSTOMER MENU 4 - [4] 회원탈퇴
 	public boolean delete(Scanner sc, String userID) {
 		// 아이디 비번 입력
@@ -569,25 +572,5 @@ public class CustomerDAOUtil {
 		return result;
 
 	}// delete
-	
-	
-	
-	
-	
-	
-
-
-	
-
-
-
-	
-
-
-
-
-
-
-	
 
 }// CustomerDAOUtil
