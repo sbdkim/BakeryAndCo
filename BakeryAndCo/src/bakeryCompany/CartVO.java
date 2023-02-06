@@ -1,4 +1,4 @@
-package bakeryComapny;
+package bakeryCompany;
 
 public class CartVO {
 

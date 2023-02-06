@@ -1,4 +1,4 @@
-package bakeryComapny;
+package bakeryCompany;
 
 import java.sql.Date;
 
