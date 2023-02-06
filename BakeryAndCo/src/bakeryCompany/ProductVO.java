@@ -47,11 +47,11 @@ public class ProductVO {
 	
 	
 
-	public int getProNum() {
+	public int getProdNum() {
 		return prodNum;
 	}
 
-	public void setProNum(int proNum) {
+	public void setProdNum(int proNum) {
 		this.prodNum = proNum;
 	}
 

@@ -67,7 +67,7 @@ public class CartVO {
 
 	@Override
 	public String toString() {
-		return "CartVO : [ID: "  + userID + ", 제품번호: " + prodNum +", 제품명: " + prodName + ", 갯수: " + quantity + ", 가격: " + price +"]";
+		return "[ID: "  + userID + ", 제품번호: " + prodNum +", 제품명: " + prodName + ", 갯수: " + quantity + ", 가격: " + price +"]";
 	}
 	
 	
