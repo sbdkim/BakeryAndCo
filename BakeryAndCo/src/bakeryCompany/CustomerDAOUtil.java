@@ -281,6 +281,19 @@ public class CustomerDAOUtil {
 		return result;
 	}
 
+	// CUSTOMER MENU 1 - [1] 주문내역 - 리뷰남기기
+		public boolean writeReview(int orderNo, String review) {
+			boolean result = false;
+			if(dao.writeReview(orderNo, review) == 1) {
+				result = true;
+			}
+
+			return result;
+		}
+	
+	
+	
+	
 	// CUSTOMER MENU 1 - [1] 주문내역 - [2] 진행중인 주문 목록
 	public boolean showCurrentOrder(String id) {
 		boolean result = false;

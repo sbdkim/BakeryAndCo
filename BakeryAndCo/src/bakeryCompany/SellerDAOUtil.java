@@ -326,6 +326,21 @@ public class SellerDAOUtil {
 
 		return result;
 	}
+	//SELLER MENU 1 - [1] 주문목록 (주문완료 시키기)
+	
+	public boolean completeOrder(int orderNo) {
+		boolean result = false;
+		if(dao.completeOrder(orderNo) == 1) {
+			result = true;
+		}
+		return result;
+	}
+	
+	
+	
+	
+	
+	
 
 	// SELLER MENU 3 - [3] 제품 목록
 	public boolean viewStoreProduct(String storeName) {

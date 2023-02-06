@@ -243,6 +243,45 @@ public class SellerDAO {
 		return list;
 
 	}
+	
+	
+	//SELLER MENU 1 - [1] 주문목록 (주문완료 시키기)
+	public int completeOrder(int orderNo) {
+		int result = 0;
+		Connection conn = this.getConnection();
+		String sql = null;
+		sql = "update orderTBL set orderCompleted=1 where orderNo = ?";
+
+		PreparedStatement pstmt = null;
+		try {
+			// 4. PreparedStatement 객체 생성하기
+			pstmt = conn.prepareStatement(sql);
+			// 5. ? 값 설정하기
+			pstmt.setInt(1, orderNo);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			this.close(pstmt, conn);
+		}
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//SELLER MENU 2 - [2] 고객목록
 	public ArrayList<CustomerVO> viewCustomers(String storeName) {
 		ArrayList<CustomerVO> list = null;

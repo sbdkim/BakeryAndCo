@@ -241,7 +241,7 @@ public class CustomerDAO {
 		return list;
 	}// viewCompletedOrder
 	
-	public int writeReview(String orderNo, String review) {
+	public int writeReview(int orderNo, String review) {
 		int result = 0;
 		Connection conn = this.getConnection();
 		PreparedStatement pstmt = null;
@@ -251,7 +251,7 @@ public class CustomerDAO {
 			pstmt = conn.prepareStatement(sql);
 			// ?채우기
 			pstmt.setString(1, review);
-			pstmt.setString(2, orderNo);
+			pstmt.setInt(2, orderNo);
 
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {

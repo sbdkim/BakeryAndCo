@@ -155,6 +155,50 @@ public class BakeryCompanyMain {
 											if (result2) {
 												System.out.println("[완료된 주문 목록 출력 완료]");
 												System.out.println();
+												
+												/* review write*/
+												boolean writeReviewRun = true;
+												int compOrd = 0;
+												String scompOrd, review;
+												while(writeReviewRun) {
+													System.out.print("[리뷰를 남기실 주문 번호를 입력하시오]:");
+													try {
+														scompOrd = sc.nextLine().trim();
+																												
+														
+														if(scompOrd.length() == 0) {
+															System.out.println("[오류: 주문번호를 입력안하셨습니다.. 리뷰 작성을 종료합니다]");
+															break;
+														}
+														compOrd = Integer.parseInt(scompOrd);
+
+														
+														
+													}catch(Exception e) {
+														System.out.println("[오류: 입력하신 주문번호에 오류가 있습니다.. 다시 입력하시오]");
+														continue;
+													}
+													 System.out.print("[리뷰를 작성해주세요]:");
+													 review = sc.nextLine();
+													 
+													 if(util.writeReview(compOrd,  review)) {
+														 System.out.println("[리뷰작성 성공]:");
+														 writeReviewRun = false;
+														 break;
+													 }else {
+														 System.out.println("[리뷰작성 실패]:");
+														 writeReviewRun = false;
+														 break;
+													 }
+													
+													
+													
+													
+												}// writeReview
+												
+												
+												
+												
 											} else {
 												System.out.println("[완료된 주문 목록 출력 실패]");
 												System.out.println();
@@ -547,6 +591,109 @@ public class BakeryCompanyMain {
 										if (util2.viewStoreOrder(storeName)) {
 											System.out.println("[모든 주문목록 조회 완료]");
 											System.out.println();
+											
+											//진행중인 주문을 배송(완로) 시키기
+											String sorderComplete;
+											int orderComplete;
+											boolean orderCompleteRun = true;
+											while(orderCompleteRun) {
+												System.out.println("───────────────────────────────────");
+												System.out.println("[주문 메뉴]");
+												System.out.println("[1] 진행중 주문 배송하기");
+												System.out.println("[2] 돌아가기");
+												System.out.println("───────────────────────────────────");
+												
+												try {
+													System.out.print("[주문메뉴 번호을 입력하시오]:");
+													sorderComplete = sc.nextLine().trim();
+													orderComplete = Integer.parseInt(sorderComplete);
+												}catch(Exception e ) {
+													System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+													continue;
+												}
+												
+												if (orderComplete > 2 || orderComplete < 1) {
+													System.out.println("[오류: 입력하신 매뉴에 오류가 있습니다.. 다시 입력하세요]");
+													continue;
+												}
+												
+												if(orderComplete ==1 ) {
+													String sorderNumber, confirmComplete;
+													int orderNumber;
+													boolean orderCompleteNumberRun = true;
+													while(orderCompleteNumberRun){
+														System.out.print("[진행중인 주문 번호을 입력하세요]");
+														try {
+														sorderNumber = sc.nextLine().trim();
+														orderNumber = Integer.parseInt(sorderNumber);
+														}catch(Exception e) {
+															System.out.println("[오류: 입력하신 주문번호가 잘못됐습니다..다시 입력하세요]");
+															continue;
+														}
+														
+														if (orderNumber < 1) {
+															System.out.println("[오류: 입력하신 주문번호가 잘못됐습니다..다시 입력하세요]");
+															continue;
+														}
+														
+														System.out.print("[진행중인 주문을 배송하시겠습니까? (y/n)]:");
+														confirmComplete = sc.nextLine().trim();
+
+														
+														if (confirmComplete.equals("y") || confirmComplete.equals("Y")) {
+															if (util2.completeOrder(orderNumber)) {
+																System.out.println("[배송완료!]");
+																break;
+															} else {
+																System.out.println("[배송실패]");
+																break;
+															}
+
+														} else {
+															System.out.println("[배송을 종료하겠습니다...]");
+															continue;
+
+														}
+
+													}
+													
+													
+													
+												}
+												
+												if(orderComplete==2) {
+													System.out.println("[주문 목록을 종료합니다]");
+													orderCompleteRun = false;
+													break;
+												}
+												
+												
+												
+												
+											}//orderComplete while loop
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
+											
 										} else {
 											System.out.println("[주문목록 조회 실패]");
 											System.out.println();
